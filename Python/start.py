@@ -32,6 +32,6 @@ for id, info in MICE_INIT_INFO.items():
 # print(m.weight_times[-1])
 
 dataUpdate.mouseUpdate('Weight Sensor - ID A11111 - Weight 675g - Time 123456',all_mice)   
-m = all_mice['A11111']
-print(m.weight[-1])
-print(m.weight_times[-1])
+# m = all_mice['A11111']
+# print(m.weight[-1])
+# print(m.weight_times[-1])
