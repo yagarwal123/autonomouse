@@ -3,11 +3,12 @@ from PyQt5.QtCore import pyqtSlot, QRect
 
 import sys
 import os
-os.system("pyuic5 -x mainwin.ui -o mainwin.py")
-from mainwin import Ui_MainWindow
+os.system(r"pyuic5 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
+#from gui import mainwin
+from gui.mainwin import Ui_MainWindow
 
 
-class MyActions(Ui_MainWindow):
+class mainwinActions(Ui_MainWindow):
     def __init__(self, title=" "):
         self.title = title
         self.left = 250
@@ -36,7 +37,7 @@ if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = MyActions("Main Window")
+    ui = mainwinActions("Main Window")
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
