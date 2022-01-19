@@ -6,6 +6,7 @@ import os
 os.system(r"pyuic5 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
 #from gui import mainwin
 from gui.mainwin import Ui_MainWindow
+from gui.mousewin_actions import mousewinActions
 
 
 class mainwinActions(Ui_MainWindow):
@@ -31,7 +32,11 @@ class mainwinActions(Ui_MainWindow):
 
 
     def open_mouse(self):
-        self.label_blah.setText("Submit button is pressed ")
+        #app = QtWidgets.QApplication(sys.argv)
+        dialog = QtWidgets.QDialog()
+        ui = mousewinActions("Mouse Details")
+        ui.setupUi(dialog)
+        dialog.exec()
 
 if __name__ == "__main__":
 

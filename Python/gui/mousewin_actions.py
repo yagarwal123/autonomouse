@@ -5,7 +5,7 @@ import sys
 import os
 os.system(r"pyuic5 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
 #from gui import mainwin
-from mousewin import Ui_Dialog
+from gui.mousewin import Ui_Dialog
 
 
 class mousewinActions(Ui_Dialog):
