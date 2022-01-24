@@ -7,10 +7,12 @@ os.system(r"pyuic5 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
 #from gui import mainwin
 from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
+from gui.doorwin_actions import doorwinActions
 
 
 class mainwinActions(Ui_MainWindow):
-    def __init__(self, title=" "):
+    def __init__(self, all_mice = {}, title=" "):
+        self.all_mice = all_mice
         self.title = title
         self.left = 250
         self.top = 250
@@ -29,14 +31,23 @@ class mainwinActions(Ui_MainWindow):
     # define actions here
     def myactions(self):
         self.mouse_button.clicked.connect(self.open_mouse)
+        self.doorButton.clicked.connect(self.open_door)
 
 
     def open_mouse(self):
         #app = QtWidgets.QApplication(sys.argv)
-        dialog = QtWidgets.QDialog()
-        ui = mousewinActions("Mouse Details")
-        ui.setupUi(dialog)
-        dialog.exec()
+        self.mousewin = QtWidgets.QWidget()
+        ID = self.mouse_id_select.currentText().split(' - ')[0]
+        self.mouseui = mousewinActions(self.all_mice[ID])
+        self.mouseui.setupUi(self.mousewin)
+        self.mousewin.show()
+
+    def open_door(self):
+        #app = QtWidgets.QApplication(sys.argv)
+        self.doorwin = QtWidgets.QWidget()
+        self.doorui = doorwinActions()
+        self.doorui.setupUi(self.doorwin)
+        self.doorwin.show()
 
 if __name__ == "__main__":
 

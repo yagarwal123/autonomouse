@@ -4,10 +4,12 @@ import multiprocessing
 
 from Mouse import Mouse
 from start_teensy_read import startTeensyRead
-from gui.start_gui import startGUI
+from start_gui import startGUI
 
 import os
 os.system(r"pyuic5 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
+os.system(r"pyuic5 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
+os.system(r"pyuic5 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py")
 
 MICE_INIT_INFO = {'A11111':['Stuart',67],
               'A22222': ['Little',45]}
@@ -37,7 +39,7 @@ for id, info in MICE_INIT_INFO.items():
     all_mice[id] = Mouse(id,info[0],info[1])
 
 if __name__ == "__main__":
-    p1 = multiprocessing.Process(target=startGUI) 
+    p1 = multiprocessing.Process(target=startGUI, args=(all_mice,)) 
     p2 = multiprocessing.Process(target=startTeensyRead, args=(all_mice,))
     p1.start() 
     p2.start()

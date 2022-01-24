@@ -11,47 +11,28 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(223, 300)
-        self.gridLayout = QtWidgets.QGridLayout(Dialog)
-        self.gridLayout.setObjectName("gridLayout")
-        self.mouseBox = QtWidgets.QTableWidget(Dialog)
-        self.mouseBox.setObjectName("mouseBox")
-        self.mouseBox.setColumnCount(2)
-        self.mouseBox.setRowCount(0)
-        item = QtWidgets.QTableWidgetItem()
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        item.setFont(font)
-        self.mouseBox.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        item.setFont(font)
-        self.mouseBox.setHorizontalHeaderItem(1, item)
-        self.gridLayout.addWidget(self.mouseBox, 0, 0, 1, 1)
+class Ui_mouseWin(object):
+    def setupUi(self, mouseWin):
+        mouseWin.setObjectName("mouseWin")
+        mouseWin.resize(429, 192)
+        self.pushButton = QtWidgets.QPushButton(mouseWin)
+        self.pushButton.setGeometry(QtCore.QRect(50, 90, 75, 23))
+        self.pushButton.setObjectName("pushButton")
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(mouseWin)
+        QtCore.QMetaObject.connectSlotsByName(mouseWin)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, mouseWin):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        item = self.mouseBox.horizontalHeaderItem(0)
-        item.setText(_translate("Dialog", "Mouse"))
-        item = self.mouseBox.horizontalHeaderItem(1)
-        item.setText(_translate("Dialog", "Datetime"))
+        mouseWin.setWindowTitle(_translate("mouseWin", "Form"))
+        self.pushButton.setText(_translate("mouseWin", "PushButton"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    mouseWin = QtWidgets.QWidget()
+    ui = Ui_mouseWin()
+    ui.setupUi(mouseWin)
+    mouseWin.show()
     sys.exit(app.exec_())

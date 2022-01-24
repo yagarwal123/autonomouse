@@ -7,6 +7,12 @@ class Mouse:
         self.weight_times = [0]
         self.doortimes = []
 
+    def get_name(self):
+        return self.name
+    
+    def get_id(self):
+        return self.id
+
     def add_weight(self,w):
         self.weight.append(w)
 
