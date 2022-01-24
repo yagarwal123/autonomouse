@@ -34,8 +34,8 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount){
   
   // lambda function, pass in outerscope
   // define timers
-  t1.begin([=]{callback1(sensorValue);}, 100ms, false); // reads lickPin every 50ms and print to serial
-  t2.begin([=]{callback2(lickPin, sensorValue);}, 100ms, false); // reads lickPin every 50ms and print to serial
+  t1.begin([=]{callback1(sensorValue);}, 1ms, false); // reads lickPin every 50ms and print to serial
+  t2.begin([=]{callback2(lickPin, sensorValue);}, 1ms, false); // reads lickPin every 50ms and print to serial
   
   for(int i=0; i<10; i++){
     Serial.print("Trial ");
@@ -69,6 +69,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount){
            
         if (lickTime > 0){
           deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
+          Serial.println("giving rewardddddddddddddddddddddddd");
           t1.stop();
           }
         
@@ -77,10 +78,11 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount){
         }
       }
       downTime = millis() + WAITTIME; // count 5s from now
-    t2.stop();// stop timer
+    t1.stop();
+    t2.stop();// stop timers whether or not there was licking
     
-    //Serial.print("licked at ");
-    //Serial.println(lickTime);
+    Serial.print("licked at ");
+    Serial.println(lickTime);
 
     // start periodic timer
     t2.start();
