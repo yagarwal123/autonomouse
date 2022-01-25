@@ -20,7 +20,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount){
     responseTime = startTime + RES; // acceptable responese time to stimulus
     //Serial.println(startTime);
     while(millis() < responseTime){// response period
-      //lickCheck = read_lick(lickPin, THRESHOLD);
+      lickCheck = read_lick(lickPin, THRESHOLD);
       //Serial.println(lickCheck);
       if (lickTime == -1){
         lickCheck = read_lick(lickPin, THRESHOLD);
