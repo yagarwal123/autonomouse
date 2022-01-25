@@ -38,13 +38,13 @@ class Ui_doorWin(object):
         _translate = QtCore.QCoreApplication.translate
         doorWin.setWindowTitle(_translate("doorWin", "Form"))
         item = self.tableWidget.horizontalHeaderItem(0)
-        item.setText(_translate("doorWin", "Mouse ID"))
-        item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("doorWin", "Mouse Name"))
-        item = self.tableWidget.horizontalHeaderItem(2)
-        item.setText(_translate("doorWin", "Door No"))
-        item = self.tableWidget.horizontalHeaderItem(3)
         item.setText(_translate("doorWin", "Time"))
+        item = self.tableWidget.horizontalHeaderItem(1)
+        item.setText(_translate("doorWin", "Mouse ID"))
+        item = self.tableWidget.horizontalHeaderItem(2)
+        item.setText(_translate("doorWin", "Mouse Name"))
+        item = self.tableWidget.horizontalHeaderItem(3)
+        item.setText(_translate("doorWin", "Door No"))
 
 
 if __name__ == "__main__":

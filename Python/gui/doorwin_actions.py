@@ -9,7 +9,8 @@ from gui.doorwin import Ui_doorWin
 
 
 class doorwinActions(Ui_doorWin):
-    def __init__(self):
+    def __init__(self,doors):
+        self.doors = doors
         self.title = "Doors"
         self.left = 250
         self.top = 250
@@ -22,6 +23,16 @@ class doorwinActions(Ui_doorWin):
         # MainWindow.resize(400, 300) # do not modify it
         MainWindow.move(self.left, self.top)  # set location for window
         MainWindow.setWindowTitle(self.title) # change title
+        self.popTable()
+
+    def popTable(self):
+        entries = len(self.doors)
+        self.tableWidget.setRowCount(entries)
+        for i in range(entries):
+            self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(self.doors[i][0])))
+            self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(self.doors[i][1].get_id()))
+            self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(self.doors[i][1].get_name()))
+            self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(self.doors[i][1].weight[-1])))
 
 
 if __name__ == "__main__":

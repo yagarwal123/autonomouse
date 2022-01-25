@@ -38,9 +38,14 @@ all_mice = {}
 for id, info in MICE_INIT_INFO.items():
     all_mice[id] = Mouse(id,info[0],info[1])
 
+doors = [
+    [12367, all_mice['A22222']],
+    [33333, all_mice['A11111']]
+    ]
+
 if __name__ == "__main__":
-    p1 = multiprocessing.Process(target=startGUI, args=(all_mice,)) 
-    p2 = multiprocessing.Process(target=startTeensyRead, args=(all_mice,))
+    p1 = multiprocessing.Process(target=startGUI, args=(all_mice,doors,)) 
+    p2 = multiprocessing.Process(target=startTeensyRead, args=(all_mice,doors,))
     p1.start() 
     p2.start()
 

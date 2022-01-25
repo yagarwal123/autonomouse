@@ -8,7 +8,7 @@ import data_update
 
 logger = logging.getLogger(__name__)
 
-def startTeensyRead(all_mice):
+def startTeensyRead(all_mice,doors):
     while True:
         # m = all_mice['A11111']
         # print(m.weight[-1])

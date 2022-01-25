@@ -11,9 +11,10 @@ from gui.doorwin_actions import doorwinActions
 
 
 class mainwinActions(Ui_MainWindow):
-    def __init__(self, all_mice = {}, title=" "):
+    def __init__(self, all_mice = {},doors=[]):
         self.all_mice = all_mice
-        self.title = title
+        self.doors = doors
+        self.title = 'Main Window'
         self.left = 250
         self.top = 250
         self.width = 200
@@ -45,7 +46,7 @@ class mainwinActions(Ui_MainWindow):
     def open_door(self):
         #app = QtWidgets.QApplication(sys.argv)
         self.doorwin = QtWidgets.QWidget()
-        self.doorui = doorwinActions()
+        self.doorui = doorwinActions(self.doors)
         self.doorui.setupUi(self.doorwin)
         self.doorwin.show()
 

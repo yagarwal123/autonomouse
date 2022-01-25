@@ -18,6 +18,11 @@
     <widget class="QTableWidget" name="tableWidget">
      <column>
       <property name="text">
+       <string>Time</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Mouse ID</string>
       </property>
      </column>
@@ -29,11 +34,6 @@
      <column>
       <property name="text">
        <string>Door No</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Time</string>
       </property>
      </column>
     </widget>
