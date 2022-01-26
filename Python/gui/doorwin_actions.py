@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot, QRect
+from PyQt5.QtCore import pyqtSlot, QRect, QTimer
 
 import sys
 import os
@@ -23,7 +23,9 @@ class doorwinActions(Ui_doorWin):
         # MainWindow.resize(400, 300) # do not modify it
         MainWindow.move(self.left, self.top)  # set location for window
         MainWindow.setWindowTitle(self.title) # change title
-        self.popTable()
+        self.timer = QTimer()
+        self.timer.timeout.connect(lambda:self.popTable())
+        self.timer.start(1000)
 
     def popTable(self):
         entries = len(self.doors)
@@ -32,6 +34,8 @@ class doorwinActions(Ui_doorWin):
             self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(self.doors[i][0])))
             self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(self.doors[i][1].get_id()))
             self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(self.doors[i][1].get_name()))
+
+            #delete this
             self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(self.doors[i][1].weight[-1])))
 
 

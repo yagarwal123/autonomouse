@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot, QRect
+from PyQt5.QtCore import pyqtSlot, QRect, QThread
 
 import sys
 import os
@@ -8,6 +8,7 @@ os.system(r"pyuic5 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
 from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
 from gui.doorwin_actions import doorwinActions
+from start_teensy_read import startTeensyRead
 
 
 class mainwinActions(Ui_MainWindow):
@@ -27,6 +28,8 @@ class mainwinActions(Ui_MainWindow):
         MainWindow.move(self.left, self.top)  # set location for window
         MainWindow.setWindowTitle(self.title) # change title
 
+        self.worker = TeensyRead(self.all_mice,self.doors)
+        self.worker.start()
         self.myactions() # add actions for different buttons
 
     # define actions here
@@ -49,6 +52,16 @@ class mainwinActions(Ui_MainWindow):
         self.doorui = doorwinActions(self.doors)
         self.doorui.setupUi(self.doorwin)
         self.doorwin.show()
+
+class TeensyRead(QThread):
+    def __init__(self, all_mice = {},doors=[]):
+        super(TeensyRead, self).__init__()
+        self.all_mice = all_mice
+        self.doors = doors
+
+    def run(self):
+        startTeensyRead(self.all_mice,self.doors)
+
 
 if __name__ == "__main__":
 

@@ -42,14 +42,10 @@ doors = [
     [12367, all_mice['A22222']],
     [33333, all_mice['A11111']]
     ]
+#Uncomment
+#doors = []
 
 if __name__ == "__main__":
-    p1 = multiprocessing.Process(target=startGUI, args=(all_mice,doors,)) 
-    p2 = multiprocessing.Process(target=startTeensyRead, args=(all_mice,doors,))
-    p1.start() 
-    p2.start()
-
-    p1.join()       #Wait till Process 1 ends (Till GUI is closed)
-    p2.terminate()  #Terminate Process 2 (Stop reading Teensy)
+    startGUI(all_mice,doors)
     
 

@@ -19,7 +19,12 @@ def startTeensyRead(all_mice,doors):
         serIn = re.search(r"b'(.*)\\r\\n",serIn).group(1)
         print(serIn)
         data_update.dataUpdate(serIn,all_mice)  
-        sleep(3)
+        sleep(5)
+        serIn = "b'Weight Sensor - ID A11111 - Weight 6g - Time 123456\\r\\n"
+        serIn = re.search(r"b'(.*)\\r\\n",serIn).group(1)
+        print(serIn)
+        data_update.dataUpdate(serIn,all_mice)  
+        sleep(5)
         # m = all_mice['A11111']
         # print(m.weight[-1])
         # print(m.weight_times[-1])
