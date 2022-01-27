@@ -3,16 +3,17 @@
 
 float ave_reading(HX711 scale){
   float result = 0;
-  for(int i=0; i<10; i++){
+  for(int i=0; i<20; i++){
     result += scale.get_units();
     }
-  return result/10; // returns averaged result over 10 readings
+  return result/20; // returns averaged result over 10 readings
   }
 
 float load_cell(HX711 scale) { // sliding window for weight: search for stable weight readings
   float weight = 0;
   float w1 = 0;
   int wCounter = 0;
+  /*
   while(wCounter < 5){ // reach 5 consistent readings
     weight = ave_reading(scale);
     w1 = ave_reading(scale);
@@ -22,5 +23,8 @@ float load_cell(HX711 scale) { // sliding window for weight: search for stable w
         wCounter = 0;
         }
     }
+    
   return weight;
+  */
+  return ave_reading(scale);
 }
