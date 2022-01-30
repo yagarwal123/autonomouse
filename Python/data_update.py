@@ -3,7 +3,7 @@ import re
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(inSer,all_mice,doors):
+def dataUpdate(inSer,all_mice,doors,live_licks):
     KNOWNSTATEMENTS = ['^Weight Sensor - ID (.*) - Weight (\d*)g - Time (\d*)$',
                       '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',
                       ] 

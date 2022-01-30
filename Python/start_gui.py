@@ -3,11 +3,11 @@ from gui.mainwin_actions import mainwinActions
 import sys
 
 
-def startGUI(all_mice,doors):
+def startGUI(all_mice,doors,live_licks):
 
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = mainwinActions(all_mice, doors)
+    ui = mainwinActions(all_mice, doors,live_licks)
     #ui = mainwinActions(all_mice)
     ui.setupUi(MainWindow)
     MainWindow.show()

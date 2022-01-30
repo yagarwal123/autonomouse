@@ -12,9 +12,10 @@ from start_teensy_read import startTeensyRead
 
 
 class mainwinActions(Ui_MainWindow):
-    def __init__(self, all_mice = {},doors=[]):
+    def __init__(self, all_mice = {},doors=[],live_licks=[]):
         self.all_mice = all_mice
         self.doors = doors
+        self.live_licks = live_licks
         self.title = 'Main Window'
         self.left = 250
         self.top = 250
@@ -28,7 +29,7 @@ class mainwinActions(Ui_MainWindow):
         MainWindow.move(self.left, self.top)  # set location for window
         MainWindow.setWindowTitle(self.title) # change title
 
-        self.worker = TeensyRead(self.all_mice,self.doors)
+        self.worker = TeensyRead(self.all_mice,self.doors,self.live_licks)
         self.worker.start()
         self.myactions() # add actions for different buttons
 
@@ -54,13 +55,14 @@ class mainwinActions(Ui_MainWindow):
         self.doorwin.show()
 
 class TeensyRead(QThread):
-    def __init__(self, all_mice = {},doors=[]):
+    def __init__(self, all_mice = {},doors=[],live_licks=[]):
         super(TeensyRead, self).__init__()
         self.all_mice = all_mice
         self.doors = doors
+        self.live_licks = live_licks
 
     def run(self):
-        startTeensyRead(self.all_mice,self.doors)
+        startTeensyRead(self.all_mice,self.doors,self.live_licks)
 
 
 if __name__ == "__main__":

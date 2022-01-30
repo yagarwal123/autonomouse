@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import serial
 #import multiprocessing
 
 from Mouse import Mouse
@@ -42,10 +43,11 @@ doors = [
     [12367, all_mice['A22222'], 1],
     [33333, all_mice['A11111'], 2]
     ]
+live_licks = []
 #Uncomment
 #doors = []
 
 if __name__ == "__main__":
-    startGUI(all_mice,doors)
+    startGUI(all_mice,doors,live_licks)
     
 
