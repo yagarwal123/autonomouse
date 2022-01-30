@@ -13,10 +13,6 @@ mutex = QMutex()
 
 def startTeensyRead(all_mice,doors,live_licks):
     while True:
-        # m = all_mice['A11111']
-        # print(m.weight[-1])
-        # print(m.weight_times[-1])
-
         #Uncomment
         #serIn = str(ser.readline()) # Read the newest output from the Arduino
 
@@ -32,7 +28,3 @@ def startTeensyRead(all_mice,doors,live_licks):
         mutex.lock()
         data_update.dataUpdate(serIn,all_mice,doors,live_licks)  
         mutex.unlock()
-
-        # m = all_mice['A11111']
-        # print(m.weight[-1])
-        # print(m.weight_times[-1])
