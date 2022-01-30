@@ -1,9 +1,9 @@
 import logging
 import logging.config
-import multiprocessing
+#import multiprocessing
 
 from Mouse import Mouse
-from start_teensy_read import startTeensyRead
+#from start_teensy_read import startTeensyRead
 from start_gui import startGUI
 
 import os
@@ -39,8 +39,8 @@ for id, info in MICE_INIT_INFO.items():
     all_mice[id] = Mouse(id,info[0],info[1])
 
 doors = [
-    [12367, all_mice['A22222']],
-    [33333, all_mice['A11111']]
+    [12367, all_mice['A22222'], 1],
+    [33333, all_mice['A11111'], 2]
     ]
 #Uncomment
 #doors = []

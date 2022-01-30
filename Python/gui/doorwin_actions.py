@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot, QRect, QTimer
+from PyQt5.QtCore import pyqtSlot, QRect, QTimer, QMutex
 
 import sys
 import os
@@ -7,6 +7,7 @@ import os
 #from gui import mainwin
 from gui.doorwin import Ui_doorWin
 
+mutex = QMutex()
 
 class doorwinActions(Ui_doorWin):
     def __init__(self,doors):
@@ -28,15 +29,15 @@ class doorwinActions(Ui_doorWin):
         self.timer.start(1000)
 
     def popTable(self):
+        mutex.lock()
         entries = len(self.doors)
         self.tableWidget.setRowCount(entries)
         for i in range(entries):
             self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(self.doors[i][0])))
             self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(self.doors[i][1].get_id()))
             self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(self.doors[i][1].get_name()))
-
-            #delete this
-            self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(self.doors[i][1].weight[-1])))
+            self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(self.doors[i][2])))
+        mutex.unlock()
 
 
 if __name__ == "__main__":

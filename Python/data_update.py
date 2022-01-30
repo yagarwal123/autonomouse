@@ -3,33 +3,35 @@ import re
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(inSer,all_mice):
-    KNOWNSTATEMENTS = ['Weight Sensor - ID ',
-                      'Door Sensor - ID ',
+def dataUpdate(inSer,all_mice,doors):
+    KNOWNSTATEMENTS = ['^Weight Sensor - ID (.*) - Weight (\d*)g - Time (\d*)$',
+                      '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',
                       ] 
-    stat_mean = matchCommand(inSer,KNOWNSTATEMENTS)
-    mouseUpdate(inSer,all_mice,stat_mean)
-
-def matchCommand(inSer,KNOWNSTATEMENTS):
-
-    stat_mean = 0
-    for idx,item in enumerate(KNOWNSTATEMENTS):
-        if inSer[0:len(item)] == item:
-            stat_mean = idx+1
-            break
-    if stat_mean == 0:
-        logger.error("Unknown message recieved : " + inSer)
-    return stat_mean
-
-def mouseUpdate(inSer,all_mice, stat_mean):
-    #TODO error handling
+    stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
         case 0:
             return
         case 1:
-            id = re.search(r'Weight Sensor - ID (.*) - Weight .*g - Time .*',inSer).group(1)
-            weight = re.search(r'Weight Sensor - ID .* - Weight (.*)g - Time .*',inSer).group(1)
-            t = re.search(r'Weight Sensor - ID .* - Weight .*g - Time (.*)',inSer).group(1)
+            id = search.group(1)
+            weight = search.group(2)
+            t = search.group(3)
             m = all_mice[id]
             m.add_weight(weight)
             m.add_weighing_times(t)
+        case 2:
+            id = search.group(1)
+            d = search.group(2)
+            t = search.group(3)
+            doors.append([t,all_mice[id],d])
+
+def matchCommand(inSer,KNOWNSTATEMENTS):
+    stat_mean = 0
+    search = None
+    for idx,item in enumerate(KNOWNSTATEMENTS):
+        search = re.search(item,inSer)
+        if search is not None:
+            stat_mean = idx+1
+            break
+    if stat_mean == 0:
+        logger.error("Unknown message recieved : " + inSer)
+    return stat_mean, search
