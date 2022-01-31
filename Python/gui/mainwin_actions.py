@@ -8,6 +8,7 @@ os.system(r"pyuic5 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
 from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
 from gui.doorwin_actions import doorwinActions
+from gui.lickwin_actions import lickwinActions
 from start_teensy_read import startTeensyRead
 
 
@@ -37,6 +38,7 @@ class mainwinActions(Ui_MainWindow):
     def myactions(self):
         self.mouse_button.clicked.connect(self.open_mouse)
         self.doorButton.clicked.connect(self.open_door)
+        self.lickButton.clicked.connect(self.open_lick)
 
 
     def open_mouse(self):
@@ -53,6 +55,13 @@ class mainwinActions(Ui_MainWindow):
         self.doorui = doorwinActions(self.doors)
         self.doorui.setupUi(self.doorwin)
         self.doorwin.show()
+
+    def open_lick(self):
+        #app = QtWidgets.QApplication(sys.argv)
+        self.lickwin = QtWidgets.QWidget()
+        self.lickui = lickwinActions(self.live_licks)
+        self.lickui.setupUi(self.lickwin)
+        self.lickwin.show()
 
 class TeensyRead(QThread):
     def __init__(self, all_mice = {},doors=[],live_licks=[]):
