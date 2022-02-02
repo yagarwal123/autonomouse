@@ -13,7 +13,6 @@ float load_cell(HX711 scale) { // sliding window for weight: search for stable w
   float weight = 0;
   float w1 = 0;
   int wCounter = 0;
-  /*
   while(wCounter < 5){ // reach 5 consistent readings
     weight = ave_reading(scale);
     w1 = ave_reading(scale);
@@ -23,8 +22,5 @@ float load_cell(HX711 scale) { // sliding window for weight: search for stable w
         wCounter = 0;
         }
     }
-    
   return weight;
-  */
-  return ave_reading(scale);
 }
