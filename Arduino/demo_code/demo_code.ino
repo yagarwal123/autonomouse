@@ -77,6 +77,44 @@ void end_test(String ID, int noMouse){
   Serial.println("All done");
 }
 
+String door1Check(){
+  ID = read_id(Serial1);
+  if (ID.length() != 10) {
+    ID = "";
+  }
+  else{
+    unsigned long recordTime = millis();
+    //Serial.println(ID);
+    String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
+    //Serial.println(mouseName);
+    if (mouseName != "Mouse does not exist") {
+      String serOut = "";
+      serOut = serOut + "Door Sensor - ID" + ID + "Door 1 - Time " + recordTime;
+      Serial.println(serOut);
+    }
+    else {ID = "";};
+  }
+  return ID;
+}
+
+String door2Check(){
+  ID = read_id(Serial2);
+  if (ID.length() != 10) {
+    ID = "";
+  }
+  else{
+    unsigned long recordTime = millis();
+    String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
+    if (mouseName != "Mouse does not exist") {
+      String serOut = "";
+      serOut = serOut + "Door Sensor - ID" + ID + "Door 2 - Time " + recordTime;
+      Serial.println(serOut);
+    }
+    else {ID = "";};
+  }
+  return ID;
+}
+
 
 void setup()
 {
@@ -84,9 +122,10 @@ void setup()
   Serial1.begin(9600);
   Serial2.begin(9600);
   door_one.attach(2);
-  door_close(door_one);
+  door_open(door_one);
   door_two.attach(23);
   door_close(door_two);
+  // door 1 open and door 2 close
   /*
     scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
     scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
@@ -102,66 +141,25 @@ void setup()
 
 void loop()
 {
-  Serial.println("starting round");
-  door_close(door_two); // for demo purpose, to be deleted
-
-  // door 1 open and door 2 close
-  //door_open(door_one);
-  door_close(door_one);
-
   // constantly checks until a known mouse appears
   // can make this an interrupt or something
-  
-  // check antenna 1
-  ID = read_id(Serial1);
-  while (ID.length() != 10) {
-    ID = read_id(Serial1);
-    //delay(150); // a delay is needed here to read, >150??? no need of delay here
-  }
-  Serial.println(ID);
-  String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
-  Serial.println(mouseName);
-  if (mouseName != "Mouse does not exist") {
-    door_open(door_one); // if mouse exists in database, open the door
-  }
-  
-  // clear buffer has no use here
-  //clear_serial_buffer(Serial1);
- 
-    // checks second antenna and see if tag exists
-  ID_sf = read_id_sf(Serial2);
-  while(ID_sf.length() != 12){
-    ID_sf = read_id_sf(Serial2); // case of no tag or unknown tag present
-  }
-  // if tag is recognised
-  Serial.println(ID_sf);
-  // clear buffer for antenna 1
-  clear_serial_buffer(Serial1);
 
-  // TODO: if needed: wait for buffer to fill up if mouse 2 present
-  // then read buffer to see if mouse 2 present
-
-  // close first door
+  String ID_1 = door1Check();
+  String ID_2 = door2Check();
+  
+  if ( (ID_2.length() == 0) || (ID_1.length() != 0) ){
+    return;
+  }
   door_close(door_one);
-
-  // open second door
-  Serial.println("opening door 2");
   door_open(door_two);
 
-  // record mouse entrace
-  Serial.print("Entering: ");
-  Serial.println(mouseName);
-  digitalClockDisplay();
-
   // take the weight
+  //Uncomment
   //weight = load_cell(scale);
-  Serial.println(mouseName);
+  //Comment out
   Serial.println("Enter mouse weight:");
   while(!Serial.available()){}
   weight = Serial.parseFloat();
-  Serial.print("weight: ");
-  Serial.print(weight);
-  Serial.println("g");
 
   // optional: if weight is >0 and < 40, close door 2
   while(weight < 15){ // keep taking weight
@@ -175,18 +173,34 @@ void loop()
   }
 
   if(weight < 40){ // run test
+    String serOut = "";
+    serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
+    Serial.println(serOut);
     Serial.println("closing door 2, start test");
     door_close(door_two);
   
     int liquidAmount = 200; // command from raspi
     run_test(lickPin, THRESHOLD, rewardPin, liquidAmount);
-    Serial.println("Test complete");
-    //end test
-    end_test(ID, noMouse);
+    Serial.println("Test complete - Start saving to file");
   }
   else{
     Serial.println("Invalid weight, abolish");
-    end_test(ID, noMouse);
   }
-
+  clear_serial_buffer(Serial2);
+  door_open(door_two);
+  while (door2Check() == ID_2){}
+  door_close(door_two);
+  
+  clear_serial_buffer(Serial1);
+  door_open(door_one);
+  while (door1Check() == ID_2){}
+  door_close(door_one);
+  while (true){
+    while(!Serial.available()){}
+    String serIn = Serial.readString();
+    if (serIn == "Save complete"){
+      break;
+    }
+  }
+  door_open(door_one);
 }

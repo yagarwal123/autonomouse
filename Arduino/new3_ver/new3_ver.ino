@@ -58,25 +58,23 @@ void setup()
   pinMode(rewardPin, OUTPUT);
   digitalWrite(rewardPin, LOW);
 }
-boolean door1Check(){
+String door1Check(){
   ID = read_id(Serial1);
   if (ID.length() != 10) {
-    mouseAtDoorOne = false;
+    ID = "";
   }
   else{
     unsigned long recordTime = millis();
-    Serial.println(ID);
+    //Serial.println(ID);
     String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
-    Serial.println(mouseName);
+    //Serial.println(mouseName);
     if (mouseName != "Mouse does not exist") {
-      timeDoor1 = recordTime;
-      door1ID = ID;
-      mouseAtDoorOne = true; // if mouse exists in database, open the door
-      Serial.println("sdhsduhd");
+      String serOut = "Door Sensor - ID" + ID + "Door 1 - Time " + recordTime;
+      Serial.println(serOut);
     }
-    else {mouseAtDoorOne = true;};
+    else {ID = "";};
   }
-  return mouseAtDoorOne;
+  return ID;
 }
 
 boolean door2Check(){
