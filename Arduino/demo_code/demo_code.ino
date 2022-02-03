@@ -33,50 +33,6 @@ int rewardPin = 32;
 int lickPin = A13;
 int THRESHOLD = 1000;
 
-void printDigits(int digits){
-  // utility function for digital clock display: prints preceding colon and leading 0
-  Serial.print(":");
-  if(digits < 10)
-    Serial.print('0');
-  Serial.print(digits);
-}
-
-void digitalClockDisplay(){
-  // digital clock display of the time
-  Serial.print(hour());
-  printDigits(minute());
-  printDigits(second());
-  Serial.print(" ");
-  Serial.print(day());
-  Serial.print(" ");
-  Serial.print(month());
-  Serial.print(" ");
-  Serial.print(year()); 
-  Serial.println(); 
-}
-
-void end_test(String ID, int noMouse){
-  Serial.println("Test ends");  
-   // clear buffer for antenna 1
-  clear_serial_buffer(Serial1);
-
-  // let mouse out
-  door_open(door_two);
-  door_open(door_one);
-  // when antenna one detects mouse
-    ID = read_id(Serial1);
-  while (ID.length() != 10) {
-    ID = read_id(Serial1);
-    //delay(150); // a delay is needed here to read, >150??? no need of delay here
-  }
-  Serial.println(ID);
-  String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
-  Serial.print(mouseName);
-  Serial.println(" is out");
-  clear_serial_buffer(Serial1);
-  Serial.println("All done");
-}
-
 String door1Check(){
   ID = read_id(Serial1);
   if (ID.length() != 10) {
@@ -136,7 +92,7 @@ void setup()
   digitalWrite(rewardPin, LOW);
 
   // set time
-  setTime(12,44,1,6,1,2022);
+  //setTime(12,44,1,6,1,2022);
 }
 
 void loop()
