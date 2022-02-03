@@ -2,8 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot, QRect, QThread
 
 import sys
-import os
-os.system(r"pyuic5 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
+
 #from gui import mainwin
 from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
