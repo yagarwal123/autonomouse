@@ -36,7 +36,7 @@ class lickwinActions(Ui_lickWin):
         
         self.timer = QTimer()
         self.timer.timeout.connect(lambda:self.pltgraph())
-        self.timer.start(1000)
+        self.timer.start(1)
 
     def pltgraph(self):
         mutex.lock()
