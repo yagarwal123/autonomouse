@@ -1,32 +1,43 @@
 import logging
 import re
+from Test import Test
 
 logger = logging.getLogger(__name__)
 
 def dataUpdate(inSer,all_mice,doors,live_licks):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d*)g - Time (\d*)$',
                       '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',
-                      '^(\d*)',
-                      '^Lick Sensor - Time (\d*)$'
+                      '^(\d*)$',
+                      '^Lick Sensor - Trial (\d) - Time (\d*)$'
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
         case 0:
             return
         case 1:
-            weight = search.group(1)
-            t = search.group(2)
+            weight = float(search.group(1))
+            t = int(search.group(2))
             m = getLastMouse(doors)
             m.add_weight(weight)
             m.add_weighing_times(t)
         case 2:
-            m = getLastMouse(doors)
-            d = search.group(2)
-            t = search.group(3)
+            m = all_mice[search.group(1)]
+            d = int(search.group(2))
+            t = int(search.group(3))
             doors.append([t,m,d])
         case 3:
-            amp = search.group(1)
-            live_licks.append(float(amp))
+            amp = float(search.group(1))
+            live_licks.append(amp)
+        case 4:
+            trial = int(search.group(1))
+            t = int(search.group(2))
+            m = getLastMouse(doors)
+            if trial == 1:
+                new_test = Test(m.get_id(),t)
+                m.tests.append(new_test)
+            else:
+                old_test = m.tests[-1]
+                old_test.append(t)
 
 def getLastMouse(doors):
     for entry in reversed(doors):

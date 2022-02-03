@@ -6,6 +6,7 @@ class Mouse:
         self.weight = [init_weight]
         self.weight_times = [0]
         self.doortimes = []
+        self.tests = []
 
     def get_name(self):
         return self.name

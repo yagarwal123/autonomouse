@@ -1,5 +1,5 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot, QRect, QTimer, QMutex
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import pyqtSlot, QRect, QTimer, QMutex
 
 import sys
 import os
@@ -19,11 +19,11 @@ class doorwinActions(Ui_doorWin):
         self.height = 150
 
     # update setupUi
-    def setupUi(self, MainWindow):
-        super().setupUi(MainWindow)
-        # MainWindow.resize(400, 300) # do not modify it
-        MainWindow.move(self.left, self.top)  # set location for window
-        MainWindow.setWindowTitle(self.title) # change title
+    def setupUi(self, Widget):
+        super().setupUi(Widget)
+        # Widget.resize(400, 300) # do not modify it
+        Widget.move(self.left, self.top)  # set location for window
+        Widget.setWindowTitle(self.title) # change title
         self.timer = QTimer()
         self.timer.timeout.connect(lambda:self.popTable())
         self.timer.start(1000)

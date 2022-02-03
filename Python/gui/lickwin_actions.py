@@ -1,5 +1,5 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot, QRect, QTimer, QMutex
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import pyqtSlot, QRect, QTimer, QMutex
 
 import sys
 import os
@@ -28,11 +28,11 @@ class lickwinActions(Ui_lickWin):
         self.height = 150
 
     # update setupUi
-    def setupUi(self, MainWindow):
-        super().setupUi(MainWindow)
+    def setupUi(self, Widget):
+        super().setupUi(Widget)
         # MainWindow.resize(400, 300) # do not modify it
-        MainWindow.move(self.left, self.top)  # set location for window
-        MainWindow.setWindowTitle(self.title) # change title
+        Widget.move(self.left, self.top)  # set location for window
+        Widget.setWindowTitle(self.title) # change title
         
         self.timer = QTimer()
         self.timer.timeout.connect(lambda:self.pltgraph())
@@ -40,7 +40,6 @@ class lickwinActions(Ui_lickWin):
 
     def pltgraph(self):
         mutex.lock()
-        entries = len(self.live_licks)
         self.plotWid.plot(self.live_licks)
         mutex.unlock()
 
