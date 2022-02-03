@@ -23,13 +23,3 @@ class mousewinActions(Ui_mouseWin):
         # MainWindow.resize(400, 300) # do not modify it
         Widget.move(self.left, self.top)  # set location for window
         Widget.setWindowTitle(self.title) # change title
-
-
-if __name__ == "__main__":
-
-    app = QtWidgets.QApplication(sys.argv)
-    Wid = QtWidgets.QWidget()
-    ui = mousewinActions()
-    ui.setupUi(Wid)
-    Wid.show()
-    sys.exit(app.exec_())

@@ -71,13 +71,3 @@ class TeensyRead(QThread):
 
     def run(self):
         startTeensyRead(self.all_mice,self.doors,self.live_licks)
-
-
-if __name__ == "__main__":
-
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = mainwinActions("Main Window")
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())

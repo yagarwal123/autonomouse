@@ -42,13 +42,3 @@ class lickwinActions(Ui_lickWin):
         mutex.lock()
         self.plotWid.plot(self.live_licks)
         mutex.unlock()
-
-
-if __name__ == "__main__":
-
-    app = QtWidgets.QApplication(sys.argv)
-    Wid = QtWidgets.QWidget()
-    ui = lickwinActions()
-    ui.setupUi(Wid)
-    Wid.show()
-    sys.exit(app.exec_())

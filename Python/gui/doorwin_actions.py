@@ -38,13 +38,3 @@ class doorwinActions(Ui_doorWin):
             self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(self.doors[i][1].get_name()))
             self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(self.doors[i][2])))
         mutex.unlock()
-
-
-if __name__ == "__main__":
-
-    app = QtWidgets.QApplication(sys.argv)
-    Wid = QtWidgets.QWidget()
-    ui = doorwinActions()
-    ui.setupUi(Wid)
-    Wid.show()
-    sys.exit(app.exec_())
