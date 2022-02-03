@@ -33,6 +33,10 @@ class mainwinActions(Ui_MainWindow):
         self.worker.start()
         self.myactions() # add actions for different buttons
 
+        #self.mouse_id_select.setItemText(3, ("MainWindow", "A11fvg111 - Stuart"))
+        for id, m in self.all_mice.items():
+            self.mouse_id_select.addItem(id + ' - ' + m.get_name())
+
     # define actions here
     def myactions(self):
         self.mouse_button.clicked.connect(self.open_mouse)
