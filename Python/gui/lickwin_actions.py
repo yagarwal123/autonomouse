@@ -31,14 +31,22 @@ class lickwinActions(Ui_lickWin):
     def setupUi(self, Widget):
         super().setupUi(Widget)
         # MainWindow.resize(400, 300) # do not modify it
-        Widget.move(self.left, self.top)  # set location for window
-        Widget.setWindowTitle(self.title) # change title
+        self.Widget = Widget
+        self.Widget.move(self.left, self.top)  # set location for window
+        self.Widget.setWindowTitle(self.title) # change title
+        self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
         
         self.timer = QTimer()
         self.timer.timeout.connect(lambda:self.pltgraph())
         self.timer.start(1)
 
+        self.exitButton.clicked.connect(self.close_win)
+
     def pltgraph(self):
         mutex.lock()
         self.plotWid.plot(self.live_licks)
         mutex.unlock()
+    
+    def close_win(self):
+        self.timer.stop()
+        self.Widget.close()

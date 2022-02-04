@@ -22,11 +22,14 @@ class doorwinActions(Ui_doorWin):
     def setupUi(self, Widget):
         super().setupUi(Widget)
         # Widget.resize(400, 300) # do not modify it
-        Widget.move(self.left, self.top)  # set location for window
-        Widget.setWindowTitle(self.title) # change title
+        self.Widget = Widget
+        self.Widget.move(self.left, self.top)  # set location for window
+        self.Widget.setWindowTitle(self.title) # change title
         self.timer = QTimer()
         self.timer.timeout.connect(lambda:self.popTable())
         self.timer.start(1000)
+        self.exitButton.clicked.connect(self.close_win)
+        self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
     def popTable(self):
         mutex.lock()
@@ -38,3 +41,7 @@ class doorwinActions(Ui_doorWin):
             self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(self.doors[i][1].get_name()))
             self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(self.doors[i][2])))
         mutex.unlock()
+
+    def close_win(self):
+        self.timer.stop()
+        self.Widget.close()

@@ -17,7 +17,12 @@ class Ui_lickWin(object):
         self.gridLayout.setObjectName("gridLayout")
         self.plotWid = PlotWidget(lickWin)
         self.plotWid.setObjectName("plotWid")
-        self.gridLayout.addWidget(self.plotWid, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.plotWid, 0, 0, 1, 2)
+        spacerItem = QtWidgets.QSpacerItem(301, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.gridLayout.addItem(spacerItem, 1, 0, 1, 1)
+        self.exitButton = QtWidgets.QPushButton(lickWin)
+        self.exitButton.setObjectName("exitButton")
+        self.gridLayout.addWidget(self.exitButton, 1, 1, 1, 1)
 
         self.retranslateUi(lickWin)
         QtCore.QMetaObject.connectSlotsByName(lickWin)
@@ -25,6 +30,7 @@ class Ui_lickWin(object):
     def retranslateUi(self, lickWin):
         _translate = QtCore.QCoreApplication.translate
         lickWin.setWindowTitle(_translate("lickWin", "Form"))
+        self.exitButton.setText(_translate("lickWin", "Exit"))
 from pyqtgraph import PlotWidget
 
 
