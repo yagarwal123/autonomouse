@@ -13,14 +13,15 @@ from start_teensy_read import startTeensyRead
 
 class mainwinActions(Ui_MainWindow):
     def __init__(self, all_mice = {},doors=[],live_licks=[]):
-        self.all_mice = all_mice
-        self.doors = doors
-        self.live_licks = live_licks
         self.title = 'Main Window'
         self.left = 250
         self.top = 250
         self.width = 200
         self.height = 150
+
+        self.all_mice = all_mice
+        self.doors = doors
+        self.live_licks = live_licks
 
     # update setupUi
     def setupUi(self, MainWindow):

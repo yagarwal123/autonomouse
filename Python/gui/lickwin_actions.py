@@ -34,19 +34,15 @@ class lickwinActions(Ui_lickWin):
         self.Widget = Widget
         self.Widget.move(self.left, self.top)  # set location for window
         self.Widget.setWindowTitle(self.title) # change title
-        self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
         
-        self.timer = QTimer()
+        self.timer = QTimer(self.Widget)
         self.timer.timeout.connect(lambda:self.pltgraph())
         self.timer.start(1)
 
-        self.exitButton.clicked.connect(self.close_win)
+        self.Widget.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
     def pltgraph(self):
         mutex.lock()
-        self.plotWid.plot(self.live_licks)
+        self.plotWid.plot(self.live_licks[-5000:])
         mutex.unlock()
-    
-    def close_win(self):
-        self.timer.stop()
-        self.Widget.close()
+

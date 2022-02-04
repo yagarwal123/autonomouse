@@ -28,11 +28,6 @@ class Ui_doorWin(object):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(3, item)
         self.gridLayout.addWidget(self.tableWidget, 0, 0, 1, 2)
-        spacerItem = QtWidgets.QSpacerItem(351, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
-        self.gridLayout.addItem(spacerItem, 1, 0, 1, 1)
-        self.exitButton = QtWidgets.QPushButton(doorWin)
-        self.exitButton.setObjectName("exitButton")
-        self.gridLayout.addWidget(self.exitButton, 1, 1, 1, 1)
 
         self.retranslateUi(doorWin)
         QtCore.QMetaObject.connectSlotsByName(doorWin)
@@ -48,7 +43,6 @@ class Ui_doorWin(object):
         item.setText(_translate("doorWin", "Mouse Name"))
         item = self.tableWidget.horizontalHeaderItem(3)
         item.setText(_translate("doorWin", "Door No"))
-        self.exitButton.setText(_translate("doorWin", "Exit"))
 
 
 if __name__ == "__main__":
