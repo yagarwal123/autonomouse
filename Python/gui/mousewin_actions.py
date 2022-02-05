@@ -8,18 +8,15 @@ import os
 from gui.mousewin import Ui_mouseWin
 
 
-class mousewinActions(Ui_mouseWin):
+class mousewinActions(QtWidgets.QWidget,Ui_mouseWin):
     def __init__(self, Mouse):
+        super().__init__()
+        self.setupUi(self)
         self.Mouse = Mouse
         self.title = str(Mouse.get_id()) + ' - ' + str(Mouse.get_name())
         self.left = 250
         self.top = 250
-        self.width = 200
-        self.height = 150
 
-    # update setupUi
-    def setupUi(self, Widget):
-        super().setupUi(Widget)
         # MainWindow.resize(400, 300) # do not modify it
-        Widget.move(self.left, self.top)  # set location for window
-        Widget.setWindowTitle(self.title) # change title
+        self.move(self.left, self.top)  # set location for window
+        self.setWindowTitle(self.title) # change title

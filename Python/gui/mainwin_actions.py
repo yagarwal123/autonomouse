@@ -11,24 +11,24 @@ from gui.lickwin_actions import lickwinActions
 from start_teensy_read import startTeensyRead
 
 
-class mainwinActions(Ui_MainWindow):
+class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, all_mice = {},doors=[],live_licks=[]):
+        super().__init__()
+        self.setupUi(self)
         self.title = 'Main Window'
         self.left = 250
         self.top = 250
-        self.width = 200
-        self.height = 150
 
         self.all_mice = all_mice
         self.doors = doors
         self.live_licks = live_licks
 
-    # update setupUi
-    def setupUi(self, MainWindow):
-        super().setupUi(MainWindow)
+    # # update setupUi
+    # def setupUi(self, MainWindow):
+    #     super().setupUi(MainWindow)
         # MainWindow.resize(400, 300) # do not modify it
-        MainWindow.move(self.left, self.top)  # set location for window
-        MainWindow.setWindowTitle(self.title) # change title
+        self.move(self.left, self.top)  # set location for window
+        self.setWindowTitle(self.title) # change title
 
         self.worker = TeensyRead(self.all_mice,self.doors,self.live_licks)
         self.worker.start()
@@ -47,24 +47,18 @@ class mainwinActions(Ui_MainWindow):
 
     def open_mouse(self):
         #app = QtWidgets.QApplication(sys.argv)
-        self.mousewin = QtWidgets.QWidget()
         ID = self.mouse_id_select.currentText().split(' - ')[0]
-        self.mouseui = mousewinActions(self.all_mice[ID])
-        self.mouseui.setupUi(self.mousewin)
+        self.mousewin = mousewinActions(self.all_mice[ID])
         self.mousewin.show()
 
     def open_door(self):
         #app = QtWidgets.QApplication(sys.argv)
-        self.doorwin = QtWidgets.QWidget()
-        self.doorui = doorwinActions(self.doors)
-        self.doorui.setupUi(self.doorwin)
+        self.doorwin = doorwinActions(self.doors)
         self.doorwin.show()
 
     def open_lick(self):
         #app = QtWidgets.QApplication(sys.argv)
-        self.lickwin = QtWidgets.QWidget()
-        self.lickui = lickwinActions(self.live_licks)
-        self.lickui.setupUi(self.lickwin)
+        self.lickwin = lickwinActions(self.live_licks)
         self.lickwin.show()
 
 class TeensyRead(QThread):

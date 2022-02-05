@@ -18,28 +18,27 @@ import numpy as np
 
 mutex = QMutex()
 
-class lickwinActions(Ui_lickWin):
+class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
     def __init__(self,live_licks):
+        super().__init__()
+        self.setupUi(self)
         self.live_licks = live_licks
         self.title = "Lick Sensor"
         self.left = 250
         self.top = 250
-        self.width = 200
-        self.height = 150
 
     # update setupUi
-    def setupUi(self, Widget):
-        super().setupUi(Widget)
+    # def setupUi(self, Widget):
+    #     super().setupUi(Widget)
         # MainWindow.resize(400, 300) # do not modify it
-        self.Widget = Widget
-        self.Widget.move(self.left, self.top)  # set location for window
-        self.Widget.setWindowTitle(self.title) # change title
+        self.move(self.left, self.top)  # set location for window
+        self.setWindowTitle(self.title) # change title
         
-        self.timer = QTimer(self.Widget)
+        self.timer = QTimer(self)
         self.timer.timeout.connect(lambda:self.pltgraph())
         self.timer.start(1)
 
-        self.Widget.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
     def pltgraph(self):
         mutex.lock()

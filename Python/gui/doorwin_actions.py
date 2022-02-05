@@ -9,27 +9,26 @@ from gui.doorwin import Ui_doorWin
 
 mutex = QMutex()
 
-class doorwinActions(Ui_doorWin):
+class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
     def __init__(self,doors):
+        super().__init__()
+        self.setupUi(self)
         self.doors = doors
         self.title = "Doors"
         self.left = 250
         self.top = 250
-        self.width = 200
-        self.height = 150
 
-    # update setupUi
-    def setupUi(self, Widget):
-        super().setupUi(Widget)
+    # # update setupUi
+    # def setupUi(self, Widget):
+    #     super().setupUi(Widget)
         # Widget.resize(400, 300) # do not modify it
-        self.Widget = Widget
-        self.Widget.move(self.left, self.top)  # set location for window
-        self.Widget.setWindowTitle(self.title) # change title
-        self.timer = QTimer(self.Widget)
+        self.move(self.left, self.top)  # set location for window
+        self.setWindowTitle(self.title) # change title
+        self.timer = QTimer(self)
         self.timer.timeout.connect(lambda:self.popTable())
         self.timer.start(1000)
         #self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
-        self.Widget.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
     def popTable(self):
         mutex.lock()
