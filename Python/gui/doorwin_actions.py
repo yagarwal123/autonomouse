@@ -3,6 +3,7 @@ from PyQt6.QtCore import pyqtSlot, QRect, QTimer, QMutex
 
 import sys
 import os
+
 #os.system(r"pyuic5 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
 #from gui import mainwin
 from gui.doorwin import Ui_doorWin
@@ -27,6 +28,7 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
         self.timer.start(1000)
         #self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch) 
 
     def popTable(self):
         mutex.lock()
