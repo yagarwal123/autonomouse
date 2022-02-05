@@ -15,14 +15,12 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
         self.setupUi(self)
         self.doors = doors
         self.title = "Doors"
-        self.left = 250
-        self.top = 250
 
     # # update setupUi
     # def setupUi(self, Widget):
     #     super().setupUi(Widget)
         # Widget.resize(400, 300) # do not modify it
-        self.move(self.left, self.top)  # set location for window
+        #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
         self.timer = QTimer(self)
         self.timer.timeout.connect(lambda:self.popTable())

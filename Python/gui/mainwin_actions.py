@@ -16,8 +16,6 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.title = 'Main Window'
-        self.left = 250
-        self.top = 250
 
         self.all_mice = all_mice
         self.doors = doors
@@ -27,7 +25,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
     # def setupUi(self, MainWindow):
     #     super().setupUi(MainWindow)
         # MainWindow.resize(400, 300) # do not modify it
-        self.move(self.left, self.top)  # set location for window
+        #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
 
         self.worker = TeensyRead(self.all_mice,self.doors,self.live_licks)
@@ -53,10 +51,18 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def open_door(self):
         #app = QtWidgets.QApplication(sys.argv)
+        try:
+            self.doorwin.close()
+        except (RuntimeError, AttributeError) as e:
+            pass
         self.doorwin = doorwinActions(self.doors)
         self.doorwin.show()
 
     def open_lick(self):
+        try:
+            self.lickwin.close()
+        except (RuntimeError, AttributeError) as e:
+            pass
         #app = QtWidgets.QApplication(sys.argv)
         self.lickwin = lickwinActions(self.live_licks)
         self.lickwin.show()

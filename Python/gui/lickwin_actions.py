@@ -24,14 +24,12 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         self.setupUi(self)
         self.live_licks = live_licks
         self.title = "Lick Sensor"
-        self.left = 250
-        self.top = 250
 
     # update setupUi
     # def setupUi(self, Widget):
     #     super().setupUi(Widget)
         # MainWindow.resize(400, 300) # do not modify it
-        self.move(self.left, self.top)  # set location for window
+        #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
         
         self.timer = QTimer(self)
