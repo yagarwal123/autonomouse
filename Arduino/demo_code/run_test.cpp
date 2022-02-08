@@ -72,10 +72,9 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     if (lickTime < 0){ // start reading at longer intervals if mouse hasnt licked
       t2.start();
     }
-    
-    Serial.print("Trial ");
-    Serial.println(i);
-    Serial.print("lick sensor ");
+    Serial.print("Lick Sensor - Trial ");
+    Serial.print(i);
+    Serial.print(" - Time ");
     Serial.println(lickTime);
     t1.start(); // start timer again
     

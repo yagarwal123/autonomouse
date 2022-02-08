@@ -18,7 +18,11 @@ ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
 def startTeensyRead(all_mice,doors,live_licks):
     while True:
         #Uncomment
-        serIn = str(ser.readline()) # Read the newest output from the Arduino
+        try:
+            serIn = str(ser.readline()) # Read the newest output from the Arduino
+        except Exception as e:
+            print(e)
+            continue
         #print(serIn)
         #Comment out
         # b'Door Sensor - ID A11111 - Door 1 - Time 34567\r\n
@@ -31,5 +35,5 @@ def startTeensyRead(all_mice,doors,live_licks):
         #print(serIn)
 
         mutex.lock()
-        data_update.dataUpdate(serIn,all_mice,doors,live_licks)  
+        data_update.dataUpdate(ser,serIn,all_mice,doors,live_licks)  
         mutex.unlock()
