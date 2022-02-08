@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 def dataUpdate(inSer,all_mice,doors,live_licks):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d*)g - Time (\d*)$',
                       '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',
-                      '^(\d*)$',
+                      '^(^\d*\.?\d*)$',
                       '^Lick Sensor - Trial (\d) - Time (\d*)$'
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
