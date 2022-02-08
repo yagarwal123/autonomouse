@@ -1,0 +1,6 @@
+# ignore ALL files with the extension DS_Store
+*.DS_Store
+
+# ignore ALL files in ANY directory named __pycache__
+__pycache__/      
+
