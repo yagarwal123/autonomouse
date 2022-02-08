@@ -47,8 +47,8 @@ float FIRFilter_calc(FIRFilter *fir, float inputVal){
     fir->out=0;
     fir->out = fir->out + (inputVal - fir->buff[oldIndex])/FIR_FILTER_LENGTH; // out + (new-old)/window
     //return the filtered data
-    //return fir->out;
+    return fir->out;
 
-    return inputVal;
+    //return inputVal;
 
 }

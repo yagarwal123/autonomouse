@@ -24,8 +24,8 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   //Calculating the filtered values
-  int weight = scale.get_units();
-  FIRFilter_calc(&fir, scale.get_units());
-  Serial.println(weight,1);
+  float weight = scale.get_units();
+  float aveWeight = FIRFilter_calc(&fir, weight);
+  Serial.println(aveWeight,1);
 
 }
