@@ -93,6 +93,8 @@ void setup()
 
   // set time
   //setTime(12,44,1,6,1,2022);
+  while (! Serial);
+  Serial.println("Starting test");
 }
 
 void loop()
@@ -146,18 +148,18 @@ void loop()
   door_open(door_two);
   while (door2Check() != ID_2){}
   door_close(door_two);
-  
-  clear_serial_buffer(Serial1);
   door_open(door_one);
-  while (door1Check() != ID_2){}
-  door_close(door_one);
+  //while (door1Check() != ID_2){}
+  //door_close(door_one);
   Serial.println("Waiting for the save to complete");
   while (true){
     while(!Serial.available()){}
     String serIn = Serial.readString();
-    if (serIn == "Save complete"){
+    if (serIn == "Save complete\n"){
       break;
     }
   }
-  door_open(door_one);
+  Serial.println("Test complete");
+  clear_serial_buffer(Serial1);
+  clear_serial_buffer(Serial2);
 }
