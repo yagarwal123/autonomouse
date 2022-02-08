@@ -19,7 +19,7 @@ def startTeensyRead(all_mice,doors,live_licks):
     while True:
         #Uncomment
         serIn = str(ser.readline()) # Read the newest output from the Arduino
-        print(serIn)
+        #print(serIn)
         #Comment out
         # b'Door Sensor - ID A11111 - Door 1 - Time 34567\r\n
         # b'Weight Sensor - Weight 75g - Time 123456\r\n
@@ -28,7 +28,7 @@ def startTeensyRead(all_mice,doors,live_licks):
         #serIn = input()
 
         serIn = re.search(r"b'(.*)\\r\\n",serIn).group(1)
-        print(serIn)
+        #print(serIn)
 
         mutex.lock()
         data_update.dataUpdate(serIn,all_mice,doors,live_licks)  

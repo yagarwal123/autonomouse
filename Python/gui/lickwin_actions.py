@@ -31,6 +31,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         # MainWindow.resize(400, 300) # do not modify it
         #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
+        self.line = self.plotWid.plot(self.live_licks[-20:])
         
         self.timer = QTimer(self)
         self.timer.timeout.connect(lambda:self.pltgraph())
@@ -40,6 +41,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
 
     def pltgraph(self):
         mutex.lock()
-        self.plotWid.plot(self.live_licks[-5000:])
+        self.line.clear()
+        self.line = self.plotWid.plot(self.live_licks[-20:])
         mutex.unlock()
 
