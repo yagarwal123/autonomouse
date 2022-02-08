@@ -9,10 +9,21 @@
 #include "load_cell.h"
 #include "read_id_sf.h" // include sparkfun decoder temporarily for testing
 #include "clear_serial_buffer.h"
+#include "SdFat.h"
+#include "time_functions.h"
 #define LOADCELL_DOUT_PIN  4
 #define LOADCELL_SCK_PIN  5
 #define calibration_factor 430.5 //This value is obtained using the SparkFun_HX711_Calibration sketch
+// for SD card access--------------------------
+#define SD_FAT_TYPE 3
+#define SD_CONFIG SdioConfig(FIFO_SDIO)
+SdFs sd;
+FsFile file;
 
+time_t getTeensy3Time()
+{
+  return Teensy3Clock.get();
+}
 
 // define objects for door
 Servo door_one;  // create servo object to control a servo
@@ -91,8 +102,21 @@ void setup()
   pinMode(rewardPin, OUTPUT);
   digitalWrite(rewardPin, LOW);
 
-  // set time
-  //setTime(12,44,1,6,1,2022);
+  // time
+  setSyncProvider(getTeensy3Time);
+
+  if (timeStatus()!= timeSet) {
+  Serial.println("Unable to sync with the RTC");
+  return;
+  }
+
+  // initialise SD card -------------------
+  // Access the built in SD card on Teensy 3.5, 3.6, 4.1 using DMA (maybe faster)
+  if (!sd.begin(SD_CONFIG)) {
+    sd.initErrorHalt(&Serial);
+  }
+  Serial.println("SD card initialized.");
+  
   while (! Serial);
   Serial.println("Starting test");
 }
@@ -138,7 +162,35 @@ void loop()
     door_close(door_two);
   
     int liquidAmount = 200; // command from raspi
-    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount);
+
+    // create file
+    String fileName = ID + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
+    Serial.println(fileName);
+    char buf[30];
+    fileName.toCharArray(buf, 30);
+    // Remove old version to set create time.
+    if (sd.exists(fileName)) {
+      Serial.println("Duplicate file!!!");
+    }
+
+    if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char
+      Serial.println(F("file.open failed"));
+      // TODO: mission abort;
+    }
+    
+    // Print current date time to file.
+    file.print(F("Test file at: "));
+    printNow(&file);
+    file.println();
+    file.print(F("time(ms), ")); // print headings
+    file.println(F("amplitude"));
+    
+    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file); // write to file during test
+
+    file.close(); // close the file
+
+    Serial.println("sending raw data");
+    // TODO: send file to PC through Serial
     Serial.println("Test complete - Start saving to file");
   }
   else{
