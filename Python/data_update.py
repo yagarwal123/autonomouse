@@ -9,6 +9,7 @@ def dataUpdate(ser, inSer,all_mice,doors,live_licks):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d*)g - Time (\d*)$',
                       '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',
                       '^(^\d*\.?\d*)$',
+                      '^Starting test now - (\d*)$',
                       '^Lick Sensor - Trial (\d*) - Time (-?\d*)$',
                       'Test complete - Start saving to file'
                       ] 
@@ -31,16 +32,20 @@ def dataUpdate(ser, inSer,all_mice,doors,live_licks):
             amp = float(search.group(1))
             live_licks.append(amp)
         case 4:
+            t = int(search.group(1))
+            m = getLastMouse(doors)
+            new_test = Test(m,t)
+            m.tests.append(new_test)
+        case 5:
             trial = int(search.group(1))
             t = int(search.group(2))
             m = getLastMouse(doors)
-            if trial == 1:
-                new_test = Test(m.get_id(),t)
-                m.tests.append(new_test)
-            else:
-                old_test = m.tests[-1]
-                old_test.add_trial(t)
-        case 5:
+            old_test = m.tests[-1]
+            if ( len(old_test.trials) != (trial-1) ):
+                logger.error("Retrieving the wrong test")
+                #print("Retrieving the wrong test")
+            old_test.add_trial(t)
+        case 6:
             #TODO Save data in file
             ser.write("Save complete".encode())
 

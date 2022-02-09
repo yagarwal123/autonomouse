@@ -8,6 +8,7 @@ from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
 from gui.doorwin_actions import doorwinActions
 from gui.lickwin_actions import lickwinActions
+from gui.testwin_actions import testwinActions
 from start_teensy_read import startTeensyRead
 
 
@@ -41,6 +42,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mouse_button.clicked.connect(self.open_mouse)
         self.doorButton.clicked.connect(self.open_door)
         self.lickButton.clicked.connect(self.open_lick)
+        self.testButton.clicked.connect(self.open_test)
 
 
     def open_mouse(self):
@@ -66,6 +68,24 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         #app = QtWidgets.QApplication(sys.argv)
         self.lickwin = lickwinActions(self.live_licks)
         self.lickwin.show()
+
+    def open_test(self):
+        #app = QtWidgets.QApplication(sys.argv)
+        try:
+            self.testwin.close()
+        except (RuntimeError, AttributeError) as e:
+            pass
+        latest_test = None
+        lowest = 5* 1e9
+        for mouse in self.all_mice.values():
+            if not mouse.tests: continue
+            t = mouse.tests[-1]
+            if (t.starting_time < lowest):
+                latest_test = t
+                lowest = t.starting_time
+        if latest_test is not None:
+            self.testwin = testwinActions(latest_test)
+            self.testwin.show()
 
 class TeensyRead(QThread):
     def __init__(self, all_mice = {},doors=[],live_licks=[]):

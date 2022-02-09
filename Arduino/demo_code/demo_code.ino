@@ -118,7 +118,7 @@ void setup()
   Serial.println("SD card initialized.");
   
   while (! Serial);
-  Serial.println("Starting test");
+  Serial.println("Starting Experiment");
 }
 
 void loop()
@@ -184,7 +184,8 @@ void loop()
     file.println();
     file.print(F("time(ms), ")); // print headings
     file.println(F("amplitude"));
-    
+
+    Serial.print("Starting test now - "); Serial.println(millis());
     run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file); // write to file during test
 
     file.close(); // close the file
