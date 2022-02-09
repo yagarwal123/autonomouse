@@ -19,8 +19,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   
-  t1.begin([=]{callback(valPt, &file);}, 500us); //every 0.5ms print to serial
-  t1.start();
+  t1.begin([=]{callback(valPt, &file);}, 500us, false); //every 0.5ms print to serial
 
   Serial.println("initialization done.");
   Serial.println();
@@ -29,8 +28,10 @@ void setup() {
   if (!sd.begin(SD_CONFIG)) {
     sd.initErrorHalt(&Serial);
   }
-}
 
+  // code ---------------------
+
+}
 void loop() {
   // put your main code here, to run repeatedly:
   
@@ -42,16 +43,20 @@ void loop() {
     Serial.println(F("file.open failed"));
     return;
   }
-  
+
+  Serial.println("saving data");
+  t1.start();
   while(Serial.available() == 0){
     val++;
     delay(1);
   }
+  t1.stop();
   file.close();
   
   // List files in SD root.
   sd.ls(LS_DATE | LS_SIZE);
   Serial.println(F("Done"));
 
+// this part cannot be in setup()
   delay(100000);
 }
