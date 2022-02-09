@@ -1,14 +1,16 @@
 import logging
 import re
+import serial
 from Test import Test
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(inSer,all_mice,doors,live_licks):
+def dataUpdate(ser, inSer,all_mice,doors,live_licks):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d*)g - Time (\d*)$',
                       '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',
-                      '^(\d*)$',
-                      '^Lick Sensor - Trial (\d) - Time (\d*)$'
+                      '^(^\d*\.?\d*)$',
+                      '^Lick Sensor - Trial (\d*) - Time (-?\d*)$',
+                      'Test complete - Start saving to file'
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -37,7 +39,10 @@ def dataUpdate(inSer,all_mice,doors,live_licks):
                 m.tests.append(new_test)
             else:
                 old_test = m.tests[-1]
-                old_test.append(t)
+                old_test.add_trial(t)
+        case 5:
+            #TODO Save data in file
+            ser.write("Save complete".encode())
 
 def getLastMouse(doors):
     for entry in reversed(doors):

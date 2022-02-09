@@ -56,7 +56,7 @@ String door1Check(){
     //Serial.println(mouseName);
     if (mouseName != "Mouse does not exist") {
       String serOut = "";
-      serOut = serOut + "Door Sensor - ID" + ID + " - Door 1 - Time " + recordTime;
+      serOut = serOut + "Door Sensor - ID " + ID + " - Door 1 - Time " + recordTime;
       Serial.println(serOut);
     }
     else {ID = "";};
@@ -74,7 +74,7 @@ String door2Check(){
     String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
     if (mouseName != "Mouse does not exist") {
       String serOut = "";
-      serOut = serOut + "Door Sensor - ID" + ID + " - Door 2 - Time " + recordTime;
+      serOut = serOut + "Door Sensor - ID " + ID + " - Door 2 - Time " + recordTime;
       Serial.println(serOut);
     }
     else {ID = "";};
@@ -205,9 +205,9 @@ void loop()
   //door_close(door_one);
   Serial.println("Waiting for the save to complete");
   while (true){
-    while(!Serial.available()){}
+    while(!Serial.available());
     String serIn = Serial.readString();
-    if (serIn == "Save complete\n"){
+    if (serIn == "Save complete"){
       break;
     }
   }

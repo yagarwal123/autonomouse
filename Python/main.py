@@ -13,7 +13,8 @@ os.system(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py")
 os.system(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py")
 
 MICE_INIT_INFO = {'A11111':['Stuart',67],
-              'A22222': ['Little',45]}
+              'A22222': ['Little',45],
+              '0007A0F7C4': ['Real',27.4]}
 
 #Uncomment
 #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port

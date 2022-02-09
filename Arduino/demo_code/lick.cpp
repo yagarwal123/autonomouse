@@ -1,8 +1,8 @@
 
 #include <Arduino.h>
 #include "lick.h"
-#include "TeensyTimerTool.h"
-using namespace TeensyTimerTool; 
+//#include "TeensyTimerTool.h"
+//using namespace TeensyTimerTool; 
 
 unsigned long millisec = 0;
 unsigned long finalTime = 0;
