@@ -145,7 +145,7 @@ void loop()
 
   // optional: if weight is >0 and < 40, close door 2
   while(weight < 15){ // keep taking weight
-    //weight = load_cell(scale);
+    //weight = load_cell(&scale);
     Serial.println("Enter mouse weight:");
     while(!Serial.available()){}
     weight = Serial.parseFloat();
