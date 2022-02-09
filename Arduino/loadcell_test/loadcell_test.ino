@@ -12,13 +12,13 @@ void setup() {
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
   scale.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
-
+  //Initialise the filter coefficient (the weight)
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //weight = load_cell(scale);
-  weight = scale.get_units();
+  weight = load_cell(&scale);
+ // weight = scale.get_units();
   Serial.println(weight,1);
   //Serial.println("g");
 }
