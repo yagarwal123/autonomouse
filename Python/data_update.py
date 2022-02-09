@@ -1,6 +1,6 @@
 import logging
 import re
-import serial
+import csv
 from Test import Test
 
 logger = logging.getLogger(__name__)
@@ -11,7 +11,8 @@ def dataUpdate(ser, inSer,all_mice,doors,live_licks):
                       '^(^\d*\.?\d*)$',
                       '^Starting test now - (\d*)$',
                       '^Lick Sensor - Trial (\d*) - Time (-?\d*)$',
-                      'Test complete - Start saving to file'
+                      '^Test complete - Start saving to file$',
+                      '^Sending raw data$'
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -41,13 +42,23 @@ def dataUpdate(ser, inSer,all_mice,doors,live_licks):
             t = int(search.group(2))
             m = getLastMouse(doors)
             old_test = m.tests[-1]
-            if ( len(old_test.trials) != (trial-1) ):
+            if ( len(old_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
                 #print("Retrieving the wrong test")
             old_test.add_trial(t)
         case 6:
             #TODO Save data in file
             ser.write("Save complete".encode())
+        case 7:
+            m = getLastMouse(doors)
+            filename = m.get_id() +  ' - ' +  m.tests[-1].starting_time
+            with open(filename, 'w') as csvfile: 
+                # creating a csv writer object 
+                csvwriter = csv.writer(csvfile) 
+                rows = ser.read() 
+                csvwriter.writerows(rows)
+               
+
 
 def getLastMouse(doors):
     for entry in reversed(doors):

@@ -190,7 +190,7 @@ void loop()
 
     file.close(); // close the file
 
-    Serial.println("sending raw data");
+    Serial.println("Sending raw data");
     // TODO: send file to PC through Serial
     Serial.println("Test complete - Start saving to file");
   }

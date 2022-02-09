@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import pyqtSlot, QRect, QThread
 
-import sys
+import logging
 
 #from gui import mainwin
 from gui.mainwin import Ui_MainWindow
@@ -10,6 +10,8 @@ from gui.doorwin_actions import doorwinActions
 from gui.lickwin_actions import lickwinActions
 from gui.testwin_actions import testwinActions
 from start_teensy_read import startTeensyRead
+
+logger = logging.getLogger(__name__)
 
 
 class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
