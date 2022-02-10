@@ -1,18 +1,19 @@
 import logging
 import re
 import csv
+from myTime import myTime
 from Test import Test
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(ser, inSer,all_mice,doors,live_licks):
-    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d*)g - Time (\d*)$',
-                      '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',
-                      '^(^\d*\.?\d*)$',
-                      '^Starting test now - (\d*)$',
-                      '^Lick Sensor - Trial (\d*) - Time (-?\d*)$',
-                      '^Test complete - Start saving to file$',
-                      '^Sending raw data$'
+def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
+    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d*)g - Time (\d*)$',      #1
+                      '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',   #2
+                      '^(^\d*\.?\d*)$',                                     #3
+                      '^Starting test now - (\d*)$',                        #4
+                      '^Lick Sensor - Trial (\d*) - Time (-?\d*)$',         #5
+                      '^Test complete - Start saving to file$',             #6
+                      '^Sending raw data$'                                  #7
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -20,23 +21,24 @@ def dataUpdate(ser, inSer,all_mice,doors,live_licks):
             return
         case 1:
             weight = float(search.group(1))
-            t = int(search.group(2))
+            t = myTime(START_TIME,int(search.group(2)))
             m = getLastMouse(doors)
             m.add_weight(weight)
             m.add_weighing_times(t)
         case 2:
             m = all_mice[search.group(1)]
             d = int(search.group(2))
-            t = int(search.group(3))
+            t = myTime(START_TIME,int(search.group(3)))
             doors.append([t,m,d])
         case 3:
             amp = float(search.group(1))
             live_licks.append(amp)
         case 4:
-            t = int(search.group(1))
+            t = myTime(START_TIME,int(search.group(1)))
             m = getLastMouse(doors)
             new_test = Test(m,t)
             m.tests.append(new_test)
+            all_tests.append(new_test)
         case 5:
             trial = int(search.group(1))
             t = int(search.group(2))

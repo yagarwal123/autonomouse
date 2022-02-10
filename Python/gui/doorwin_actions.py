@@ -29,6 +29,7 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
         #self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch) 
+        self.tableWidget.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents) 
 
     def popTable(self):
         mutex.lock()

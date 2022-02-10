@@ -15,7 +15,7 @@ mutex = QMutex()
 ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
 
 
-def startTeensyRead(all_mice,doors,live_licks):
+def startTeensyRead(START_TIME,all_mice,doors,live_licks,all_tests):
     while True:
         #Uncomment
         try:
@@ -35,5 +35,5 @@ def startTeensyRead(all_mice,doors,live_licks):
         #print(serIn)
 
         mutex.lock()
-        data_update.dataUpdate(ser,serIn,all_mice,doors,live_licks)  
+        data_update.dataUpdate(START_TIME,ser,serIn,all_mice,doors,live_licks,all_tests)  
         mutex.unlock()

@@ -15,14 +15,16 @@ logger = logging.getLogger(__name__)
 
 
 class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, all_mice = {},doors=[],live_licks=[]):
+    def __init__(self, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[]):
         super().__init__()
         self.setupUi(self)
         self.title = 'Main Window'
 
+        self.START_TIME = START_TIME
         self.all_mice = all_mice
         self.doors = doors
         self.live_licks = live_licks
+        self.all_tests = all_tests
 
     # # update setupUi
     # def setupUi(self, MainWindow):
@@ -31,7 +33,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
 
-        self.worker = TeensyRead(self.all_mice,self.doors,self.live_licks)
+        self.worker = TeensyRead(self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests)
         self.worker.start()
         self.myactions() # add actions for different buttons
 
@@ -77,24 +79,22 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.testwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        latest_test = None
-        lowest = 5* 1e9
-        for mouse in self.all_mice.values():
-            if not mouse.tests: continue
-            t = mouse.tests[-1]
-            if (t.starting_time < lowest):
-                latest_test = t
-                lowest = t.starting_time
-        if latest_test is not None:
-            self.testwin = testwinActions(latest_test)
+        if self.all_tests:
+            self.testwin = testwinActions(self.all_tests)
             self.testwin.show()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('No tests have been conducted yet')
+            msg.exec()
 
 class TeensyRead(QThread):
-    def __init__(self, all_mice = {},doors=[],live_licks=[]):
+    def __init__(self, START_TIME, all_mice,doors,live_licks,all_tests):
         super(TeensyRead, self).__init__()
         self.all_mice = all_mice
         self.doors = doors
         self.live_licks = live_licks
+        self.all_tests = all_tests
+        self.START_TIME = START_TIME
 
     def run(self):
-        startTeensyRead(self.all_mice,self.doors,self.live_licks)
+        startTeensyRead(self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests)
