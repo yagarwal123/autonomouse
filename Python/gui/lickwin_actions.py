@@ -35,7 +35,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         
         self.timer = QTimer(self)
         self.timer.timeout.connect(lambda:self.pltgraph())
-        self.timer.start(1)
+        self.timer.start(15)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
