@@ -68,12 +68,11 @@ void loop()
   }
   
   file.rewind();
-  //dump_file("saving_test.csv", &file);
 
   while(file.available()){ // file is available
     char line[40];
     int data = file.fgets(line, sizeof(line));
-    Serial.println(line);
+    Serial.print(line);
   }
 
 /*
