@@ -7,14 +7,14 @@ from Test import Test
 logger = logging.getLogger(__name__)
 
 def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
-    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+)g - Time (\d+)$',      #1
-                      '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',   #2
-                      '^(^\d+)$',                                           #3
-                      '^Starting test now - (\d+)$',                        #4
-                      '^Lick Sensor - Trial (\d+) - Time (-?\d+)$',         #5
-                      '^Test complete - Start saving to file$',             #6
-                      '^Sending raw data$',                                 #7
-                      '^Waiting for the save to complete$'                  #8
+    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g - Time (\d+)$',        #1
+                      '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
+                      '^(\d+\.?\d*)$',                                              #3
+                      '^Starting test now - (\d+)$',                                #4
+                      '^Lick Sensor - Trial (\d+) - Time (-?\d+)$',                 #5
+                      '^Test complete - Start saving to file$',                     #6
+                      '^Sending raw data$',                                         #7
+                      '^Waiting for the save to complete$'                          #8
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
