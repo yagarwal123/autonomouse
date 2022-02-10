@@ -44,6 +44,10 @@ int rewardPin = 32;
 int lickPin = A13;
 int THRESHOLD = 1000;
 
+unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
+unsigned long lastExitTime = 0;
+String lastMouse = "";
+
 String door1Check(){
   ID = read_id(Serial1);
   if (ID.length() != 10) {
@@ -128,12 +132,19 @@ void loop()
 
   String ID_1 = door1Check();
   String ID_2 = door2Check();
+
+  
+  //TODO: dealing with rollover
+  if ( (ID_2 == lastMouse) && ( (millis()-lastExitTime) < INTERVAL_BETWEEN_TESTS ) ){
+    return;
+  }
   
   if ( (ID_2.length() == 0) || (ID_1.length() != 0) ){
     return;
   }
   door_close(door_one);
   door_open(door_two);
+  lastMouse = ID_2;
 
   // take the weight
   //Uncomment
@@ -202,6 +213,7 @@ void loop()
   while (door2Check() != ID_2){}
   door_close(door_two);
   door_open(door_one);
+  lastExitTime = millis();
   //while (door1Check() != ID_2){}
   //door_close(door_one);
   Serial.println("Waiting for the save to complete");

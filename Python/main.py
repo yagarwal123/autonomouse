@@ -44,24 +44,20 @@ all_mice = {}
 for id, info in MICE_INIT_INFO.items():
     all_mice[id] = Mouse(id,info[0],info[1])
 
-#Initiate objects
-
-#doors = []
-#live_licks = []
-
+#Comment out
 doors = [
     [12367, all_mice['A22222'], 1],
     [33333, all_mice['A11111'], 2]
     ]
 live_licks = [0,0,0,7,100,60]
-
 all_tests = []
+
 
 if __name__ == "__main__":
     #startGUI(START_TIME,all_mice,doors,live_licks,all_tests)
     app = QtWidgets.QApplication(sys.argv)
     mainwin = mainwinActions(START_TIME,all_mice, doors,live_licks,all_tests)
-    #ui = mainwinActions(all_mice)
+    #mainwin = mainwinActions(START_TIME,all_mice)
     mainwin.show()
     sys.exit(app.exec())
     
