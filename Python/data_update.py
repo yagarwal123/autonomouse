@@ -7,13 +7,14 @@ from Test import Test
 logger = logging.getLogger(__name__)
 
 def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
-    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d*)g - Time (\d*)$',      #1
-                      '^Door Sensor - ID (.*) - Door (\d) - Time (\d*)$',   #2
-                      '^(^\d*\.?\d*)$',                                     #3
-                      '^Starting test now - (\d*)$',                        #4
-                      '^Lick Sensor - Trial (\d*) - Time (-?\d*)$',         #5
+    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+)g - Time (\d+)$',      #1
+                      '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',   #2
+                      '^(^\d+)$',                                           #3
+                      '^Starting test now - (\d+)$',                        #4
+                      '^Lick Sensor - Trial (\d+) - Time (-?\d+)$',         #5
                       '^Test complete - Start saving to file$',             #6
-                      '^Sending raw data$'                                  #7
+                      '^Sending raw data$',                                 #7
+                      '^Waiting for the save to complete$'                  #8
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -50,16 +51,29 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
             old_test.add_trial(t)
         case 6:
             #TODO Save data in file
-            ser.write("Save complete".encode())
-        case 7:
-            m = getLastMouse(doors)
-            filename = m.get_id() +  ' - ' +  m.tests[-1].starting_time
+            test = all_tests[-1]
+            filename = 'Test data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time)
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvwriter = csv.writer(csvfile) 
-                rows = ser.read() 
-                csvwriter.writerows(rows)
-               
+                for idx,trial in enumerate(test.trials):
+                    row = [idx+1, trial]
+                    csvwriter.writerow(row)
+            live_licks=[]
+            
+        case 7:
+            test = all_tests[-1]
+            filename = 'Raw lick data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time)
+            with open(filename, 'w') as csvfile: 
+                # creating a csv writer object 
+                csvwriter = csv.writer(csvfile) 
+                row = '0'
+                while row.isnumeric():
+                    row = (ser.read().decode("utf-8"))
+                    csvwriter.writerow(row)
+                print('victory')
+        case 8:
+            ser.write("Save complete".encode())
 
 
 def getLastMouse(doors):

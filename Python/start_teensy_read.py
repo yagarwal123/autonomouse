@@ -19,7 +19,7 @@ def startTeensyRead(START_TIME,all_mice,doors,live_licks,all_tests):
     while True:
         #Uncomment
         try:
-            serIn = str(ser.readline()) # Read the newest output from the Arduino
+            serIn = (ser.readline()).decode("utf-8").strip() # Read the newest output from the Arduino
         except Exception as e:
             print(e)
             continue
@@ -31,7 +31,8 @@ def startTeensyRead(START_TIME,all_mice,doors,live_licks,all_tests):
         # b'792\r\n
         #serIn = input()
 
-        serIn = re.search(r"b'(.*)\\r\\n",serIn).group(1)
+        #serIn = re.search(r"b'(.*)\\r\\n",serIn).group(1)
+        #serIn = serIn.decode("utf-8")
         #print(serIn)
 
         mutex.lock()

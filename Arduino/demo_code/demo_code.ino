@@ -150,16 +150,17 @@ void loop()
   //Uncomment
   //weight = load_cell(&scale);
   //Comment out
-  Serial.println("Enter mouse weight:");
-  while(!Serial.available()){}
-  weight = Serial.parseFloat();
+  //Serial.println("Enter mouse weight:");
+  //while(!Serial.available()){}
+  //weight = Serial.parseFloat();
+  weight = 20;
 
   // optional: if weight is >0 and < 40, close door 2
   while(weight < 15){ // keep taking weight
     //weight = load_cell(&scale);
     Serial.println("Enter mouse weight:");
-    while(!Serial.available()){}
-    weight = Serial.parseFloat();
+    //while(!Serial.available()){}
+    weight = 20;
     Serial.print("weight: ");
     Serial.print(weight);
     Serial.println("g");
@@ -206,8 +207,9 @@ void loop()
     while(file.available()){ // file is available
       char line[20];
       int data = file.fgets(line, sizeof(line));
-      Serial.print(line);
+      Serial.print(data);
     }
+    Serial.println();
     file.close(); // close the file
     Serial.println("Test complete - Start saving to file");
   }
