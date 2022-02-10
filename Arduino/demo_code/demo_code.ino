@@ -148,7 +148,7 @@ void loop()
 
   // take the weight
   //Uncomment
-  //weight = load_cell(scale);
+  //weight = load_cell(&scale);
   //Comment out
   Serial.println("Enter mouse weight:");
   while(!Serial.available()){}
@@ -199,10 +199,16 @@ void loop()
     Serial.print("Starting test now - "); Serial.println(millis());
     run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file); // write to file during test
 
-    file.close(); // close the file
-
     Serial.println("Sending raw data");
     // TODO: send file to PC through Serial
+    file.rewind();
+
+    while(file.available()){ // file is available
+      char line[20];
+      int data = file.fgets(line, sizeof(line));
+      Serial.print(line);
+    }
+    file.close(); // close the file
     Serial.println("Test complete - Start saving to file");
   }
   else{
