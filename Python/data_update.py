@@ -67,9 +67,9 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvwriter = csv.writer(csvfile) 
-                row = '0'
-                while row.isnumeric():
-                    row = (ser.read_until(b'\r').decode("utf-8")).strip()
+                rows = ser.readline().decode("utf-8").strip()
+                rows = rows.split('\r')
+                for row in rows:
                     csvwriter.writerow(row)
         case 8:
             ser.write("Save complete".encode())
