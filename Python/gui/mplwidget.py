@@ -1,7 +1,7 @@
 # Imports
 from PyQt6 import QtWidgets
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as Canvas
+from matplotlib.backends.backend_qtagg import FigureCanvas as Canvas
 import matplotlib
 
 matplotlib.use('QTAgg')
@@ -10,7 +10,7 @@ matplotlib.use('QTAgg')
 class MplCanvas(Canvas):
     def __init__(self):
         self.fig = Figure()
-        self.ax = self.fig.add_subplot(111)
+        self.ax = self.fig.add_subplot()
         Canvas.__init__(self, self.fig)
         Canvas.setSizePolicy(self, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         Canvas.updateGeometry(self)

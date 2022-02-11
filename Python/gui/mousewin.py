@@ -12,10 +12,12 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_mouseWin(object):
     def setupUi(self, mouseWin):
         mouseWin.setObjectName("mouseWin")
-        mouseWin.resize(429, 192)
-        self.pushButton = QtWidgets.QPushButton(mouseWin)
-        self.pushButton.setGeometry(QtCore.QRect(50, 90, 75, 23))
-        self.pushButton.setObjectName("pushButton")
+        mouseWin.resize(376, 280)
+        self.gridLayout = QtWidgets.QGridLayout(mouseWin)
+        self.gridLayout.setObjectName("gridLayout")
+        self.plotWid = MplWidget(mouseWin)
+        self.plotWid.setObjectName("plotWid")
+        self.gridLayout.addWidget(self.plotWid, 0, 0, 1, 2)
 
         self.retranslateUi(mouseWin)
         QtCore.QMetaObject.connectSlotsByName(mouseWin)
@@ -23,7 +25,7 @@ class Ui_mouseWin(object):
     def retranslateUi(self, mouseWin):
         _translate = QtCore.QCoreApplication.translate
         mouseWin.setWindowTitle(_translate("mouseWin", "Form"))
-        self.pushButton.setText(_translate("mouseWin", "PushButton"))
+from gui.mplwidget import MplWidget
 
 
 if __name__ == "__main__":
