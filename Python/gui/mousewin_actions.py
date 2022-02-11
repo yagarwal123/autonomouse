@@ -18,7 +18,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         # MainWindow.resize(400, 300) # do not modify it
         #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
-        self.plt = None
+        self.pltax = None
         
         self.timer = QTimer(self)
         self.timer.timeout.connect(lambda:self.pltgraph())
@@ -28,8 +28,8 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
 
     def pltgraph(self):
         mutex.lock()
-        if self.plt:
-            self.plt.clear()
+        if self.pltax:
+            self.pltax.clear()
         
         x = [0] + [i.millis for i in self.mouse.weight_times]
         x_lab = ['Start'] + [str(i) for i in self.mouse.weight_times]

@@ -15,7 +15,7 @@ class Ui_lickWin(object):
         lickWin.resize(376, 280)
         self.gridLayout = QtWidgets.QGridLayout(lickWin)
         self.gridLayout.setObjectName("gridLayout")
-        self.plotWid = PlotWidget(lickWin)
+        self.plotWid = MplWidget(lickWin)
         self.plotWid.setObjectName("plotWid")
         self.gridLayout.addWidget(self.plotWid, 0, 0, 1, 2)
 
@@ -25,7 +25,7 @@ class Ui_lickWin(object):
     def retranslateUi(self, lickWin):
         _translate = QtCore.QCoreApplication.translate
         lickWin.setWindowTitle(_translate("lickWin", "Form"))
-from pyqtgraph import PlotWidget
+from gui.mplwidget import MplWidget
 
 
 if __name__ == "__main__":

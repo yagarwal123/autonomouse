@@ -6,15 +6,6 @@ import os
 #os.system(r"pyuic5 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
 #from gui import mainwin
 from gui.lickwin import Ui_lickWin
-# import matplotlib 
-# import matplotlib.pyplot as plt
-# matplotlib.use('Qt5Agg')
-# from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-# from matplotlib.figure import Figure
-# import matplotlib.ticker as ticker
-# import queue
-import pyqtgraph as pg
-import numpy as np
 
 mutex = QMutex()
 
@@ -31,7 +22,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         # MainWindow.resize(400, 300) # do not modify it
         #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
-        self.line = self.plotWid.plot(self.live_licks[-5000:])
+        self.pltax = None
         
         self.timer = QTimer(self)
         self.timer.timeout.connect(lambda:self.pltgraph())
@@ -41,7 +32,16 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
 
     def pltgraph(self):
         mutex.lock()
-        self.line.clear()
-        self.line = self.plotWid.plot(self.live_licks[-5000:])
+        if self.pltax:
+            self.pltax.clear()
+
+        self.pltax = self.plotWid.canvas.ax
+        #matplotlib.pyplot.setp(self.pltax, xticks=x, xticklabels=x_lab)
+        #matplotlib.pyplot.setp(self.pltax.xaxis.get_majorticklabels(), rotation=90)
+        self.pltax.plot(self.live_licks[-5000:])
+        #self.pltax.set_xlim(left=0)
+        #self.plotWid.canvas.fig.set_tight_layout(True)
+
+        self.plotWid.canvas.draw()
         mutex.unlock()
 
