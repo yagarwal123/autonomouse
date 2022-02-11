@@ -59,7 +59,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
                 for idx,trial in enumerate(test.trials):
                     row = [idx+1, trial]
                     csvwriter.writerow(row)
-            live_licks=[]
+            live_licks.clear()
             
         case 7:
             test = all_tests[-1]
