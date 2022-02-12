@@ -6,7 +6,6 @@ os.system(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py")
 os.system(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py")
 
 import logging
-import serial
 import datetime
 from PyQt6 import QtWidgets
 from gui.mainwin_actions import mainwinActions
