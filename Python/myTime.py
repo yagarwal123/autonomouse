@@ -1,5 +1,6 @@
 import datetime
 
+#Open question: Is it better to inherit class since we need to get the START_TIME obj anyway?
 class myTime:
     """description of class"""
     def __init__(self,START_TIME, millis):
