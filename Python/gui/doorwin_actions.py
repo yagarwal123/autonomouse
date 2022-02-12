@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import pyqtSlot, QRect, QTimer, QMutex
+from PyQt6.QtCore import pyqtSlot, QRect, QTimer
 
 import sys
 import os
@@ -8,13 +8,13 @@ import os
 #from gui import mainwin
 from gui.doorwin import Ui_doorWin
 
-mutex = QMutex()
 
 class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
-    def __init__(self,doors):
+    def __init__(self,mutex,doors):
         super().__init__()
         self.setupUi(self)
         self.doors = doors
+        self.mutex = mutex
         self.title = "Doors"
 
     # # update setupUi
@@ -32,7 +32,7 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
         self.tableWidget.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents) 
 
     def popTable(self):
-        mutex.lock()
+        self.mutex.lock()
         entries = len(self.doors)
         self.tableWidget.setRowCount(entries)
         for i in range(entries):
@@ -40,4 +40,4 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
             self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(self.doors[i][1].get_id()))
             self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(self.doors[i][1].get_name()))
             self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(self.doors[i][2])))
-        mutex.unlock()
+        self.mutex.unlock()

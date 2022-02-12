@@ -1,21 +1,16 @@
 import logging
 import serial
 import re
-from time import sleep
-from PyQt6.QtCore import QMutex
 
-from Mouse import Mouse
 import data_update
 
 logger = logging.getLogger(__name__)
-
-mutex = QMutex()
 
 #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
 ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
 
 
-def startTeensyRead(START_TIME,all_mice,doors,live_licks,all_tests):
+def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests):
     while True:
         #Uncomment
         try:

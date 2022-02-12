@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import pyqtSlot, QRect, QTimer, QMutex
+from PyQt6.QtCore import pyqtSlot, QRect, QTimer
 
 import sys
 import os
@@ -7,13 +7,12 @@ import os
 #from gui import mainwin
 from gui.lickwin import Ui_lickWin
 
-mutex = QMutex()
-
 class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
-    def __init__(self,live_licks):
+    def __init__(self,mutex,live_licks):
         super().__init__()
         self.setupUi(self)
         self.live_licks = live_licks
+        self.mutex = mutex
         self.title = "Lick Sensor"
 
     # update setupUi
@@ -31,7 +30,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
     def pltgraph(self):
-        mutex.lock()
+        self.mutex.lock()
         if self.pltax:
             self.pltax.clear()
 
@@ -43,5 +42,5 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         #self.plotWid.canvas.fig.set_tight_layout(True)
 
         self.plotWid.canvas.draw()
-        mutex.unlock()
+        self.mutex.unlock()
 

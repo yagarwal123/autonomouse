@@ -1,18 +1,17 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import pyqtSlot, QRect, QTimer, QMutex
+from PyQt6.QtCore import pyqtSlot, QRect, QTimer
 
 import matplotlib.pyplot
 #os.system(r"pyuic5 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
 #from gui import mainwin
 from gui.mousewin import Ui_mouseWin
 
-mutex = QMutex()
-
 class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
-    def __init__(self,mouse):
+    def __init__(self,mutex,mouse):
         super().__init__()
         self.setupUi(self)
         self.mouse = mouse
+        self.mutex = mutex
         self.title = self.mouse.get_id() +  ' - ' + self.mouse.get_name()
 
         # MainWindow.resize(400, 300) # do not modify it
@@ -27,7 +26,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
     def pltgraph(self):
-        mutex.lock()
+        self.mutex.lock()
         if self.pltax:
             self.pltax.clear()
         
@@ -43,4 +42,4 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.plotWid.canvas.fig.set_tight_layout(True)
 
         self.plotWid.canvas.draw()
-        mutex.unlock()
+        self.mutex.unlock()

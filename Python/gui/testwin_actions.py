@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import pyqtSlot, QRect, QTimer, QMutex
+from PyQt6.QtCore import pyqtSlot, QRect, QTimer
 
 import sys
 import os
@@ -7,8 +7,6 @@ import os
 #os.system(r"pyuic5 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
 #from gui import mainwin
 from gui.testwin import Ui_testWin
-
-mutex = QMutex()
 
 class testwinActions(QtWidgets.QWidget, Ui_testWin):
     def __init__(self,all_tests):
@@ -32,7 +30,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
 
 
     def popData(self):
-        mutex.lock()
+        self.mutex.lock()
         test = self.all_tests[-1]
         self.m_name.setText(test.mouse.get_name())
         self.m_id.setText(test.mouse.get_id())
@@ -41,4 +39,4 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         for idx,t_time in enumerate(test.trials):
             self.tableWidget.setItem(idx,0,QtWidgets.QTableWidgetItem(str(idx + 1)))
             self.tableWidget.setItem(idx,1,QtWidgets.QTableWidgetItem(str(t_time)))
-        mutex.unlock()
+        self.mutex.unlock()
