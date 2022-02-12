@@ -1,3 +1,10 @@
+import os
+os.system(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
+os.system(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
+os.system(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py")
+os.system(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py")
+os.system(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py")
+
 import logging
 import serial
 import datetime
@@ -8,13 +15,6 @@ import sys
 
 from Mouse import Mouse
 #from start_teensy_read import startTeensyRead
-
-import os
-os.system(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
-os.system(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
-os.system(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py")
-os.system(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py")
-os.system(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py")
 
 MICE_INIT_INFO = {'A11111':['Stuart',67],
               'A22222': ['Little',45],
