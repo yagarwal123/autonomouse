@@ -38,6 +38,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         #matplotlib.pyplot.setp(self.pltax, xticks=x, xticklabels=x_lab)
         #matplotlib.pyplot.setp(self.pltax.xaxis.get_majorticklabels(), rotation=90)
         self.pltax.plot(self.live_licks[-5000:])
+        self.pltax.set_xticks([])
         #self.plotWid.canvas.fig.set_tight_layout(True)
         #self.pltax.set_xlim(left=0)
         #self.plotWid.canvas.fig.set_tight_layout(True)
