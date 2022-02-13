@@ -39,7 +39,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         matplotlib.pyplot.setp(self.pltax.xaxis.get_majorticklabels(), rotation=90)
         self.pltax.plot(x,y)
         self.pltax.set_xlim(left=0)
-        self.plotWid.canvas.fig.set_tight_layout(True)
+        #self.plotWid.canvas.fig.set_tight_layout(True)
 
         self.plotWid.canvas.draw()
         self.mutex.unlock()
