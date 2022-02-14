@@ -24,6 +24,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.timer.start(1000)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
 
     def pltgraph(self):
         self.mutex.lock()

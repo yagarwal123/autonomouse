@@ -28,6 +28,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         self.timer.start(15)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
 
     def pltgraph(self):
         self.mutex.lock()

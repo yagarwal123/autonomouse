@@ -28,6 +28,7 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
         self.timer.start(1000)
         #self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch) 
         self.tableWidget.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents) 
 
