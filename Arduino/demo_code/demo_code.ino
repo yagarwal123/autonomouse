@@ -226,7 +226,7 @@ void loop()
   Serial.println("Waiting for the save to complete");
   while (true){
     while(!Serial.available());
-    String serIn = Serial.readString();
+    String serIn = Serial.readStringUntil('\n');
     if (serIn == "Save complete"){
       break;
     }

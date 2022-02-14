@@ -73,7 +73,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
                     csvwriter.writerow(row)
                     
         case 8:
-            ser.write("Save complete".encode())
+            ser.write("Save complete\n".encode())
 
 
 def getLastMouse(doors):
