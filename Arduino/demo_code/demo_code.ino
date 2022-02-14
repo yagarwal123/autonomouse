@@ -11,9 +11,9 @@
 #include "clear_serial_buffer.h"
 #include "SdFat.h"
 #include "time_functions.h"
-#define LOADCELL_DOUT_PIN  4
-#define LOADCELL_SCK_PIN  5
-#define calibration_factor 430.5 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define LOADCELL_DOUT_PIN  20
+#define LOADCELL_SCK_PIN  19
+#define calibration_factor 1004 //This value is obtained using the SparkFun_HX711_Calibration sketch
 // for SD card access--------------------------
 #define SD_FAT_TYPE 3
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
@@ -97,11 +97,11 @@ void setup()
   door_two.attach(23);
   door_close(door_two);
   // door 1 open and door 2 close
-  /*
-    scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-    scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
-    scale.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
-  */
+  
+  scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+  scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
+  scale.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
+  
   //Setting up the pins for the reward system
   pinMode(rewardPin, OUTPUT);
   digitalWrite(rewardPin, LOW);
@@ -148,19 +148,18 @@ void loop()
 
   // take the weight
   //Uncomment
-  //weight = load_cell(&scale);
+  weight = load_cell(&scale);
   //Comment out
   //Serial.println("Enter mouse weight:");
   //while(!Serial.available()){}
   //weight = Serial.parseFloat();
-  weight = 20;
 
   // optional: if weight is >0 and < 40, close door 2
   while(weight < 15){ // keep taking weight
-    //weight = load_cell(&scale);
-    Serial.println("Enter mouse weight:");
+    weight = load_cell(&scale);
+    //Serial.println("Enter mouse weight:");
     //while(!Serial.available()){}
-    weight = 20;
+    //weight = 20;
     Serial.print("weight: ");
     Serial.print(weight);
     Serial.println("g");
@@ -207,9 +206,9 @@ void loop()
     while(file.available()){ // file is available
       char line[20];
       int data = file.fgets(line, sizeof(line));
-      Serial.print(data);
+      Serial.print(line);
     }
-    Serial.println();
+    Serial.println("Raw data send complete");
     file.close(); // close the file
     Serial.println("Test complete - Start saving to file");
   }

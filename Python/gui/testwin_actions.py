@@ -9,10 +9,11 @@ import os
 from gui.testwin import Ui_testWin
 
 class testwinActions(QtWidgets.QWidget, Ui_testWin):
-    def __init__(self,all_tests):
+    def __init__(self,mutex,all_tests):
         super().__init__()
         self.setupUi(self)
         self.all_tests = all_tests
+        self.mutex = mutex
         self.title = "Latest test"
 
     # # update setupUi
