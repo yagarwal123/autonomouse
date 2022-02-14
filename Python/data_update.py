@@ -52,7 +52,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
         case 6:
             #TODO Save data in file
             test = all_tests[-1]
-            filename = 'Test data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time)
+            filename = 'Test data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvwriter = csv.writer(csvfile) 
@@ -63,7 +63,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
             
         case 7:
             test = all_tests[-1]
-            filename = 'Raw lick data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time)
+            filename = 'Raw lick data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvwriter = csv.writer(csvfile) 
