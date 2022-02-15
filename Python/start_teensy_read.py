@@ -18,7 +18,7 @@ serInlogger.addHandler(fileHandler)
 ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
 #ser = None
 
-def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests):
+def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests,experiment_paused):
     while True:
         #Uncomment
         try:
@@ -39,7 +39,7 @@ def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests):
         #serIn = re.search(r"b'(.*)\\r\\n",serIn).group(1)
         #serIn = serIn.decode("utf-8")
         #print(serIn)
-
+        
         mutex.lock()
-        data_update.dataUpdate(START_TIME,ser,serIn,all_mice,doors,live_licks,all_tests)  
+        data_update.dataUpdate(START_TIME,ser,serIn,all_mice,doors,live_licks,all_tests,experiment_paused)  
         mutex.unlock()

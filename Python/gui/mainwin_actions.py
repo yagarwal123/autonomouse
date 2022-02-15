@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[]):
+    def __init__(self, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[],experiment_paused=[False]):
         super().__init__()
         self.setupUi(self)
         self.title = 'Main Window'
@@ -25,6 +25,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.doors = doors
         self.live_licks = live_licks
         self.all_tests = all_tests
+        self.experiment_paused = experiment_paused
 
         self.mutex = QMutex()
 
@@ -35,7 +36,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
 
-        self.worker = TeensyRead(self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests)
+        self.worker = TeensyRead(self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)
         self.worker.start()
         self.myactions() # add actions for different buttons
 
@@ -49,6 +50,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.doorButton.clicked.connect(self.open_door)
         self.lickButton.clicked.connect(self.open_lick)
         self.testButton.clicked.connect(self.open_test)
+        self.pauseButton.clicked.connect(self.pause_exp)
 
 
     def open_mouse(self):
@@ -89,8 +91,18 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             msg.setText('No tests have been conducted yet')
             msg.exec()
 
+    def pause_exp(self):
+        self.experiment_paused[0] = not self.experiment_paused[0]
+        if self.experiment_paused[0]:       #Experiment is paused
+            self.pauseButton.setText('Unpause Experiment')
+            self.pauseLabel.setText('Experiment is now paused')
+        else:       #Experiment is not paused
+            self.pauseButton.setText('Pause Experiment')
+            self.pauseLabel.setText('Experiment is ongoing')
+
+
 class TeensyRead(QThread):
-    def __init__(self, mutex, START_TIME, all_mice,doors,live_licks,all_tests):
+    def __init__(self, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_paused):
         super(TeensyRead, self).__init__()
         self.all_mice = all_mice
         self.doors = doors
@@ -98,6 +110,7 @@ class TeensyRead(QThread):
         self.all_tests = all_tests
         self.START_TIME = START_TIME
         self.mutex = mutex
+        self.experiment_paused = experiment_paused
 
     def run(self):
-        startTeensyRead(self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests)
+        startTeensyRead(self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)

@@ -6,7 +6,7 @@ from Test import Test
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
+def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_paused):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g - Time (\d+)$',        #1
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
@@ -14,7 +14,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
                       '^Lick Sensor - Trial (\d+) - Time (-?\d+)$',                 #5
                       '^Test complete - Start saving to file$',                     #6
                       '^Sending raw data$',                                         #7
-                      '^Waiting for the save to complete$'                          #8
+                      '^Waiting for the save to complete$',                         #8
+                      '^Check whether to start test$'                               #9
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -74,6 +75,12 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests):
                     
         case 8:
             ser.write("Save complete\n".encode())
+        case 9:
+            if experiment_paused[0]:
+                ser.write("Experiment paused\n".encode())
+            else:
+                ser.write("Start experiment\n".encode())
+                
 
 
 def getLastMouse(doors):

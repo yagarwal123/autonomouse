@@ -142,6 +142,19 @@ void loop()
   if ( (ID_2.length() == 0) || (ID_1.length() != 0) ){
     return;
   }
+
+  Serial.println("Check whether to start test");
+  while (true){
+    while(!Serial.available());
+    String serIn = Serial.readStringUntil('\n');
+    if (serIn == "Experiment paused"){
+      return;
+    }
+    else if (serIn == "Start experiment"){
+      break;
+    }
+  }
+
   door_close(door_one);
   door_open(door_two);
   lastMouse = ID_2;
