@@ -2,6 +2,9 @@ import logging.config
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 
+logging.getLogger('matplotlib').setLevel(logging.INFO)
+#Optional - matplotlib spams a lot of debugs, so setting its level to info
+
 
 import os
 os.system(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")

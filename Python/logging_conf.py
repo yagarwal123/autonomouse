@@ -3,12 +3,12 @@ LOGGING_CONFIG = {
     'loggers': {
         '': {  # root logger
             'level': 'NOTSET',
-            'handlers': ['debug_console_handler', 'info_rotating_file_handler', 'error_file_handler'],
+            'handlers': ['debug_console_handler', 'info_rotating_file_handler', 'warning_file_handler'],
         },
         'my.package': { 
             'level': 'WARNING',
             'propagate': False,
-            'handlers': ['info_rotating_file_handler', 'error_file_handler' ],
+            'handlers': ['info_rotating_file_handler', 'warning_file_handler' ],
         },
     },
     'handlers': {
@@ -27,11 +27,11 @@ LOGGING_CONFIG = {
             'maxBytes': 1048576,
             'backupCount': 10
         },
-        'error_file_handler': {
+        'warning_file_handler': {
             'level': 'WARNING',
-            'formatter': 'error',
+            'formatter': 'warning',
             'class': 'logging.FileHandler',
-            'filename': 'error.log',
+            'filename': 'warning.log',
             'mode': 'a',
         },
     },
@@ -39,7 +39,7 @@ LOGGING_CONFIG = {
         'info': {
             'format': '%(asctime)s-%(levelname)s-%(name)s::%(module)s|%(lineno)s:: %(message)s'
         },
-        'error': {
+        'warning': {
             'format': '%(asctime)s-%(levelname)s-%(name)s-%(process)d::%(module)s|%(lineno)s:: %(message)s'
         },
     },
