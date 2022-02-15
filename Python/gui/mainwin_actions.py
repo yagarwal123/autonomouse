@@ -40,6 +40,8 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.worker.start()
         self.myactions() # add actions for different buttons
 
+        self.all_mousewin = []
+
         #self.mouse_id_select.setItemText(3, ("MainWindow", "A11fvg111 - Stuart"))
         for id, m in self.all_mice.items():
             self.mouse_id_select.addItem(id + ' - ' + m.get_name())
@@ -56,8 +58,8 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
     def open_mouse(self):
         #app = QtWidgets.QApplication(sys.argv)
         ID = self.mouse_id_select.currentText().split(' - ')[0]
-        self.mousewin = mousewinActions(self.mutex,self.all_mice[ID])
-        self.mousewin.show()
+        self.all_mousewin.append(mousewinActions(self.mutex,self.all_mice[ID]))
+        self.all_mousewin[-1].show()
 
     def open_door(self):
         #app = QtWidgets.QApplication(sys.argv)
