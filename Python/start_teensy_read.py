@@ -7,7 +7,7 @@ import data_update
 logger = logging.getLogger(__name__)
 
 serInlogger = logging.getLogger('Logger')
-formatter = logging.Formatter('%(asctime)s-%(message)s')
+formatter = logging.Formatter('%(asctime)s - "%(message)s"')
 fileHandler = logging.FileHandler('Serial_inputs.log', mode='w')   
 fileHandler.setFormatter(formatter)
 serInlogger.addHandler(fileHandler)
