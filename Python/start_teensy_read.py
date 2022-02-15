@@ -16,16 +16,18 @@ serInlogger.addHandler(fileHandler)
 
 #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
 ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
-
+#ser = None
 
 def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests):
     while True:
         #Uncomment
         try:
             serIn = (ser.readline()).decode("utf-8").strip() # Read the newest output from the Arduino
+            #serIn = input()
         except Exception as e:
-            print(e)
+            logger.error(e)
             continue
+        serInlogger.info(serIn)
         #print(serIn)
         #Comment out
         # b'Door Sensor - ID A11111 - Door 1 - Time 34567\r\n
@@ -33,7 +35,6 @@ def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests):
         # b'Lick Sensor - Trial 1 - Time 6792\r\n
         # b'792\r\n
         #serIn = input()
-        serInlogger.info(serIn)
 
         #serIn = re.search(r"b'(.*)\\r\\n",serIn).group(1)
         #serIn = serIn.decode("utf-8")
