@@ -12,7 +12,7 @@ fileHandler = logging.FileHandler('Serial_inputs.log', mode='w')
 fileHandler.setFormatter(formatter)
 serInlogger.addHandler(fileHandler)
 #This will overwrite files, do we want that? Or we do want to save previous runs?
-#Mode a adds to the file, Mode w rewrites. Same question for log/error files
+#Mode a adds to the file, Mode w rewrites. Same question for info/warning log files
 
 #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
 ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
