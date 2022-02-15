@@ -6,6 +6,14 @@ import data_update
 
 logger = logging.getLogger(__name__)
 
+serInlogger = logging.getLogger('Logger')
+formatter = logging.Formatter('%(message)s')
+fileHandler = logging.FileHandler('Serial_inputs.log', mode='w')   
+fileHandler.setFormatter(formatter)
+serInlogger.addHandler(fileHandler)
+#This will overwrite files, do we want that? Or we do want to save previous runs?
+#Mode a adds to the file, Mode w rewrites. Same question for log/error files
+
 #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
 ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
 
@@ -25,6 +33,7 @@ def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests):
         # b'Lick Sensor - Trial 1 - Time 6792\r\n
         # b'792\r\n
         #serIn = input()
+        serInlogger.info(serIn)
 
         #serIn = re.search(r"b'(.*)\\r\\n",serIn).group(1)
         #serIn = serIn.decode("utf-8")

@@ -1,3 +1,8 @@
+import logging.config
+from logging_conf import LOGGING_CONFIG
+logging.config.dictConfig(LOGGING_CONFIG)
+
+
 import os
 os.system(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
 os.system(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
@@ -23,20 +28,6 @@ START_TIME = datetime.datetime.now()
 
 #Uncomment
 #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# create formatter
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-# create console handler and set level to debug
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-ch.setFormatter(formatter)
-
-# add ch to logger
-logger.addHandler(ch)
 
 #Inititate Mice
 all_mice = {}
