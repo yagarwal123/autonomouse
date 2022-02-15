@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[],experiment_paused=[False]):
+    def __init__(self, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[]):
         super().__init__()
         self.setupUi(self)
         self.title = 'Main Window'
@@ -25,7 +25,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.doors = doors
         self.live_licks = live_licks
         self.all_tests = all_tests
-        self.experiment_paused = experiment_paused
+        self.experiment_paused = [False]
 
         self.mutex = QMutex()
 
