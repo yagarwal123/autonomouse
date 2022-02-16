@@ -37,24 +37,24 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.changelickButton.clicked.connect(self.change_lick)
 
     def change_liquid(self):
-        try:
-            l = float(self.liquidLineEdit.text())
-            self.liq_am_disp.setText(str(l))
-            self.mouse.liquid_amount = l
+        l = self.liquidLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.liq_am_disp.setText(l)
+            self.mouse.liquid_amount = int(l)
             self.liquidLineEdit.clear()
-        except ValueError:
+        else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
             msg.exec()
         
 
     def change_lick(self):
-        try:
-            l = float(self.lickLineEdit.text())
-            self.lick_thresh_disp.setText(str(l))
-            self.mouse.lick_threshold = l
+        l = self.lickLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.lick_thresh_disp.setText(l)
+            self.mouse.lick_threshold = int(l)
             self.lickLineEdit.clear()
-        except ValueError:
+        else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
             msg.exec()
