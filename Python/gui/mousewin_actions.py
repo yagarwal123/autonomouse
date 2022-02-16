@@ -29,10 +29,13 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.liq_am_disp.setText(str(self.mouse.liquid_amount))
         self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
 
+        self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
+        self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
+
         self.myactions()
 
     # define actions here
-    def myactions(self):
+    def myactions(self):  
         self.changeliquidButton.clicked.connect(self.change_liquid)
         self.changelickButton.clicked.connect(self.change_lick)
 
