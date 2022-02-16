@@ -6,81 +6,70 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>390</height>
+    <width>503</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Current Liquid Amount:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="liq_am_disp">
-       <property name="text">
-        <string>1000</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLineEdit" name="lineEdit_2">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>20</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>Change</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Current Lick Threshold:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="lick_thresh_disp">
-       <property name="text">
-        <string>2000</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLineEdit" name="lineEdit"/>
-     </item>
-     <item row="1" column="3">
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="text">
-        <string>Change</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Current Liquid Amount:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="liq_am_disp">
+     <property name="text">
+      <string>1000</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLineEdit" name="lineEdit"/>
+   </item>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Change</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Current Lick Threshold:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="lick_thresh_disp">
+     <property name="text">
+      <string>2000</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="lineEdit_2"/>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>Change</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="4">
     <widget class="Line" name="line_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0" colspan="4">
     <widget class="MplWidget" name="plotWid" native="true">
      <property name="minimumSize">
       <size>
