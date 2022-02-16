@@ -26,6 +26,39 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
 
+        self.liq_am_disp.setText(str(self.mouse.liquid_amount))
+        self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
+
+        self.myactions()
+
+    # define actions here
+    def myactions(self):
+        self.changeliquidButton.clicked.connect(self.change_liquid)
+        self.changelickButton.clicked.connect(self.change_lick)
+
+    def change_liquid(self):
+        try:
+            l = float(self.liquidLineEdit.text())
+            self.liq_am_disp.setText(str(l))
+            self.mouse.liquid_amount = l
+            self.liquidLineEdit.clear()
+        except ValueError:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+        
+
+    def change_lick(self):
+        try:
+            l = float(self.lickLineEdit.text())
+            self.lick_thresh_disp.setText(str(l))
+            self.mouse.lick_threshold = l
+            self.lickLineEdit.clear()
+        except ValueError:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
     def pltgraph(self):
         self.mutex.lock()
         if self.pltax:
