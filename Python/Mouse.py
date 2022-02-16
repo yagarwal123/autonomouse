@@ -8,6 +8,8 @@ class Mouse:
         self.weight_times = []
         self.doortimes = []
         self.tests = []
+        self.lick_threshold = 1000
+        self.liquid_amount = 200
 
     def get_name(self):
         return self.name

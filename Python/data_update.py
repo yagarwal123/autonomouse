@@ -15,7 +15,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                       '^Test complete - Start saving to file$',                     #6
                       '^Sending raw data$',                                         #7
                       '^Waiting for the save to complete$',                         #8
-                      '^Check whether to start test$'                               #9
+                      '^Check whether to start test$',                              #9
+                      '^Send parameters: Incoming mouse ID - (.+)$'                 #10
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -54,6 +55,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             #TODO Save data in file
             test = all_tests[-1]
             filename = 'Test data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
+            filename = filename.replace(":",".")
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvwriter = csv.writer(csvfile) 
@@ -65,6 +67,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
         case 7:
             test = all_tests[-1]
             filename = 'Raw lick data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
+            filename = filename.replace(":",".")
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvwriter = csv.writer(csvfile) 
@@ -80,6 +83,10 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 ser.write("Experiment paused\n".encode())
             else:
                 ser.write("Start experiment\n".encode())
+        case 10:
+            m = all_mice[search.group(1)]
+            ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
+            ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
                 
 
 

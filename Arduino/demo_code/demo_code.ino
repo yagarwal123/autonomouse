@@ -42,7 +42,6 @@ float weight;
 // Variables for the lick and reward system
 int rewardPin = 32;
 int lickPin = A13;
-int THRESHOLD = 1000;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -186,11 +185,9 @@ void loop()
     Serial.println(serOut);
     Serial.println("closing door 2, start test");
     door_close(door_two);
-  
-    int liquidAmount = 200; // command from raspi
 
     // create file
-    String fileName = ID + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
+    String fileName = ID_2 + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
     Serial.println(fileName);
     char buf[30];
     fileName.toCharArray(buf, 30);
@@ -210,6 +207,12 @@ void loop()
     file.println();
     file.print(F("time(ms), ")); // print headings
     file.println(F("amplitude"));
+    
+    Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
+    while (!Serial.available());
+    int THRESHOLD = Serial.readStringUntil('\n').toInt();
+    while (!Serial.available());
+    int liquidAmount = Serial.readStringUntil('\n').toInt();
 
     Serial.print("Starting test now - "); Serial.println(millis());
     run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file); // write to file during test
