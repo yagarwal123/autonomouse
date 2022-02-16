@@ -2,7 +2,7 @@
 *.DS_Store
 
 # ignore ALL files with the extension log
-*.log
+*.log*
 
 # ignore ALL files in ANY directory named __pycache__
 __pycache__/      
