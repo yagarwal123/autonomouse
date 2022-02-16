@@ -28,7 +28,7 @@ def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests,experim
         except Exception as e:
             logger.error(e)
             continue
-        serInlogger.info(serIn)
+        serInlogger.debug(serIn)
         #print(serIn)
         #Comment out
         # b'Door Sensor - ID A11111 - Door 1 - Time 34567\r\n
