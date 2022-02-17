@@ -7,7 +7,6 @@
 #include "check_id_exist.h"
 #include "HX711.h"
 #include "load_cell.h"
-#include "read_id_sf.h" // include sparkfun decoder temporarily for testing
 #include "clear_serial_buffer.h"
 #include "SdFat.h"
 #include "time_functions.h"
