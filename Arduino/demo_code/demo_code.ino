@@ -104,9 +104,9 @@ void setup()
   //Setting up the pins for the reward system
   pinMode(rewardPin, OUTPUT);
   digitalWrite(rewardPin, LOW);
-  // pin for TTL pulse camera
+    // pin for TTL pulse camera
   pinMode(TTL_PIN, INPUT);
-  
+
   // time
   setSyncProvider(getTeensy3Time);
 
@@ -208,7 +208,8 @@ void loop()
     printNow(&file);
     file.println();
     file.print(F("time(ms), ")); // print headings
-    file.println(F("amplitude"));
+    file.print(F("amplitude, "));
+    file.println(F("TTL"));
     
     Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
     while (!Serial.available());
@@ -227,7 +228,7 @@ void loop()
     file.rewind();
 
     while(file.available()){ // file is available
-      char line[40];
+      char line[20];
       int data = file.fgets(line, sizeof(line));
       Serial.print(line);
     }

@@ -32,13 +32,13 @@ void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr, int TTL_PIN){
   pr->print(millis() - *timePt);
   pr->print(", ");
   pr->print(*sensorAddr);
-  if(digitalRead(TTL_PIN)){
-    pr->print(", ");
+  pr->print(", ");
+  if(digitalRead(TTL_PIN)==HIGH){
     pr->print(1);
     }
-//    else{
-//      pr->print(0);
-//      }
+    else{
+      pr->print(0);
+      }
   pr->println();
   }
 

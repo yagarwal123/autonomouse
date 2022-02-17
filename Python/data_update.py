@@ -62,6 +62,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvwriter = csv.writer(csvfile) 
+                csvwriter.writerow(['Trial No', 'Lick Time'])
                 for idx,trial in enumerate(test.trials):
                     row = [idx+1, trial]
                     csvwriter.writerow(row)
@@ -79,6 +80,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 while (row != 'Raw data send complete'):
                     row = ser.readline().decode("utf-8").strip()
                     csvwriter.writerow(row.split(','))
+                print('victory')
+            
                     
         case 8:
             ser.write("Save complete\n".encode())
