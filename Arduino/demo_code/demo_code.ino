@@ -18,6 +18,7 @@
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
 SdFs sd;
 FsFile file;
+#define TTL_PIN 33
 
 time_t getTeensy3Time()
 {
@@ -103,7 +104,9 @@ void setup()
   //Setting up the pins for the reward system
   pinMode(rewardPin, OUTPUT);
   digitalWrite(rewardPin, LOW);
-
+  // pin for TTL pulse camera
+  pinMode(TTL_PIN, INPUT);
+  
   // time
   setSyncProvider(getTeensy3Time);
 
@@ -217,7 +220,7 @@ void loop()
     Serial.print("Recieved information - Lick Threhold - ");Serial.println(THRESHOLD);
 
     Serial.print("Starting test now - "); Serial.println(millis());
-    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file); // write to file during test
+    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, TTL_PIN); // write to file during test
 
     Serial.println("Sending raw data");
     // TODO: send file to PC through Serial
