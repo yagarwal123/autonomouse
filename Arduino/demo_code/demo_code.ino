@@ -214,6 +214,9 @@ void loop()
     while (!Serial.available());
     int liquidAmount = Serial.readStringUntil('\n').toInt();
 
+    Serial.print("Recieved information - Liquid Amount - ");Serial.println(liquidAmount);
+    Serial.print("Recieved information - Lick Threhold - ");Serial.println(THRESHOLD);
+
     Serial.print("Starting test now - "); Serial.println(millis());
     run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file); // write to file during test
 
