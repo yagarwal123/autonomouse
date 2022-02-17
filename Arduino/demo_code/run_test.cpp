@@ -28,13 +28,21 @@ void callback2(int lickPin, int* sensorAddr) // reads sensor value
   //Serial.println("r");
   }
 
-void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sensor value at regular interval to pr
+void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr, int TTL_PIN){ // saves sensor value at regular interval to pr
   pr->print(millis() - *timePt);
   pr->print(", ");
-  pr->println(*sensorAddr);
+  pr->print(*sensorAddr);
+  if(digitalRead(TTL_PIN)){
+    pr->print(", ");
+    pr->print(1);
+    }
+//    else{
+//      pr->print(0);
+//      }
+  pr->println();
   }
 
-void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr){
+void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int TTL_PIN){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -44,7 +52,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   // define timers
   t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
   t2.begin([=]{callback2(lickPin, sensorPt);}, 15ms, false); // reads lickPin every 50ms
-  t3.begin([=]{callback3(sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
+  t3.begin([=]{callback3(sensorPt, timePt, pr, TTL_PIN);}, 1ms); // saves amplitude every 1ms
   
   for(int i=1; i<11; i++){
     //Serial.print("Trial ");
