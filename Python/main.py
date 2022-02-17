@@ -2,6 +2,8 @@ import logging.config
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 
+import zmq 
+
 logging.getLogger('matplotlib').setLevel(logging.INFO)
 #Optional - matplotlib spams a lot of debugs, so setting its level to info
 

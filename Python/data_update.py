@@ -3,6 +3,7 @@ import re
 import csv
 from myTime import myTime
 from Test import Test
+import rasp
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             new_test = Test(m,t)
             m.tests.append(new_test)
             all_tests.append(new_test)
+            rasp.start_rpi_host()
+            rasp.start_record('test1')
         case 5:
             trial = int(search.group(1))
             t = int(search.group(2))
@@ -65,6 +68,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             live_licks.clear()
             
         case 7:
+            rasp.close_record()
             test = all_tests[-1]
             filename = 'Raw lick data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
             filename = filename.replace(":",".")

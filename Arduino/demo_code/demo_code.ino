@@ -40,7 +40,7 @@ float weight;
 
 // Variables for the lick and reward system
 int rewardPin = 32;
-int lickPin = A13;
+int lickPin = A1;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -224,7 +224,7 @@ void loop()
     file.rewind();
 
     while(file.available()){ // file is available
-      char line[20];
+      char line[40];
       int data = file.fgets(line, sizeof(line));
       Serial.print(line);
     }
