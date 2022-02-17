@@ -47,6 +47,9 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
   unsigned long* timePt = &startTime; // pointer to start time of test
+  int i=0;
+  int noLickCounter=0;// counts the number of no licks - stops after no licks found in 5 consequtive trials
+  // actual number need to be confirmed
   
   // lambda function, pass in outerscope
   // define timers
@@ -54,7 +57,9 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   t2.begin([=]{callback2(lickPin, sensorPt);}, 15ms, false); // reads lickPin every 50ms
   t3.begin([=]{callback3(sensorPt, timePt, pr, TTL_PIN);}, 1ms); // saves amplitude every 1ms
   
-  for(int i=1; i<11; i++){
+  //for(int i=1; i<11; i++){
+  while(noLickCounter<5){
+    i++; // increment trial number
     //Serial.print("Trial ");
     //Serial.println(i);
     lickTime = -1; // time takes to lick: if not licked return -1
@@ -71,6 +76,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
           t2.start(); // start reading at longer intervals if mouse has licked
           lickTime = lickCheck - startTime;
           deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
+          noLickCounter=0; // reset noLickCounter
           }
         }
       }
@@ -79,6 +85,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     t1.stop();// stop timers whether or not there was licking
     if (lickTime < 0){ // start reading at longer intervals if mouse hasnt licked
       t2.start();
+      noLickCounter++;
     }
     Serial.print("Lick Sensor - Trial ");
     Serial.print(i);
