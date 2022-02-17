@@ -21,6 +21,7 @@ import sys
 #import multiprocessing
 
 from Mouse import Mouse
+from myTime import myTime
 #from start_teensy_read import startTeensyRead
 
 MICE_INIT_INFO = {'A11111':['Stuart',67],
@@ -39,8 +40,8 @@ for id, info in MICE_INIT_INFO.items():
 
 #Comment out
 doors = [
-    [12367, all_mice['A22222'], 1],
-    [33333, all_mice['A11111'], 2]
+    [myTime(START_TIME,12367), all_mice['A22222'], 1],
+    [myTime(START_TIME,33333), all_mice['A11111'], 2]
     ]
 live_licks = [0,0,0,7,100,60]
 all_tests = []
