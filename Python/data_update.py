@@ -52,12 +52,11 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             old_test = m.tests[-1]
             if ( len(old_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
-                #print("Retrieving the wrong test")
             old_test.add_trial(t)
         case 6:
-            #TODO Save data in file
             test = all_tests[-1]
             filename = 'Test data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
+            #TODO: Remove (?) after better time formatting
             filename = filename.replace(":",".")
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 

@@ -17,11 +17,9 @@ import datetime
 from PyQt6 import QtWidgets
 from gui.mainwin_actions import mainwinActions
 import sys
-#import multiprocessing
 
 from Mouse import Mouse
 from myTime import myTime
-#from start_teensy_read import startTeensyRead
 
 MICE_INIT_INFO = {'A11111':['Stuart',67],
               'A22222': ['Little',45],
@@ -29,25 +27,21 @@ MICE_INIT_INFO = {'A11111':['Stuart',67],
 
 START_TIME = datetime.datetime.now()
 
-#Uncomment
-#ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
-
-#Inititate Mice
-all_mice = {}
-for id, info in MICE_INIT_INFO.items():
-    all_mice[id] = Mouse(id,info[0],info[1])
-
-#Comment out
-doors = [
-    [myTime(START_TIME,12367), all_mice['A22222'], 1],
-    [myTime(START_TIME,33333), all_mice['A11111'], 2]
-    ]
-live_licks = [0,0,0,7,100,60]
-all_tests = []
-
 
 if __name__ == "__main__":
-    #startGUI(START_TIME,all_mice,doors,live_licks,all_tests)
+    #Inititate Mice
+    all_mice = {}
+    for id, info in MICE_INIT_INFO.items():
+        all_mice[id] = Mouse(id,info[0],info[1])
+
+    #Comment out
+    doors = [
+        [myTime(START_TIME,12367), all_mice['A22222'], 1],
+        [myTime(START_TIME,33333), all_mice['A11111'], 2]
+        ]
+    live_licks = [0,0,0,7,100,60]
+    all_tests = []
+
     app = QtWidgets.QApplication(sys.argv)
     mainwin = mainwinActions(START_TIME,all_mice, doors,live_licks,all_tests)
     #mainwin = mainwinActions(START_TIME,all_mice)
