@@ -1,13 +1,5 @@
-from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import pyqtSlot, QRect, QTimer
-
-import sys
-import os
-
-#os.system(r"pyuic5 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
-#from gui import mainwin
+from PyQt6 import QtCore, QtWidgets
 from gui.doorwin import Ui_doorWin
-
 
 class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
     def __init__(self,mutex,doors):
@@ -17,13 +9,8 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
         self.mutex = mutex
         self.title = "Doors"
 
-    # # update setupUi
-    # def setupUi(self, Widget):
-    #     super().setupUi(Widget)
-        # Widget.resize(400, 300) # do not modify it
-        #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
-        self.timer = QTimer(self)
+        self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(lambda:self.popTable())
         self.timer.start(1000)
         #self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)

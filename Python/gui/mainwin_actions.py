@@ -1,9 +1,9 @@
-from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import pyqtSlot, QRect, QThread, QMutex
+from PyQt6 import QtWidgets, QtGui
+from PyQt6.QtCore import QThread, QMutex
+from PyQt6.QtWidgets import QMessageBox
 
 import logging
 
-#from gui import mainwin
 from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
 from gui.doorwin_actions import doorwinActions
@@ -29,12 +29,9 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.mutex = QMutex()
 
-    # # update setupUi
-    # def setupUi(self, MainWindow):
-    #     super().setupUi(MainWindow)
-        # MainWindow.resize(400, 300) # do not modify it
-        #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
+
+        #self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
         self.worker = TeensyRead(self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)
         self.worker.start()
@@ -42,9 +39,19 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.all_mousewin = []
 
-        #self.mouse_id_select.setItemText(3, ("MainWindow", "A11fvg111 - Stuart"))
         for id, m in self.all_mice.items():
             self.mouse_id_select.addItem(id + ' - ' + m.get_name())
+
+    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        close = QMessageBox()
+        close.setText("Do you want to end the experiment?")
+        close.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        close = close.exec()
+
+        if close == QMessageBox.StandardButton.Yes:
+            a0.accept()
+        else:
+            a0.ignore()
 
     # define actions here
     def myactions(self):
@@ -56,13 +63,14 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def open_mouse(self):
-        #app = QtWidgets.QApplication(sys.argv)
+        #TODO: Think of a better way to handle this
+        if len(self.all_mousewin) > 100:
+            self.all_mousewin.clear()
         ID = self.mouse_id_select.currentText().split(' - ')[0]
         self.all_mousewin.append(mousewinActions(self.mutex,self.all_mice[ID]))
         self.all_mousewin[-1].show()
 
     def open_door(self):
-        #app = QtWidgets.QApplication(sys.argv)
         try:
             self.doorwin.close()
         except (RuntimeError, AttributeError) as e:
@@ -75,12 +83,10 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lickwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        #app = QtWidgets.QApplication(sys.argv)
         self.lickwin = lickwinActions(self.mutex,self.live_licks)
         self.lickwin.show()
 
     def open_test(self):
-        #app = QtWidgets.QApplication(sys.argv)
         try:
             self.testwin.close()
         except (RuntimeError, AttributeError) as e:
@@ -98,7 +104,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.experiment_paused[0]:       #Experiment is paused
             self.pauseButton.setText('Unpause Experiment')
             self.pauseLabel.setText('Experiment is now paused')
-        else:       #Experiment is not paused
+        else:                               #Experiment is not paused
             self.pauseButton.setText('Pause Experiment')
             self.pauseLabel.setText('Experiment is ongoing')
 

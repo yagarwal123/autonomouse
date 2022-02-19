@@ -1,11 +1,5 @@
-from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import pyqtSlot, QRect, QTimer
+from PyQt6 import QtCore, QtWidgets
 
-import sys
-import os
-
-#os.system(r"pyuic5 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
-#from gui import mainwin
 from gui.testwin import Ui_testWin
 
 class testwinActions(QtWidgets.QWidget, Ui_testWin):
@@ -16,16 +10,11 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.mutex = mutex
         self.title = "Latest test"
 
-    # # update setupUi
-    # def setupUi(self, Widget):
-    #     super().setupUi(Widget)
-        # Widget.resize(400, 300) # do not modify it
-        #self.move(self.left, self.top)  # set location for window
         self.setWindowTitle(self.title) # change title
-        self.timer = QTimer(self)
+        self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(lambda:self.popData())
         self.timer.start(1000)
-        #self.Widget.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
+        
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch) 
