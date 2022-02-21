@@ -21,11 +21,10 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
 
     def popTable(self):
         self.mutex.lock()
-        entries = len(self.doors)
-        self.tableWidget.setRowCount(entries)
-        for i in range(entries):
-            self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(self.doors[i][0])))
-            self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(self.doors[i][1].get_id()))
-            self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(self.doors[i][1].get_name()))
-            self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(self.doors[i][2])))
+        self.tableWidget.setRowCount(len(self.doors))
+        for i,door in enumerate(self.doors):
+            self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(door[0])))
+            self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(door[1].get_id()))
+            self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(door[1].get_name()))
+            self.tableWidget.setItem(i,3,QtWidgets.QTableWidgetItem(str(door[2])))
         self.mutex.unlock()
