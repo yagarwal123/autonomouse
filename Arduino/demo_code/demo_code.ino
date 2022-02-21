@@ -228,8 +228,9 @@ void loop()
     file.rewind();
 
     while(file.available()){ // file is available
-      char line[20];
-      int data = file.fgets(line, sizeof(line));
+      //char line[40];
+      //int data = file.fgets(line, sizeof(line));
+      char line = file.read();
       Serial.print(line);
     }
     Serial.println("Raw data send complete");

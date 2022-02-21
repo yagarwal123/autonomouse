@@ -15,11 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[]):
+    def __init__(self, ser, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[]):
         super().__init__()
         self.setupUi(self)
         self.title = 'Main Window'
 
+        self.ser = ser
         self.START_TIME = START_TIME
         self.all_mice = all_mice
         self.doors = doors
@@ -33,7 +34,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
-        self.worker = TeensyRead(self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)
+        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)
         self.worker.start()
         self.myactions() # add actions for different buttons
 
@@ -49,6 +50,9 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         close = close.exec()
 
         if close == QMessageBox.StandardButton.Yes:
+            self.worker.terminate()
+            self.worker.wait()
+            self.ser.close()
             a0.accept()
         else:
             a0.ignore()
@@ -110,8 +114,9 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 class TeensyRead(QThread):
-    def __init__(self, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_paused):
+    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_paused):
         super(TeensyRead, self).__init__()
+        self.ser = ser
         self.all_mice = all_mice
         self.doors = doors
         self.live_licks = live_licks
@@ -121,4 +126,4 @@ class TeensyRead(QThread):
         self.experiment_paused = experiment_paused
 
     def run(self):
-        startTeensyRead(self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)
+        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)

@@ -17,6 +17,7 @@ import datetime
 from PyQt6 import QtWidgets
 from gui.mainwin_actions import mainwinActions
 import sys
+import serial
 
 from Mouse import Mouse
 from myTime import myTime
@@ -42,8 +43,13 @@ if __name__ == "__main__":
     live_licks = [0,0,0,7,100,60]
     all_tests = []
 
+    #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
+    #ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
+    ser = serial.Serial('COM4', 9600)
+    #ser = None
+
     app = QtWidgets.QApplication(sys.argv)
-    mainwin = mainwinActions(START_TIME,all_mice, doors,live_licks,all_tests)
+    mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)
     #mainwin = mainwinActions(START_TIME,all_mice)
     mainwin.show()
     sys.exit(app.exec())

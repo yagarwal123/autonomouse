@@ -13,12 +13,7 @@ serInlogger.addHandler(fileHandler)
 #Question: This will overwrite files, do we want that? Or we do want to save previous runs?
 #Mode a adds to the file, Mode w rewrites. Same question for info/warning log files
 
-#ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
-ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
-#ser = serial.Serial('COM4', 9600)
-#ser = None
-
-def startTeensyRead(mutex,START_TIME,all_mice,doors,live_licks,all_tests,experiment_paused):
+def startTeensyRead(ser,mutex,START_TIME,all_mice,doors,live_licks,all_tests,experiment_paused):
     while True:
         try:
             #Uncomment
