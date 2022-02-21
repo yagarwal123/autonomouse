@@ -235,12 +235,13 @@ void loop()
     }
 
     while(file.available()){ // file is available
+      while(Serial.availableForWrite() < 40);   //Wait till 40 bytes are there in buffer
       char line[40];
       int data = file.fgets(line, sizeof(line));
       //char line = file.read();
       Serial.print(line);
-      delayMicroseconds(10);
     }
+    Serial.flush();                           //Wait till buffer is clear
     Serial.println("Raw data send complete");
     file.close(); // close the file
     Serial.println("Test complete - Start saving to file");

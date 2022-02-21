@@ -1,6 +1,5 @@
 import logging
 import re
-import csv
 from myTime import myTime
 from Test import Test
 import rasp_camera
@@ -44,7 +43,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             m.tests.append(new_test)
             all_tests.append(new_test)
             rasp_camera.start_rpi_host()
-            rasp_camera.start_record('test1')
+            rasp_camera.start_record(f'test{len(all_tests)}')
         case 5:
             trial = int(search.group(1))
             t = int(search.group(2))
@@ -55,36 +54,29 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             old_test.add_trial(t)
         case 6:
             test = all_tests[-1]
-            filename = 'Test data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
+            filename = f'Test data - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
             #TODO: Remove (?) after better time formatting
             filename = filename.replace(":",".")
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
-                csvwriter = csv.writer(csvfile) 
-                csvwriter.writerow(['Trial No', 'Lick Time'])
+                csvfile.write('Trial No,Lick Time\n')
                 for idx,trial in enumerate(test.trials):
-                    row = [idx+1, trial]
-                    csvwriter.writerow(row)
+                    row = f"{idx+1},{trial}\n"
+                    csvfile.write(row)
             live_licks.clear()
             
         case 7:
             rasp_camera.close_record()
             ser.write("Camera closed\n".encode())
             test = all_tests[-1]
-            filename = 'Raw lick data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
+            filename = f'Raw lick data - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
             filename = filename.replace(":",".")
             with open(filename, 'w') as csvfile: 
-                # creating a csv writer object 
-                csvwriter = csv.writer(csvfile) 
-                row = ''
-                while (row != 'Raw data send complete'):
+                l = ''
+                while (l.strip() != 'Raw data send complete'):
                     logger.error(ser.in_waiting)
-                    buff = ser.in_waiting
-                    if buff:
-                        reads = ser.read(buff).decode("utf-8").strip()
-                        rows = reads.split('\n')
-                        for row in rows:
-                            csvwriter.writerow(row.split(','))
+                    l = ser.readline()
+                    csvfile.write(l)
                     
                 print('victory')
             

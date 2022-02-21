@@ -4,8 +4,11 @@
 # ignore ALL files with the extension log
 *.log*
 
-# ignore ALL files with the extension log
+# ignore ALL files with the extension csv
 *.csv
+
+# don't ignore mouse_info.csv
+!mouse_info.csv
 
 # ignore ALL files in ANY directory named __pycache__
 __pycache__/      

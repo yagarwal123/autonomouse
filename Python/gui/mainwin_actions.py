@@ -41,7 +41,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.all_mousewin = []
 
         for id, m in self.all_mice.items():
-            self.mouse_id_select.addItem(id + ' - ' + m.get_name())
+            self.mouse_id_select.addItem(f'{id} - {m.get_name()}')
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         close = QMessageBox()
