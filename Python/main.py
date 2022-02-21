@@ -1,4 +1,6 @@
+import subprocess
 import logging.config
+from time import sleep
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 
@@ -30,18 +32,26 @@ START_TIME = datetime.datetime.now()
 
 
 if __name__ == "__main__":
+
+    #m = subprocess.run(['C:/Program Files (x86)/Arduino/arduino.exe','--upload','C:\\Users\\lab\\AppData\\Local\\Temp\\arduino_build_680162/demo_code.ino.hex'])
+    #m = subprocess.run(['"C:/PROGRA~2/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"'],shell=True,encoding='UTF-8')
+    #os.system("\"C:/Program Files (x86)/Arduino/arduino.exe\" --upload \"C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino\"")
+    #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
+    #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
+    
+    #sleep(60)
     #Inititate Mice
     all_mice = {}
     for id, info in MICE_INIT_INFO.items():
         all_mice[id] = Mouse(id,info[0],info[1])
 
     #Comment out
-    doors = [
-        [myTime(START_TIME,12367), all_mice['A22222'], 1],
-        [myTime(START_TIME,33333), all_mice['A11111'], 2]
-        ]
-    live_licks = [0,0,0,7,100,60]
-    all_tests = []
+    # doors = [
+    #     [myTime(START_TIME,12367), all_mice['A22222'], 1],
+    #     [myTime(START_TIME,33333), all_mice['A11111'], 2]
+    #     ]
+    # live_licks = [0,0,0,7,100,60]
+    # all_tests = []
 
     #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
     #ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
@@ -49,8 +59,8 @@ if __name__ == "__main__":
     #ser = None
 
     app = QtWidgets.QApplication(sys.argv)
-    mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)
-    #mainwin = mainwinActions(START_TIME,all_mice)
+    #mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)
+    mainwin = mainwinActions(ser,START_TIME,all_mice)
     mainwin.show()
     sys.exit(app.exec())
     
