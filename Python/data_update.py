@@ -69,6 +69,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             
         case 7:
             rasp_camera.close_record()
+            ser.write("Camera closed\n".encode())
             test = all_tests[-1]
             filename = 'Raw lick data - ' + test.mouse.get_id() +  ' - ' +  str(test.starting_time) + '.csv'
             filename = filename.replace(":",".")
@@ -77,8 +78,14 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 csvwriter = csv.writer(csvfile) 
                 row = ''
                 while (row != 'Raw data send complete'):
-                    row = ser.readline().decode("utf-8").strip()
-                    csvwriter.writerow(row.split(','))
+                    logger.error(ser.in_waiting)
+                    buff = ser.in_waiting
+                    if buff:
+                        reads = ser.read(buff).decode("utf-8").strip()
+                        rows = reads.split('\n')
+                        for row in rows:
+                            csvwriter.writerow(row.split(','))
+                    
                 print('victory')
             
                     

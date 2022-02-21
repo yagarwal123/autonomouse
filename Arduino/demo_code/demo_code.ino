@@ -226,12 +226,20 @@ void loop()
     Serial.println("Sending raw data");
     // TODO: send file to PC through Serial
     file.rewind();
+    while (true){
+      while(!Serial.available());
+      String serIn = Serial.readStringUntil('\n');
+      if (serIn == "Camera closed"){
+        break;
+      }
+    }
 
     while(file.available()){ // file is available
-      //char line[40];
-      //int data = file.fgets(line, sizeof(line));
-      char line = file.read();
+      char line[40];
+      int data = file.fgets(line, sizeof(line));
+      //char line = file.read();
       Serial.print(line);
+      delayMicroseconds(10);
     }
     Serial.println("Raw data send complete");
     file.close(); // close the file
