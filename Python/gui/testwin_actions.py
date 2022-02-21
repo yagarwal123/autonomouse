@@ -27,7 +27,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.m_id.setText(test.mouse.get_id())
         self.test_start_time.setText(str(test.starting_time))
         self.tableWidget.setRowCount(len(test.trials))
-        for idx,t_time in enumerate(test.trials):
-            self.tableWidget.setItem(idx,0,QtWidgets.QTableWidgetItem(str(idx + 1)))
-            self.tableWidget.setItem(idx,1,QtWidgets.QTableWidgetItem(str(t_time)))
+        for i,trial in enumerate(test.trials):
+            self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
+            self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(trial.value)))
         self.mutex.unlock()

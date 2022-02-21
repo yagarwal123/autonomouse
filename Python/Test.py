@@ -9,4 +9,10 @@ class Test:
     def add_trial(self,new_trial):
         return self.trials.append(new_trial)
 
+class Trial:
+    """description of class"""
+    def __init__(self,idx, value):
+        self.idx = idx
+        self.value = value
+    
 

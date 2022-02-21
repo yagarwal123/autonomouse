@@ -1,7 +1,7 @@
 import logging
 import re
 from myTime import myTime
-from Test import Test
+from Test import Test, Trial
 import rasp_camera
 
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             old_test = m.tests[-1]
             if ( len(old_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
-            old_test.add_trial(t)
+            old_test.add_trial(Trial(trial,t))
         case 6:
             test = all_tests[-1]
             filename = f'Test data - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
