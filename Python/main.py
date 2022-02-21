@@ -24,9 +24,9 @@ import serial
 from Mouse import Mouse
 from myTime import myTime
 
-MICE_INIT_INFO = {'A11111':['Stuart',67],
-              'A22222': ['Little',45],
-              '0007A0F7C4': ['Real',27.4]}
+# MICE_INIT_INFO = {'A11111':['Stuart',67],
+#               'A22222': ['Little',45],
+#               '0007A0F7C4': ['Real',27.4]}
 
 START_TIME = datetime.datetime.now()
 
