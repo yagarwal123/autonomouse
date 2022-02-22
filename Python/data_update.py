@@ -17,7 +17,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                       '^Waiting for the save to complete$',                         #8
                       '^Check whether to start test$',                              #9
                       '^Send parameters: Incoming mouse ID - (.+)$',                #10
-                      '^LOGGER:'                                                    #11
+                      '^LOGGER:',                                                   #11
+                      '^TTL - (\d+)$'                                               #12
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -39,10 +40,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             live_licks.append(amp)
         case 4:
             t = myTime(START_TIME,int(search.group(1)))
-            m = getLastMouse(doors)
-            new_test = Test(m,t)
-            m.tests.append(new_test)
-            all_tests.append(new_test)
+            all_tests[-1].add_starting_time(t)
         case 5:
             trial = int(search.group(1))
             t = int(search.group(2))
@@ -63,6 +61,12 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                     row = f"{idx+1},{trial.value}\n"
                     csvfile.write(row)
             live_licks.clear()
+
+            ttl_filename = f'TTL high millis - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
+            ttl_filename = ttl_filename.replace(":",".")
+            with open(ttl_filename, 'w') as ttlfile:
+                for t in test.ttl:
+                    ttlfile.write(f'{t.millis}\n')
             
         case 7:
             rasp_camera.stop_record()
@@ -85,9 +89,6 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                             csvfile.write(l)
                         ser.write("Resume\n".encode())
                     
-            print('victory')
-            
-                    
         case 8:
             ser.write("Save complete\n".encode())
         case 9:
@@ -96,12 +97,20 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             else:
                 rasp_camera.start_record(f'test{len(all_tests)}')
                 ser.write("Start experiment\n".encode())
+                m = getLastMouse(doors)
+                new_test = Test(m)
+                m.tests.append(new_test)
+                all_tests.append(new_test)
         case 10:
             m = all_mice[search.group(1)]
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
         case 11:
             pass
+        case 12:
+            test = all_tests[-1]
+            t = myTime(START_TIME,int(search.group(1)))
+            test.add_ttl(t)
                 
 
 
