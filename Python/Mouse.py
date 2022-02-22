@@ -11,6 +11,7 @@ class Mouse:
         self.liquid_amount = 200
         self.lick_threshold = 1000
         self.waittime = 5000
+        self.test_limit = 10
 
     def get_name(self):
         return self.name

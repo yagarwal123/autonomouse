@@ -93,7 +93,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             ser.write("Save complete\n".encode())
         case 9:
             if experiment_parameters.paused:
-                ser.write("Experiment paused\n".encode())
+                ser.write("Do not start\n".encode())
             else:
                 rasp_camera.start_record(f'test{len(all_tests)}')
                 ser.write("Start experiment\n".encode())

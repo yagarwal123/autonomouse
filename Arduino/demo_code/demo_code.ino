@@ -181,7 +181,7 @@ void loop()
   while (true){
     while(!Serial.available());
     String serIn = Serial.readStringUntil('\n');
-    if (serIn == "Experiment paused"){
+    if (serIn == "Do not start"){
       clear_serial_buffer(Serial1);
       clear_serial_buffer(Serial2);
       return;

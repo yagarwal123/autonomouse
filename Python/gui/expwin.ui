@@ -85,10 +85,10 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QLineEdit" name="waittimeLineEdit_2"/>
+    <widget class="QLineEdit" name="mouseLimLineEdit"/>
    </item>
    <item row="4" column="2">
-    <widget class="QPushButton" name="changewaittimeButton_2">
+    <widget class="QPushButton" name="changeMouseLimButton">
      <property name="text">
       <string>Change</string>
      </property>

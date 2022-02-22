@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_mouseWin(object):
     def setupUi(self, mouseWin):
         mouseWin.setObjectName("mouseWin")
-        mouseWin.resize(509, 395)
+        mouseWin.resize(503, 392)
         self.gridLayout = QtWidgets.QGridLayout(mouseWin)
         self.gridLayout.setObjectName("gridLayout")
         self.label = QtWidgets.QLabel(mouseWin)
@@ -51,15 +51,27 @@ class Ui_mouseWin(object):
         self.changewaittimeButton = QtWidgets.QPushButton(mouseWin)
         self.changewaittimeButton.setObjectName("changewaittimeButton")
         self.gridLayout.addWidget(self.changewaittimeButton, 2, 3, 1, 1)
+        self.label_4 = QtWidgets.QLabel(mouseWin)
+        self.label_4.setObjectName("label_4")
+        self.gridLayout.addWidget(self.label_4, 3, 0, 1, 1)
+        self.test_lim_disp = QtWidgets.QLabel(mouseWin)
+        self.test_lim_disp.setObjectName("test_lim_disp")
+        self.gridLayout.addWidget(self.test_lim_disp, 3, 1, 1, 1)
+        self.testLimLineEdit = QtWidgets.QLineEdit(mouseWin)
+        self.testLimLineEdit.setObjectName("testLimLineEdit")
+        self.gridLayout.addWidget(self.testLimLineEdit, 3, 2, 1, 1)
+        self.changeTestLimButton = QtWidgets.QPushButton(mouseWin)
+        self.changeTestLimButton.setObjectName("changeTestLimButton")
+        self.gridLayout.addWidget(self.changeTestLimButton, 3, 3, 1, 1)
         self.line_2 = QtWidgets.QFrame(mouseWin)
         self.line_2.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_2.setObjectName("line_2")
-        self.gridLayout.addWidget(self.line_2, 3, 0, 1, 4)
+        self.gridLayout.addWidget(self.line_2, 4, 0, 1, 4)
         self.plotWid = MplWidget(mouseWin)
         self.plotWid.setMinimumSize(QtCore.QSize(491, 281))
         self.plotWid.setObjectName("plotWid")
-        self.gridLayout.addWidget(self.plotWid, 4, 0, 1, 4)
+        self.gridLayout.addWidget(self.plotWid, 5, 0, 1, 4)
 
         self.retranslateUi(mouseWin)
         QtCore.QMetaObject.connectSlotsByName(mouseWin)
@@ -76,6 +88,9 @@ class Ui_mouseWin(object):
         self.label_3.setText(_translate("mouseWin", "Current Wait Time (ms):"))
         self.waittime_disp.setText(_translate("mouseWin", "5000"))
         self.changewaittimeButton.setText(_translate("mouseWin", "Change"))
+        self.label_4.setText(_translate("mouseWin", "Test Limit"))
+        self.test_lim_disp.setText(_translate("mouseWin", "10"))
+        self.changeTestLimButton.setText(_translate("mouseWin", "Change"))
 from gui.mplwidget import MplWidget
 
 

@@ -18,3 +18,8 @@ class ExperimentParameters:
         for m in all_mice.values():
             m.waittime = waittime
 
+    @staticmethod
+    def update_all_mice_limit(all_mice,limit):
+        for m in all_mice.values():
+            m.test_limit = limit
+
