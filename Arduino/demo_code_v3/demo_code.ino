@@ -10,21 +10,15 @@
 #include "clear_serial_buffer.h"
 #include "SdFat.h"
 #include "time_functions.h"
-#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
 #define calibration_factor 1004 //This value is obtained using the SparkFun_HX711_Calibration sketch
 // for SD card access--------------------------
 #define SD_FAT_TYPE 3
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
-//#define TTL_PIN 33
-
 SdFs sd;
 FsFile file;
-
-using namespace TeensyTimerTool; 
-
-PeriodicTimer t4; // timer to run periodically check TTL pulse
+#define TTL_PIN 33
 
 time_t getTeensy3Time()
 {
@@ -47,8 +41,8 @@ float weight;
 
 // Variables for the lick and reward system
 int rewardPin = 32;
-int lickPin = A1;
-const int TTL_PIN = 33;
+int lickPin = A13;
+int THRESHOLD = 1000;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -92,31 +86,7 @@ String door2Check(){
   return ID;
 }
 
-void waitUntilReceive(String msg){
-  while (true){
-    while(!Serial.available());
-    String serIn = Serial.readStringUntil('\n');
-    if (serIn == msg){
-      break;
-    }
-  }
-}
 
-void letMouseOut(String ID_2){
-  clear_serial_buffer(Serial2);
-  door_open(door_two);
-  while (door2Check() != ID_2){}
-  door_close(door_two);
-  door_open(door_one);
-}
-
-void callback4(const int TTL_PIN){ // saves sensor value at regular interval to pr
-  if(digitalRead(TTL_PIN)==HIGH){
-    Serial.print("TTL - ");
-    Serial.println(millis());
-  } // checking TTL pulse
-}
-  
 void setup()
 {
   Serial.begin(9600);
@@ -135,7 +105,8 @@ void setup()
   //Setting up the pins for the reward system
   pinMode(rewardPin, OUTPUT);
   digitalWrite(rewardPin, LOW);
-    // pin for TTL pulse camera
+
+  // pin for TTL pulse camera
   pinMode(TTL_PIN, INPUT);
 
   // time
@@ -152,11 +123,9 @@ void setup()
     sd.initErrorHalt(&Serial);
   }
   Serial.println("SD card initialized.");
-
-  t4.begin([=]{callback4(TTL_PIN);}, 1ms, false);
   
   while (! Serial);
-  Serial.println("LOGGER: Starting Experiment");
+  Serial.println("Starting Experiment");
 }
 
 void loop()
@@ -176,21 +145,6 @@ void loop()
   if ( (ID_2.length() == 0) || (ID_1.length() != 0) ){
     return;
   }
-
-  Serial.println("Check whether to start test");
-  while (true){
-    while(!Serial.available());
-    String serIn = Serial.readStringUntil('\n');
-    if (serIn == "Experiment paused"){
-      clear_serial_buffer(Serial1);
-      clear_serial_buffer(Serial2);
-      return;
-    }
-    else if (serIn == "Start experiment"){
-      break;
-    }
-  }
-
   door_close(door_one);
   door_open(door_two);
   lastMouse = ID_2;
@@ -220,10 +174,11 @@ void loop()
     Serial.println(serOut);
     Serial.println("closing door 2, start test");
     door_close(door_two);
-    t4.start();
+  
+    int liquidAmount = 200; // command from raspi
 
     // create file
-    String fileName = ID_2 + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
+    String fileName = ID + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
     Serial.println(fileName);
     char buf[30];
     fileName.toCharArray(buf, 30);
@@ -243,68 +198,32 @@ void loop()
     file.println();
     file.print(F("time(ms), ")); // print headings
     file.println(F("amplitude"));
-    
-    Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
-    while (!Serial.available());
-    int THRESHOLD = Serial.readStringUntil('\n').toInt();
-    while (!Serial.available());
-    int liquidAmount = Serial.readStringUntil('\n').toInt();
-    while (!Serial.available());
-    int WAITTIME = Serial.readStringUntil('\n').toInt();
 
-    Serial.print("Recieved information - Liquid Amount - ");Serial.println(liquidAmount);
-    Serial.print("Recieved information - Lick Threhold - ");Serial.println(THRESHOLD);
-    Serial.print("Recieved information - Inter trial interval - ");Serial.println(WAITTIME);
-    
-    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME); // write to file during test
-    file.close(); // close the file
-    letMouseOut(ID_2);
-    lastExitTime = millis();
+    Serial.print("Starting test now - "); Serial.println(millis());
+    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, TTL_PIN); // write to file during test
 
     Serial.println("Sending raw data");
-    t4.stop(); // stop reading TTL pulse
     // TODO: send file to PC through Serial
-    //file.rewind();
-    while (true){
-      while(!Serial.available());
-      String serIn = Serial.readStringUntil('\n');
-      if (serIn == "Camera closed"){
-        break;
-      }
-    }
-
-
-    // open file again
-    if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char
-      Serial.println(F("file.open failed"));
-      // TODO: mission abort;
-    }
     file.rewind();
 
     while(file.available()){ // file is available
-      if(Serial.available()){
-        String serIn = Serial.readStringUntil('\n');
-        if (serIn == "Pause"){
-          waitUntilReceive("Resume");
-        }
-      }
-      while(Serial.availableForWrite() < 40);
-      char line[40];
+      char line[20];
       int data = file.fgets(line, sizeof(line));
-      //char line = file.read();
       Serial.print(line);
     }
-    //file.close(); // close the file
-    while(Serial.availableForWrite() < 6000); //Wait till 6000 bytes of space is left in out buffer
     Serial.println("Raw data send complete");
-    
+    file.close(); // close the file
     Serial.println("Test complete - Start saving to file");
   }
   else{
     Serial.println("Invalid weight, abolish");
-    letMouseOut(ID_2);
-    lastExitTime = millis();
   }
+  clear_serial_buffer(Serial2);
+  door_open(door_two);
+  while (door2Check() != ID_2){}
+  door_close(door_two);
+  door_open(door_one);
+  lastExitTime = millis();
   //while (door1Check() != ID_2){}
   //door_close(door_one);
   Serial.println("Waiting for the save to complete");
