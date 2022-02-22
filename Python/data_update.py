@@ -75,7 +75,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 l = ''
                 while (l.strip() != 'Raw data send complete'):
                     logger.error(ser.in_waiting)
-                    l = ser.readline()
+                    l = ser.readline().decode("utf-8")
                     csvfile.write(l)
                     
                 print('victory')
