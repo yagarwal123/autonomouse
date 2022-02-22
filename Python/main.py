@@ -38,9 +38,9 @@ if __name__ == "__main__":
     #os.system("\"C:/Program Files (x86)/Arduino/arduino.exe\" --upload \"C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino\"")
     #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
-    # cmd = "C:/PROGRA~2/Arduino/arduino.exe --board TEENSY41 --port COM4 --verify C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-    # subprocess.run(cmd.split())
-    # sleep(60)
+    cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
+    l = subprocess.run(cmd.split())
+    print(l.returncode)
 
     all_mice = {}
     with open('mouse_info.csv',mode='r') as f:

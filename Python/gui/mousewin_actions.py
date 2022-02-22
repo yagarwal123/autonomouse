@@ -65,11 +65,12 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         x = [0] + [i.millis for i in self.mouse.weight_times]
         x_lab = ['Start'] + [str(i) for i in self.mouse.weight_times]
         y = [self.mouse.init_weight] + self.mouse.weights
+        y = [float(i) for i in y]
 
         self.pltax = self.plotWid.canvas.ax
         matplotlib.pyplot.setp(self.pltax, xticks=x, xticklabels=x_lab)
         matplotlib.pyplot.setp(self.pltax.xaxis.get_majorticklabels(), rotation=90)
-        self.pltax.plot(x,y)
+        self.pltax.plot(x,y,'--o')
         self.pltax.set_xlim(left=0)
         self.pltax.set_ylabel('Weight (g)')
 

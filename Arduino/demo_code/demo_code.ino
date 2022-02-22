@@ -123,7 +123,7 @@ void setup()
   Serial.println("SD card initialized.");
   
   while (! Serial);
-  Serial.println("Starting Experiment");
+  Serial.println("LOGGER: Starting Experiment");
 }
 
 void loop()
@@ -235,15 +235,16 @@ void loop()
     }
 
     while(file.available()){ // file is available
-      while(Serial.availableForWrite() < 40);   //Wait till 40 bytes are there in buffer
+      while(Serial.availableForWrite() < 40);   //Wait till 6000 bytes of space is left in out buffer
       char line[40];
       int data = file.fgets(line, sizeof(line));
       //char line = file.read();
       Serial.print(line);
     }
-    Serial.flush();                           //Wait till buffer is clear
-    Serial.println("Raw data send complete");
     file.close(); // close the file
+    while(Serial.availableForWrite() < 6000); //Wait till 6000 bytes of space is left in out buffer
+    Serial.println("Raw data send complete");
+    
     Serial.println("Test complete - Start saving to file");
   }
   else{
