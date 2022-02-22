@@ -10,6 +10,7 @@ from gui.doorwin_actions import doorwinActions
 from gui.lickwin_actions import lickwinActions
 from gui.testwin_actions import testwinActions
 from start_teensy_read import startTeensyRead
+import rasp_camera
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +53,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         if close == QMessageBox.StandardButton.Yes:
             self.worker.terminate()
             self.worker.wait()
+            rasp_camera.close_record()
             self.ser.close()
             a0.accept()
         else:

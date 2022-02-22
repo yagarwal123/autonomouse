@@ -22,6 +22,7 @@ import sys
 import serial
 
 from Mouse import Mouse
+import rasp_camera
 from myTime import myTime
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
     cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     l = subprocess.run(cmd.split())
-    print(l.returncode)
+    assert(l.returncode == 0)
 
     all_mice = {}
     with open('mouse_info.csv',mode='r') as f:
@@ -66,6 +67,8 @@ if __name__ == "__main__":
     #ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
     ser = serial.Serial('COM4', 9600)
     #ser = None
+
+    rasp_camera.start_rpi_host()
 
     app = QtWidgets.QApplication(sys.argv)
     #mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)

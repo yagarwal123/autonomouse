@@ -43,8 +43,6 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             new_test = Test(m,t)
             m.tests.append(new_test)
             all_tests.append(new_test)
-            rasp_camera.start_rpi_host()
-            rasp_camera.start_record(f'test{len(all_tests)}')
         case 5:
             trial = int(search.group(1))
             t = int(search.group(2))
@@ -67,7 +65,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             live_licks.clear()
             
         case 7:
-            rasp_camera.close_record()
+            rasp_camera.stop_record()
             ser.write("Camera closed\n".encode())
             test = all_tests[-1]
             filename = f'Raw lick data - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
@@ -75,14 +73,14 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             with open(filename, 'w') as csvfile: 
                 l = ''
                 while (l.strip() != 'Raw data send complete'):
-                    logger.error(ser.in_waiting)
+                    #logger.error(ser.in_waiting)
                     l = ser.readline().decode("utf-8")
                     csvfile.write(l)
                     if (ser.in_waiting > 6000):
-                        logger.error('Panic')
+                        #logger.error('Panic')
                         ser.write("Pause\n".encode())
                         while (ser.in_waiting > 100):
-                            logger.error(ser.in_waiting)
+                            #logger.error(ser.in_waiting)
                             l = ser.readline().decode("utf-8")
                             csvfile.write(l)
                         ser.write("Resume\n".encode())
@@ -96,6 +94,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             if experiment_paused[0]:
                 ser.write("Experiment paused\n".encode())
             else:
+                rasp_camera.start_record(f'test{len(all_tests)}')
                 ser.write("Start experiment\n".encode())
         case 10:
             m = all_mice[search.group(1)]

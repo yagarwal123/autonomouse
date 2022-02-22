@@ -81,6 +81,20 @@ def func_close(address, port):  # address='172.29.37.78'; port = 5555
 
     print('2')
 
+def func_stop(address, port):
+    url = "tcp://%s:%d" % (address, port)
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect(url)
+
+    msg = 'Stop'
+    try:
+        socket.send_string(msg, flags=zmq.NOBLOCK, encoding='utf-8')
+        str = socket.recv(zmq.NOBLOCK)
+        print(str)
+    except zmq.ZMQError as e:
+        print('Close Error: %s', e)
+
 
 
 def start_rpi_host():
@@ -104,3 +118,8 @@ def close_record():
     for i in range(0, len(ip_addresses)):
         func_close(ip_addresses[i], port)
         print('3')
+
+def stop_record():
+    print('stopping recording')
+    for i in range(0, len(ip_addresses)):
+        func_stop(ip_addresses[i], port)
