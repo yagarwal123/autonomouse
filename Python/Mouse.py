@@ -34,7 +34,7 @@ class Mouse:
         d = datetime.date.today()
         no_of_tests = 0
         for t in reversed(self.tests):
-            if t.time.date() == d:
+            if t.starting_time.time.date() == d:
                 no_of_tests += 1
             else:
                 return no_of_tests
