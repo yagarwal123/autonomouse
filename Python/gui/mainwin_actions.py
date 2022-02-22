@@ -9,6 +9,7 @@ from gui.mousewin_actions import mousewinActions
 from gui.doorwin_actions import doorwinActions
 from gui.lickwin_actions import lickwinActions
 from gui.testwin_actions import testwinActions
+from gui.expwin_actions import expwinActions
 from start_teensy_read import startTeensyRead
 import rasp_camera
 from ExperimentParameters import ExperimentParameters
@@ -66,7 +67,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.doorButton.clicked.connect(self.open_door)
         self.lickButton.clicked.connect(self.open_lick)
         self.testButton.clicked.connect(self.open_test)
-        self.pauseButton.clicked.connect(self.pause_exp)
+        self.expButton.clicked.connect(self.open_exp)
 
 
     def open_mouse(self):
@@ -106,14 +107,13 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             msg.setText('No tests have been conducted yet')
             msg.exec()
 
-    def pause_exp(self):
-        self.experiment_parameters.paused = not self.experiment_parameters.paused
-        if self.experiment_parameters.paused:       #Experiment is paused
-            self.pauseButton.setText('Unpause Experiment')
-            self.pauseLabel.setText('Experiment is now paused')
-        else:                               #Experiment is not paused
-            self.pauseButton.setText('Pause Experiment')
-            self.pauseLabel.setText('Experiment is ongoing')
+    def open_exp(self):
+        try:
+            self.expwin.close()
+        except (RuntimeError, AttributeError) as e:
+            pass
+        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice)
+        self.expwin.show()
 
 
 class TeensyRead(QThread):

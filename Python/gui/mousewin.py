@@ -73,7 +73,7 @@ class Ui_mouseWin(object):
         self.label_2.setText(_translate("mouseWin", "Current Lick Threshold:"))
         self.lick_thresh_disp.setText(_translate("mouseWin", "2000"))
         self.changelickButton.setText(_translate("mouseWin", "Change"))
-        self.label_3.setText(_translate("mouseWin", "Current Wait Time:"))
+        self.label_3.setText(_translate("mouseWin", "Current Wait Time (ms):"))
         self.waittime_disp.setText(_translate("mouseWin", "5000"))
         self.changewaittimeButton.setText(_translate("mouseWin", "Change"))
 from gui.mplwidget import MplWidget
