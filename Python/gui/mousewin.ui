@@ -65,7 +65,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Current Wait Time:</string>
+      <string>Current Wait Time (ms):</string>
      </property>
     </widget>
    </item>
