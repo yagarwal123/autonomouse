@@ -6,7 +6,7 @@ import rasp_camera
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_paused):
+def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g - Time (\d+)$',        #1
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
@@ -92,7 +92,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
         case 8:
             ser.write("Save complete\n".encode())
         case 9:
-            if experiment_paused[0]:
+            if experiment_parameters.paused:
                 ser.write("Experiment paused\n".encode())
             else:
                 rasp_camera.start_record(f'test{len(all_tests)}')
@@ -105,6 +105,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             m = all_mice[search.group(1)]
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
+            ser.write( ( str(m.waittime) + "\n" ).encode() )
         case 11:
             pass
         case 12:

@@ -11,6 +11,7 @@ from gui.lickwin_actions import lickwinActions
 from gui.testwin_actions import testwinActions
 from start_teensy_read import startTeensyRead
 import rasp_camera
+from ExperimentParameters import ExperimentParameters
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.doors = doors
         self.live_licks = live_licks
         self.all_tests = all_tests
-        self.experiment_paused = [False]
+        self.experiment_parameters = ExperimentParameters()
 
         self.mutex = QMutex()
 
@@ -35,7 +36,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
-        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)
+        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters)
         self.worker.start()
         self.myactions() # add actions for different buttons
 
@@ -106,8 +107,8 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             msg.exec()
 
     def pause_exp(self):
-        self.experiment_paused[0] = not self.experiment_paused[0]
-        if self.experiment_paused[0]:       #Experiment is paused
+        self.experiment_parameters.paused = not self.experiment_parameters.paused
+        if self.experiment_parameters.paused:       #Experiment is paused
             self.pauseButton.setText('Unpause Experiment')
             self.pauseLabel.setText('Experiment is now paused')
         else:                               #Experiment is not paused
@@ -116,7 +117,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 class TeensyRead(QThread):
-    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_paused):
+    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_parameters):
         super(TeensyRead, self).__init__()
         self.ser = ser
         self.all_mice = all_mice
@@ -125,7 +126,7 @@ class TeensyRead(QThread):
         self.all_tests = all_tests
         self.START_TIME = START_TIME
         self.mutex = mutex
-        self.experiment_paused = experiment_paused
+        self.experiment_parameters = experiment_parameters
 
     def run(self):
-        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_paused)
+        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters)

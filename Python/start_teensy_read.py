@@ -13,7 +13,7 @@ serInlogger.addHandler(fileHandler)
 #Question: This will overwrite files, do we want that? Or we do want to save previous runs?
 #Mode a adds to the file, Mode w rewrites. Same question for info/warning log files
 
-def startTeensyRead(ser,mutex,START_TIME,all_mice,doors,live_licks,all_tests,experiment_paused):
+def startTeensyRead(ser,mutex,START_TIME,all_mice,doors,live_licks,all_tests,experiment_parameters):
     while True:
         try:
             #Uncomment
@@ -29,5 +29,5 @@ def startTeensyRead(ser,mutex,START_TIME,all_mice,doors,live_licks,all_tests,exp
         # b'792\r\n
         
         mutex.lock()
-        data_update.dataUpdate(START_TIME,ser,serIn,all_mice,doors,live_licks,all_tests,experiment_paused)  
+        data_update.dataUpdate(START_TIME,ser,serIn,all_mice,doors,live_licks,all_tests,experiment_parameters)  
         mutex.unlock()

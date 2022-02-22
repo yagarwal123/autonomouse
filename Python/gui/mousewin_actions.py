@@ -23,9 +23,11 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
 
         self.liq_am_disp.setText(str(self.mouse.liquid_amount))
         self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
+        self.waittime_disp.setText(str(self.mouse.waittime))
 
         self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
+        self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
 
         self.myactions()
 
@@ -33,6 +35,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def myactions(self):  
         self.changeliquidButton.clicked.connect(self.change_liquid)
         self.changelickButton.clicked.connect(self.change_lick)
+        self.changewaittimeButton.clicked.connect(self.change_waittime)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -52,6 +55,17 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             self.lick_thresh_disp.setText(l)
             self.mouse.lick_threshold = int(l)
             self.lickLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def change_waittime(self):
+        l = self.waittimeLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.waittime_disp.setText(l)
+            self.mouse.waittime = int(l)
+            self.waittimeLineEdit.clear()
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')

@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_mouseWin(object):
     def setupUi(self, mouseWin):
         mouseWin.setObjectName("mouseWin")
-        mouseWin.resize(503, 346)
+        mouseWin.resize(509, 395)
         self.gridLayout = QtWidgets.QGridLayout(mouseWin)
         self.gridLayout.setObjectName("gridLayout")
         self.label = QtWidgets.QLabel(mouseWin)
@@ -39,15 +39,27 @@ class Ui_mouseWin(object):
         self.changelickButton = QtWidgets.QPushButton(mouseWin)
         self.changelickButton.setObjectName("changelickButton")
         self.gridLayout.addWidget(self.changelickButton, 1, 3, 1, 1)
+        self.label_3 = QtWidgets.QLabel(mouseWin)
+        self.label_3.setObjectName("label_3")
+        self.gridLayout.addWidget(self.label_3, 2, 0, 1, 1)
+        self.waittime_disp = QtWidgets.QLabel(mouseWin)
+        self.waittime_disp.setObjectName("waittime_disp")
+        self.gridLayout.addWidget(self.waittime_disp, 2, 1, 1, 1)
+        self.waittimeLineEdit = QtWidgets.QLineEdit(mouseWin)
+        self.waittimeLineEdit.setObjectName("waittimeLineEdit")
+        self.gridLayout.addWidget(self.waittimeLineEdit, 2, 2, 1, 1)
+        self.changewaittimeButton = QtWidgets.QPushButton(mouseWin)
+        self.changewaittimeButton.setObjectName("changewaittimeButton")
+        self.gridLayout.addWidget(self.changewaittimeButton, 2, 3, 1, 1)
         self.line_2 = QtWidgets.QFrame(mouseWin)
         self.line_2.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_2.setObjectName("line_2")
-        self.gridLayout.addWidget(self.line_2, 2, 0, 1, 4)
+        self.gridLayout.addWidget(self.line_2, 3, 0, 1, 4)
         self.plotWid = MplWidget(mouseWin)
         self.plotWid.setMinimumSize(QtCore.QSize(491, 281))
         self.plotWid.setObjectName("plotWid")
-        self.gridLayout.addWidget(self.plotWid, 3, 0, 1, 4)
+        self.gridLayout.addWidget(self.plotWid, 4, 0, 1, 4)
 
         self.retranslateUi(mouseWin)
         QtCore.QMetaObject.connectSlotsByName(mouseWin)
@@ -61,6 +73,9 @@ class Ui_mouseWin(object):
         self.label_2.setText(_translate("mouseWin", "Current Lick Threshold:"))
         self.lick_thresh_disp.setText(_translate("mouseWin", "2000"))
         self.changelickButton.setText(_translate("mouseWin", "Change"))
+        self.label_3.setText(_translate("mouseWin", "Current Wait Time:"))
+        self.waittime_disp.setText(_translate("mouseWin", "5000"))
+        self.changewaittimeButton.setText(_translate("mouseWin", "Change"))
 from gui.mplwidget import MplWidget
 
 

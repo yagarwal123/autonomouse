@@ -7,12 +7,11 @@ logging.config.dictConfig(LOGGING_CONFIG)
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 #Optional - matplotlib spams a lot of debugs, so setting its level to info
 
-import os
-os.system(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py")
-os.system(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py")
-os.system(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py")
-os.system(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py")
-os.system(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py")
+subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py",shell=True)
+subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py",shell=True)
+subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py",shell=True)
+subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py",shell=True)
+subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py",shell=True)
 
 import logging
 import datetime
