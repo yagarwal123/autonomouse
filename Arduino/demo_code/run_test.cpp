@@ -12,7 +12,7 @@ PeriodicTimer t3; // timer to run periodic save to file
 unsigned long responseTime = 0;
 unsigned long downTime = 0;
 int lickTime;
-unsigned long WAITTIME = 5000;
+//unsigned long WAITTIME = 5000;
 unsigned long RES = 2500;
 int lickCheck = 0;
 
@@ -28,21 +28,13 @@ void callback2(int lickPin, int* sensorAddr) // reads sensor value
   //Serial.println("r");
   }
 
-void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr, int TTL_PIN){ // saves sensor value at regular interval to pr
+void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sensor value at regular interval to pr
   pr->print(millis() - *timePt);
   pr->print(", ");
-  pr->print(*sensorAddr);
-  pr->print(", ");
-  if(digitalRead(TTL_PIN)==HIGH){
-    pr->print(1);
-    }
-    else{
-      pr->print(0);
-      }
-  pr->println();
+  pr->println(*sensorAddr);
   }
 
-void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int TTL_PIN){
+void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -55,8 +47,10 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   // define timers
   t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
   t2.begin([=]{callback2(lickPin, sensorPt);}, 15ms, false); // reads lickPin every 50ms
-  t3.begin([=]{callback3(sensorPt, timePt, pr, TTL_PIN);}, 1ms); // saves amplitude every 1ms
+  t3.begin([=]{callback3(sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
   
+  Serial.print("Starting test now - "); Serial.println(millis());
+  pr->println(millis()); // write start time in file DELETE ONE
   //for(int i=1; i<11; i++){
   while(noLickCounter<5){
     i++; // increment trial number
@@ -66,6 +60,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     lickCheck = 0; // time taken to lick from stimulus onset
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
+    pr->println(millis()); // write start time in file DELETE ONE
     t1.start(); // start 
     //t3.start(); // start saving to file
     //Serial.println(startTime);

@@ -10,15 +10,21 @@
 #include "clear_serial_buffer.h"
 #include "SdFat.h"
 #include "time_functions.h"
+#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
 #define calibration_factor 1004 //This value is obtained using the SparkFun_HX711_Calibration sketch
 // for SD card access--------------------------
 #define SD_FAT_TYPE 3
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
+//#define TTL_PIN 33
+
 SdFs sd;
 FsFile file;
-#define TTL_PIN 33
+
+using namespace TeensyTimerTool; 
+
+PeriodicTimer t4; // timer to run periodically check TTL pulse
 
 time_t getTeensy3Time()
 {
@@ -42,6 +48,7 @@ float weight;
 // Variables for the lick and reward system
 int rewardPin = 32;
 int lickPin = A1;
+const int TTL_PIN = 33;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -103,7 +110,13 @@ void letMouseOut(String ID_2){
   door_open(door_one);
 }
 
-
+void callback4(const int TTL_PIN){ // saves sensor value at regular interval to pr
+  if(digitalRead(TTL_PIN)==HIGH){
+    Serial.print("TTL - ");
+    Serial.println(millis());
+  } // checking TTL pulse
+}
+  
 void setup()
 {
   Serial.begin(9600);
@@ -139,6 +152,8 @@ void setup()
     sd.initErrorHalt(&Serial);
   }
   Serial.println("SD card initialized.");
+
+  t4.begin([=]{callback4(TTL_PIN);}, 1ms, false);
   
   while (! Serial);
   Serial.println("LOGGER: Starting Experiment");
@@ -205,6 +220,7 @@ void loop()
     Serial.println(serOut);
     Serial.println("closing door 2, start test");
     door_close(door_two);
+    t4.start();
 
     // create file
     String fileName = ID_2 + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
@@ -226,26 +242,27 @@ void loop()
     printNow(&file);
     file.println();
     file.print(F("time(ms), ")); // print headings
-    file.print(F("amplitude, "));
-    file.println(F("TTL"));
+    file.println(F("amplitude"));
     
     Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
     while (!Serial.available());
     int THRESHOLD = Serial.readStringUntil('\n').toInt();
     while (!Serial.available());
     int liquidAmount = Serial.readStringUntil('\n').toInt();
+    while (!Serial.available());
+    int WAITTIME = Serial.readStringUntil('\n').toInt();
 
     Serial.print("Recieved information - Liquid Amount - ");Serial.println(liquidAmount);
     Serial.print("Recieved information - Lick Threhold - ");Serial.println(THRESHOLD);
-
-    Serial.print("Starting test now - "); Serial.println(millis());
-
-    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, TTL_PIN); // write to file during test
+    Serial.print("Recieved information - Inter trial interval - ");Serial.println(WAITTIME);
+    
+    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME); // write to file during test
     file.close(); // close the file
     letMouseOut(ID_2);
     lastExitTime = millis();
 
     Serial.println("Sending raw data");
+    t4.stop(); // stop reading TTL pulse
     // TODO: send file to PC through Serial
     //file.rewind();
     while (true){
