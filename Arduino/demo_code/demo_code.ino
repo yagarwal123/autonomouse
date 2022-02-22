@@ -39,7 +39,7 @@ Servo door_two; // twelve servo objects can be created on most boards
 const int noMouse = 2;
 String KNOWNTAGS[noMouse] = {"0007A0F7C4", "0000000000"};
 String TAGNAMES[noMouse] = {"Stuart", "Little"};
-String ID, ID_sf;
+String ID;
 
 // objects and constants for weighing
 HX711 scale;
@@ -177,7 +177,7 @@ void loop()
     return;
   }
 
-  Serial.println("Check whether to start test");
+  Serial.print("Check whether to start test - "); Serial.println(ID_2);
   while (true){
     while(!Serial.available());
     String serIn = Serial.readStringUntil('\n');

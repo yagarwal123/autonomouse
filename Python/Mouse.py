@@ -1,3 +1,5 @@
+import datetime
+
 class Mouse:
     """description of class"""
     def __init__(self,id,name,init_weight):
@@ -28,4 +30,16 @@ class Mouse:
     def add_doortimes(self,t):
         self.doortimes.append(t)
 
+    def tests_today(self):
+        d = datetime.date.today()
+        no_of_tests = 0
+        for t in reversed(self.tests):
+            if t.time.date() == d:
+                no_of_tests += 1
+            else:
+                return no_of_tests
+
+    def reached_limit(self):
+        return self.tests_today() >= self.test_limit
+        
 

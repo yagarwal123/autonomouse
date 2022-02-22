@@ -15,7 +15,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                       '^Test complete - Start saving to file$',                     #6
                       '^Sending raw data$',                                         #7
                       '^Waiting for the save to complete$',                         #8
-                      '^Check whether to start test$',                              #9
+                      '^Check whether to start test - (.+)$',                       #9
                       '^Send parameters: Incoming mouse ID - (.+)$',                #10
                       '^LOGGER:',                                                   #11
                       '^TTL - (\d+)$'                                               #12
@@ -92,7 +92,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
         case 8:
             ser.write("Save complete\n".encode())
         case 9:
-            if experiment_parameters.paused:
+            m = all_mice[search.group(1)]
+            if experiment_parameters.paused or m.reached_limit():
                 ser.write("Do not start\n".encode())
             else:
                 rasp_camera.start_record(f'test{len(all_tests)}')
