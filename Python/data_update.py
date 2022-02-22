@@ -16,7 +16,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                       '^Sending raw data$',                                         #7
                       '^Waiting for the save to complete$',                         #8
                       '^Check whether to start test$',                              #9
-                      '^Send parameters: Incoming mouse ID - (.+)$'                 #10
+                      '^Send parameters: Incoming mouse ID - (.+)$',                #10
+                      '^LOGGER:'                                                    #11
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -74,11 +75,19 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             with open(filename, 'w') as csvfile: 
                 l = ''
                 while (l.strip() != 'Raw data send complete'):
-                    #logger.error(ser.in_waiting)
+                    logger.error(ser.in_waiting)
                     l = ser.readline().decode("utf-8")
                     csvfile.write(l)
+                    if (ser.in_waiting > 6000):
+                        logger.error('Panic')
+                        ser.write("Pause\n".encode())
+                        while (ser.in_waiting > 100):
+                            logger.error(ser.in_waiting)
+                            l = ser.readline().decode("utf-8")
+                            csvfile.write(l)
+                        ser.write("Resume\n".encode())
                     
-                print('victory')
+            print('victory')
             
                     
         case 8:
@@ -92,6 +101,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             m = all_mice[search.group(1)]
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
+        case 11:
+            pass
                 
 
 

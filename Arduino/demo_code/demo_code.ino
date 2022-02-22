@@ -85,6 +85,16 @@ String door2Check(){
   return ID;
 }
 
+void waitUntilReceive(String msg){
+  while (true){
+    while(!Serial.available());
+    String serIn = Serial.readStringUntil('\n');
+    if (serIn == msg){
+      break;
+    }
+  }
+}
+
 
 void setup()
 {
@@ -235,7 +245,14 @@ void loop()
     }
 
     while(file.available()){ // file is available
-      while(Serial.availableForWrite() < 40);   //Wait till 6000 bytes of space is left in out buffer
+      if(Serial.available()){
+        String serIn = Serial.readStringUntil('\n');
+        if (serIn == "Pause"){
+          Serial.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+          waitUntilReceive("Resume");
+        }
+      }
+      while(Serial.availableForWrite() < 40);
       char line[40];
       int data = file.fgets(line, sizeof(line));
       //char line = file.read();
