@@ -5,9 +5,9 @@
 #include "TeensyTimerTool.h"
 using namespace TeensyTimerTool; 
 
-PeriodicTimer t1; // timer to run periodic serial print
-PeriodicTimer t2; // timer to run periodic lick read and print
-PeriodicTimer t3; // timer to run periodic save to file
+PeriodicTimer t1(PIT); // timer to run periodic serial print
+PeriodicTimer t2(PIT); // timer to run periodic lick read and print
+PeriodicTimer t3(PIT); // timer to run periodic save to file
 
 unsigned long responseTime = 0;
 unsigned long downTime = 0;
