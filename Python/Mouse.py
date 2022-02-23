@@ -37,7 +37,8 @@ class Mouse:
             if t.starting_time.time.date() == d:
                 no_of_tests += 1
             else:
-                return no_of_tests
+                break
+        return no_of_tests
 
     def reached_limit(self):
         return self.tests_today() >= self.test_limit
