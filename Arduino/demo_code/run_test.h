@@ -3,6 +3,6 @@
 #include "SdFat.h"
 
 
-void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME);
+void run_test(int lickPin, int rewardPin, FsFile* pr, String fileName, String ID_2);
 
 #endif

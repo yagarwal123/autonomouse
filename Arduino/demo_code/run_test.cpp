@@ -5,9 +5,10 @@
 #include "TeensyTimerTool.h"
 using namespace TeensyTimerTool; 
 
-PeriodicTimer t1; // timer to run periodic serial print
-PeriodicTimer t2; // timer to run periodic lick read and print
-PeriodicTimer t3; // timer to run periodic save to file
+PeriodicTimer t1(PIT); // timer to run periodic serial print
+PeriodicTimer t2(PIT); // timer to run periodic lick read and print
+PeriodicTimer t3(PIT); // timer to run periodic save to file
+PeriodicTimer t4(PIT); // timer to run periodically check TTL pulse
 
 unsigned long responseTime = 0;
 unsigned long downTime = 0;
@@ -15,6 +16,7 @@ int lickTime;
 //unsigned long WAITTIME = 5000;
 unsigned long RES = 2500;
 int lickCheck = 0;
+const int TTL_PIN = 33;
 
 void callback1(int *sensorAddr){ // to print out sensorValue in regular interval
   //Serial.print("display: ");
@@ -33,8 +35,52 @@ void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sen
   pr->print(", ");
   pr->println(*sensorAddr);
   }
+  
+void callback4(const int TTL_PIN){ // saves sensor value at regular interval to pr
+  if(digitalRead(TTL_PIN)==HIGH){
+    Serial.print("TTL - ");
+    Serial.println(millis());
+  } // checking TTL pulse
+}
+  
 
-void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME){
+void run_test(int lickPin, int rewardPin, FsFile* pr, String fileName, String ID_2){
+  t4.begin([=]{callback4(TTL_PIN);}, 1ms);
+
+  char buf[30];
+  fileName.toCharArray(buf, 30);
+  
+//    // check for old version: OPTIONAL
+//  if (sd.exists(fileName)) {
+//    Serial.println("Duplicate file!!!");
+//  }
+  
+  // open file
+  if (!pr->open(buf, FILE_WRITE)) { // filename needs to be in char
+      Serial.println(F("file.open failed"));
+      // TODO: mission abort;
+  }
+  
+    // Print current date time to file.
+  //pr->print(F("Test file at: "));
+  //printNow(&file);
+  //pr->println();
+  pr->print(F("time(ms), ")); // print headings
+  pr->println(F("amplitude"));
+    
+  Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
+  while (!Serial.available());
+  int THRESHOLD = Serial.readStringUntil('\n').toInt();
+  while (!Serial.available());
+  int liquidAmount = Serial.readStringUntil('\n').toInt();
+  while (!Serial.available());
+  int WAITTIME = Serial.readStringUntil('\n').toInt();
+
+  Serial.print("Recieved information - Liquid Amount - ");Serial.println(liquidAmount);
+  Serial.print("Recieved information - Lick Threhold - ");Serial.println(THRESHOLD);
+  Serial.print("Recieved information - Inter trial interval - ");Serial.println(WAITTIME);
+ 
+  
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -46,7 +92,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   // lambda function, pass in outerscope
   // define timers
   t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
-  t2.begin([=]{callback2(lickPin, sensorPt);}, 15ms, false); // reads lickPin every 50ms
+  t2.begin([=]{callback2(lickPin, sensorPt);}, 1ms, false); // reads lickPin every 50ms
   t3.begin([=]{callback3(sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
   
   Serial.print("Starting test now - "); Serial.println(millis());
@@ -97,4 +143,6 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     //t3.stop();
   }
   t3.stop();
+  t4.stop();
+  pr->close(); // close file
 }

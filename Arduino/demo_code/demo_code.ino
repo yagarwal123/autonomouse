@@ -8,6 +8,7 @@
 #include "HX711.h"
 #include "load_cell.h"
 #include "clear_serial_buffer.h"
+#include "weight_ttl.h"
 #include "SdFat.h"
 #include "time_functions.h"
 #include "TeensyTimerTool.h"
@@ -24,7 +25,7 @@ FsFile file;
 
 using namespace TeensyTimerTool; 
 
-PeriodicTimer t4; // timer to run periodically check TTL pulse
+//PeriodicTimer t4(PIT); // timer to run periodically check TTL pulse
 
 time_t getTeensy3Time()
 {
@@ -110,13 +111,13 @@ void letMouseOut(String ID_2){
   door_open(door_one);
 }
 
-void callback4(const int TTL_PIN){ // saves sensor value at regular interval to pr
-  if(digitalRead(TTL_PIN)==HIGH){
-    Serial.print("TTL - ");
-    Serial.println(millis());
-  } // checking TTL pulse
-}
-  
+//void callback4(const int TTL_PIN){ // saves sensor value at regular interval to pr
+//  if(digitalRead(TTL_PIN)==HIGH){
+//    Serial.print("TTL - ");
+//    Serial.println(millis());
+//  } // checking TTL pulse
+//}
+//  
 void setup()
 {
   Serial.begin(9600);
@@ -153,7 +154,7 @@ void setup()
   }
   Serial.println("SD card initialized.");
 
-  t4.begin([=]{callback4(TTL_PIN);}, 1ms, false);
+  //t4.begin([=]{callback4(TTL_PIN);}, 1ms, false);
   
   while (! Serial);
   Serial.println("LOGGER: Starting Experiment");
@@ -195,24 +196,30 @@ void loop()
   door_open(door_two);
   lastMouse = ID_2;
 
-  // take the weight
-  //Uncomment
-  weight = load_cell(&scale);
-  //Comment out
-  //Serial.println("Enter mouse weight:");
-  //while(!Serial.available()){}
-  //weight = Serial.parseFloat();
+ 
+    // create file name
+  String fileName = ID_2 + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
+  Serial.println(fileName);
 
-  // optional: if weight is >0 and < 40, close door 2
-  while(weight < 15){ // keep taking weight
-    weight = load_cell(&scale);
-    //Serial.println("Enter mouse weight:");
-    //while(!Serial.available()){}
-    //weight = 20;
-    Serial.print("weight: ");
-    Serial.print(weight);
-    Serial.println("g");
-  }
+  // take the weight
+  weight = weight_ttl(&scale, TTL_PIN);
+  //Uncomment
+//  weight = load_cell(&scale);
+//  //Comment out
+//  //Serial.println("Enter mouse weight:");
+//  //while(!Serial.available()){}
+//  //weight = Serial.parseFloat();
+//
+//  // optional: if weight is >0 and < 40, close door 2
+//  while(weight < 15){ // keep taking weight
+//    weight = load_cell(&scale);
+//    //Serial.println("Enter mouse weight:");
+//    //while(!Serial.available()){}
+//    //weight = 20;
+//    Serial.print("weight: ");
+//    Serial.print(weight);
+//    Serial.println("g");
+//  }
 
   if(weight < 40){ // run test
     String serOut = "";
@@ -220,51 +227,49 @@ void loop()
     Serial.println(serOut);
     Serial.println("closing door 2, start test");
     door_close(door_two);
-    t4.start();
+    //t4.start();
 
-    // create file
-    String fileName = ID_2 + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
-    Serial.println(fileName);
     char buf[30];
     fileName.toCharArray(buf, 30);
-    // Remove old version to set create time.
-    if (sd.exists(fileName)) {
-      Serial.println("Duplicate file!!!");
-    }
-
-    if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char
-      Serial.println(F("file.open failed"));
-      // TODO: mission abort;
-    }
+//    
+//    // check for old version: OPTIONAL
+//    if (sd.exists(fileName)) {
+//      Serial.println("Duplicate file!!!");
+//    }
+//
+//    if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char
+//      Serial.println(F("file.open failed"));
+//      // TODO: mission abort;
+//    }
+//    
+//    // Print current date time to file.
+//    file.print(F("Test file at: "));
+//    printNow(&file);
+//    file.println();
+//    file.print(F("time(ms), ")); // print headings
+//    file.println(F("amplitude"));
     
-    // Print current date time to file.
-    file.print(F("Test file at: "));
-    printNow(&file);
-    file.println();
-    file.print(F("time(ms), ")); // print headings
-    file.println(F("amplitude"));
-    
-    Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
-    while (!Serial.available());
-    int THRESHOLD = Serial.readStringUntil('\n').toInt();
-    while (!Serial.available());
-    int liquidAmount = Serial.readStringUntil('\n').toInt();
-    while (!Serial.available());
-    int WAITTIME = Serial.readStringUntil('\n').toInt();
-
-    Serial.print("Recieved information - Liquid Amount - ");Serial.println(liquidAmount);
-    Serial.print("Recieved information - Lick Threhold - ");Serial.println(THRESHOLD);
-    Serial.print("Recieved information - Inter trial interval - ");Serial.println(WAITTIME);
-    
-    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME); // write to file during test
-    file.close(); // close the file
+//    Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
+//    while (!Serial.available());
+//    int THRESHOLD = Serial.readStringUntil('\n').toInt();
+//    while (!Serial.available());
+//    int liquidAmount = Serial.readStringUntil('\n').toInt();
+//    while (!Serial.available());
+//    int WAITTIME = Serial.readStringUntil('\n').toInt();
+//
+//    Serial.print("Recieved information - Liquid Amount - ");Serial.println(liquidAmount);
+//    Serial.print("Recieved information - Lick Threhold - ");Serial.println(THRESHOLD);
+//    Serial.print("Recieved information - Inter trial interval - ");Serial.println(WAITTIME);
+//    
+    run_test(lickPin, rewardPin, &file, fileName, ID_2); // write to file during test
+    //file.close(); // close the file
     letMouseOut(ID_2);
     lastExitTime = millis();
 
     Serial.println("Sending raw data");
-    t4.stop(); // stop reading TTL pulse
+    //t4.stop(); // stop reading TTL pulse
     // TODO: send file to PC through Serial
-    //file.rewind();
+
     while (true){
       while(!Serial.available());
       String serIn = Serial.readStringUntil('\n');
@@ -294,7 +299,7 @@ void loop()
       //char line = file.read();
       Serial.print(line);
     }
-    //file.close(); // close the file
+    file.close(); // close the file
     while(Serial.availableForWrite() < 6000); //Wait till 6000 bytes of space is left in out buffer
     Serial.println("Raw data send complete");
     
