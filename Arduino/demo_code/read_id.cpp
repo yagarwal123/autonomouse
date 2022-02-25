@@ -17,7 +17,7 @@ String read_id(HardwareSerial &refSer){
   
   if (refSer.available()) { 
     char newTag[11];
-    Serial.println("Serial available");
+    Serial.println("LOGGER: Serial available");
     int i = 0;
     int read_byte;
     read_byte = refSer.read();
