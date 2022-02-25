@@ -10,7 +10,7 @@
 #include "clear_serial_buffer.h"
 #include "SdFat.h"
 #include "time_functions.h"
-#include "TeensyTimerTool.h"
+//#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
 #define calibration_factor 1004 //This value is obtained using the SparkFun_HX711_Calibration sketch
@@ -22,9 +22,9 @@
 SdFs sd;
 FsFile file;
 
-using namespace TeensyTimerTool; 
+//using namespace TeensyTimerTool; 
 
-PeriodicTimer t4; // timer to run periodically check TTL pulse
+//PeriodicTimer t4; // timer to run periodically check TTL pulse
 
 time_t getTeensy3Time()
 {
@@ -110,12 +110,12 @@ void letMouseOut(String ID_2){
   door_open(door_one);
 }
 
-void callback4(const int TTL_PIN){ // saves sensor value at regular interval to pr
-  if(digitalRead(TTL_PIN)==HIGH){
-    Serial.print("TTL - ");
-    Serial.println(millis());
-  } // checking TTL pulse
-}
+//void callback4(const int TTL_PIN){ // saves sensor value at regular interval to pr
+//  if(digitalRead(TTL_PIN)==HIGH){
+//    Serial.print("TTL - ");
+//    Serial.println(millis());
+//  } // checking TTL pulse
+//}
   
 void setup()
 {
@@ -153,7 +153,7 @@ void setup()
   }
   Serial.println("SD card initialized.");
 
-  t4.begin([=]{callback4(TTL_PIN);}, 1ms, false);
+  //t4.begin([=]{callback4(TTL_PIN);}, 1ms, false);
   
   while (! Serial);
   Serial.println("LOGGER: Starting Experiment");
@@ -220,7 +220,7 @@ void loop()
     Serial.println(serOut);
     Serial.println("closing door 2, start test");
     door_close(door_two);
-    t4.start();
+    //t4.start();
 
     // create file
     String fileName = ID_2 + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
@@ -262,7 +262,7 @@ void loop()
     lastExitTime = millis();
 
     Serial.println("Sending raw data");
-    t4.stop(); // stop reading TTL pulse
+    //t4.stop(); // stop reading TTL pulse
     // TODO: send file to PC through Serial
     //file.rewind();
     while (true){
