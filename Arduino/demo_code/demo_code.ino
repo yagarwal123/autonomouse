@@ -151,7 +151,7 @@ void setup()
   if (!sd.begin(SD_CONFIG)) {
     sd.initErrorHalt(&Serial);
   }
-  Serial.println("SD card initialized.");
+  Serial.println("LOGGER: SD card initialized.");
 
   //t4.begin([=]{callback4(TTL_PIN);}, 1ms, false);
   
@@ -218,13 +218,13 @@ void loop()
     String serOut = "";
     serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
     Serial.println(serOut);
-    Serial.println("closing door 2, start test");
+    Serial.println("LOGGER: Closing door 2, start test");
     door_close(door_two);
     //t4.start();
 
     // create file
     String fileName = ID_2 + month()+"_"+day()+"_"+hour()+"_"+minute()+"_"+second()+".txt";
-    Serial.println(fileName);
+    Serial.print("LOGGER: Filename - ");Serial.println(fileName);
     char buf[30];
     fileName.toCharArray(buf, 30);
     // Remove old version to set create time.
@@ -252,9 +252,9 @@ void loop()
     while (!Serial.available());
     int WAITTIME = Serial.readStringUntil('\n').toInt();
 
-    Serial.print("Recieved information - Liquid Amount - ");Serial.println(liquidAmount);
-    Serial.print("Recieved information - Lick Threhold - ");Serial.println(THRESHOLD);
-    Serial.print("Recieved information - Inter trial interval - ");Serial.println(WAITTIME);
+    Serial.print("LOGGER: Received - Liquid Amount - ");Serial.println(liquidAmount);
+    Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
+    Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
     
     run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME); // write to file during test
     file.close(); // close the file
@@ -315,7 +315,7 @@ void loop()
       break;
     }
   }
-  Serial.println("Test complete");
+  Serial.println("LOGGER: Test complete");
   clear_serial_buffer(Serial1);
   clear_serial_buffer(Serial2);
 }

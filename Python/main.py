@@ -29,8 +29,6 @@ from myTime import myTime
 #               'A22222': ['Little',45],
 #               '0007A0F7C4': ['Real',27.4]}
 
-START_TIME = datetime.datetime.now()
-
 
 if __name__ == "__main__":
 
@@ -42,6 +40,8 @@ if __name__ == "__main__":
     cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     l = subprocess.run(cmd.split())
     assert(l.returncode == 0)
+
+    START_TIME = datetime.datetime.now()
 
     all_mice = {}
     with open('mouse_info.csv',mode='r') as f:
