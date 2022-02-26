@@ -25,6 +25,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
         self.waittime_disp.setText(str(self.mouse.waittime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
+        self.test_no_disp.setText(str(self.mouse.tests_today()))
 
         self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)

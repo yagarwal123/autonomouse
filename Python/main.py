@@ -7,12 +7,12 @@ logging.config.dictConfig(LOGGING_CONFIG)
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 #Optional - matplotlib spams a lot of debugs, so setting its level to info
 
-subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py",shell=True)
-subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py",shell=True)
-subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py",shell=True)
-subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py",shell=True)
-subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py",shell=True)
-subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py",shell=True)
+subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
+subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py".split())
+subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py".split())
+subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py".split())
+subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
+subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
 
 import logging
 import datetime
@@ -23,13 +23,11 @@ import serial
 
 from Mouse import Mouse
 import rasp_camera
-from myTime import myTime
+from config import TEENSY
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
 #               '0007A0F7C4': ['Real',27.4]}
-
-START_TIME = datetime.datetime.now()
 
 
 if __name__ == "__main__":
@@ -39,9 +37,20 @@ if __name__ == "__main__":
     #os.system("\"C:/Program Files (x86)/Arduino/arduino.exe\" --upload \"C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino\"")
     #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
-    cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-    l = subprocess.run(cmd.split())
-    assert(l.returncode == 0)
+    if TEENSY:
+        cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
+        l = subprocess.run(cmd.split())
+        assert(l.returncode == 0)
+
+    START_TIME = datetime.datetime.now()
+
+    if TEENSY:
+        ser = serial.Serial('COM4', 9600)
+        rasp_camera.start_rpi_host()
+    else:
+        ser = None
+
+    START_TIME = datetime.datetime.now()
 
     all_mice = {}
     with open('mouse_info.csv',mode='r') as f:
@@ -65,10 +74,10 @@ if __name__ == "__main__":
 
     #ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
     #ser = serial.Serial('/dev/cu.usbmodem105683101', 9600)
-    ser = serial.Serial('COM4', 9600)
-    #ser = None
 
-    rasp_camera.start_rpi_host()
+    
+
+    #
 
     app = QtWidgets.QApplication(sys.argv)
     #mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)

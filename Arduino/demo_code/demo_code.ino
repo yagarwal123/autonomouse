@@ -134,7 +134,7 @@ void setup()
   digitalWrite(rewardPin, LOW);
     // pin for TTL pulse camera
   pinMode(TTL_PIN, INPUT);
-  attachInterrupt(digitalPinToInterrupt(TTL_PIN), callback4, HIGH);
+  attachInterrupt(digitalPinToInterrupt(TTL_PIN), callback4, RISING);
 
   // time
   setSyncProvider(getTeensy3Time);
