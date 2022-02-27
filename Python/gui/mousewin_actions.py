@@ -15,7 +15,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.pltax = None
         
         self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(lambda:self.pltgraph())
+        self.timer.timeout.connect(lambda:self.updatedata())
         self.timer.start(1000)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -105,3 +105,16 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
 
         self.plotWid.canvas.draw()
         self.mutex.unlock()
+
+    def updatedisplays(self):
+        self.liq_am_disp.setText(str(self.mouse.liquid_amount))
+        self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
+        self.waittime_disp.setText(str(self.mouse.waittime))
+        self.test_lim_disp.setText(str(self.mouse.test_limit))
+        self.test_no_disp.setText(str(self.mouse.tests_today()))
+
+
+    
+    def updatedata(self):
+        self.pltgraph()
+        self.updatedisplays()
