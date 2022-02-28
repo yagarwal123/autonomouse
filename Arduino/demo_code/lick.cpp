@@ -15,6 +15,7 @@ unsigned long read_lick(int sensorPin, int THRESHOLD, int *sensorAddr) {
   //Serial.println(*sensorAddr);
   
   if (*sensorAddr > THRESHOLD) {
+    Serial.println(*sensorAddr);
     int tAbove = 1;
     millisec = millis();
     while (*sensorAddr > THRESHOLD){

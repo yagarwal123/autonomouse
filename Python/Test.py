@@ -9,6 +9,7 @@ class Test:
         self.trials=[]
         self.odours = []
         self.ttl = []
+        self.ongoing = True
     
     def add_trial(self,new_trial):
         self.trials.append(new_trial)

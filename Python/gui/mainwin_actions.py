@@ -3,6 +3,7 @@ from PyQt6.QtCore import QThread, QMutex
 from PyQt6.QtWidgets import QMessageBox
 
 import logging
+from config import TEENSY
 
 from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
@@ -53,10 +54,11 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         close = close.exec()
 
         if close == QMessageBox.StandardButton.Yes:
-            self.worker.terminate()
-            self.worker.wait()
-            rasp_camera.close_record()
-            self.ser.close()
+            if TEENSY:
+                self.worker.terminate()
+                self.worker.wait()
+                rasp_camera.close_record()
+                self.ser.close()
             a0.accept()
         else:
             a0.ignore()

@@ -45,7 +45,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   
   // lambda function, pass in outerscope
   // define timers
-  t1.begin([=]{callback1(sensorPt);}, 15ms, false); //every 100ms print to serial
+  t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
   t2.begin([=]{callback2(lickPin, sensorPt);}, 1ms, false); // reads lickPin every 50ms
   t3.begin([=]{callback3(sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
   

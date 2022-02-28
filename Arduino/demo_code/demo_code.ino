@@ -110,12 +110,9 @@ void letMouseOut(String ID_2){
   door_open(door_one);
 }
 
-//void callback4(const int TTL_PIN){ // saves sensor value at regular interval to pr
-//  if(digitalRead(TTL_PIN)==HIGH){
-//    Serial.print("TTL - ");
-//    Serial.println(millis());
-//  } // checking TTL pulse
-//}
+void callback4(){ // saves sensor value at regular interval to pr
+    Serial.print("TTL - "); Serial.println(millis());
+}
   
 void setup()
 {
@@ -137,6 +134,7 @@ void setup()
   digitalWrite(rewardPin, LOW);
     // pin for TTL pulse camera
   pinMode(TTL_PIN, INPUT);
+  attachInterrupt(digitalPinToInterrupt(TTL_PIN), callback4, RISING);
 
   // time
   setSyncProvider(getTeensy3Time);
