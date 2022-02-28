@@ -1,5 +1,4 @@
 import logging
-from config import TEENSY
 
 import data_update
 
@@ -17,10 +16,8 @@ def startTeensyRead(ser,mutex,START_TIME,all_mice,doors,live_licks,all_tests,exp
     while True:
         try:
             #Uncomment
-            if TEENSY:
-               serIn = (ser.readline()).decode("utf-8").strip() # Read the newest output from the Arduino
-            else:
-                serIn = input()
+            serIn = (ser.readline()).decode("utf-8").strip() # Read the newest output from the Arduino
+            #serIn = input()
         except Exception as e:
             logger.error(e)
             continue

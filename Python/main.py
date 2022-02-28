@@ -23,7 +23,6 @@ import serial
 
 from Mouse import Mouse
 import rasp_camera
-from config import TEENSY
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
@@ -37,22 +36,16 @@ if __name__ == "__main__":
     #os.system("\"C:/Program Files (x86)/Arduino/arduino.exe\" --upload \"C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino\"")
     #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
-    if TEENSY:
-        cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-        l = subprocess.run(cmd.split())
-        assert(l.returncode == 0)
+    cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
+    l = subprocess.run(cmd.split())
+    assert(l.returncode == 0)
 
     START_TIME = datetime.datetime.now()
 
-    if TEENSY:
-        ser = serial.Serial('COM4', 9600)
-        rasp_camera.start_rpi_host()
-    else:
-        ser = None
+    ser = serial.Serial('COM4', 9600)
+    # ser = None
 
-    START_TIME = datetime.datetime.now()
-
-    START_TIME = datetime.datetime.now()
+    rasp_camera.start_rpi_host()
 
     all_mice = {}
     with open('mouse_info.csv',mode='r') as f:
