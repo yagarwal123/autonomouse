@@ -3,6 +3,7 @@ import re
 from myTime import myTime
 from Test import Test, Trial
 import rasp_camera
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +61,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 for idx,trial in enumerate(test.trials):
                     row = f"{idx+1},{trial.value}\n"
                     csvfile.write(row)
+            test.ongoing = False
             live_licks.clear()
 
             ttl_filename = f'TTL high millis - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
@@ -70,6 +72,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             
         case 7:
             rasp_camera.stop_record()
+            time.sleep(1)
             ser.write("Camera closed\n".encode())
             test = all_tests[-1]
             filename = f'Raw lick data - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
@@ -110,9 +113,15 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
         case 11:
             pass
         case 12:
-            test = all_tests[-1]
-            t = myTime(START_TIME,int(search.group(1)))
-            test.add_ttl(t)
+            if all_tests:
+                test = all_tests[-1]
+                if test.ongoing:
+                    t = myTime(START_TIME,int(search.group(1)))
+                    test.add_ttl(t)
+                else:
+                    logger.warning("Printng TTL with no test ongoing")
+            else:
+                logger.warning("Printng TTL with no test conducted")
                 
 
 
