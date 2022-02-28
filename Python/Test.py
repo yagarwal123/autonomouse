@@ -22,6 +22,9 @@ class Test:
             self.starting_time = t
         else:
             logger.error('Unexpected starting time message. Not updated')
+    
+    def get_id(self):
+        return f'{self.mouse.get_id()}_{len(self.mouse.tests)}'
 
 class Trial:
     """description of class"""

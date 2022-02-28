@@ -1,5 +1,8 @@
+import paramiko
+from scp import SCPClient
 import logging
 import re
+import os
 from myTime import myTime
 from Test import Test, Trial
 import rasp_camera
@@ -52,9 +55,10 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             old_test.add_trial(Trial(trial,t))
         case 6:
             test = all_tests[-1]
-            filename = f'Test data - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
+            fileFolder = test.get_id()
+            filename = f'Test data - {test.get_id()}.csv'
             #TODO: Remove (?) after better time formatting
-            filename = filename.replace(":",".")
+            filename = os.path.join(fileFolder, filename)
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvfile.write('Trial No,Lick Time\n')
@@ -64,20 +68,25 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             test.ongoing = False
             live_licks.clear()
 
-            ttl_filename = f'TTL high millis - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
-            ttl_filename = ttl_filename.replace(":",".")
+            ttl_filename = f'TTL high millis - {test.get_id()}.csv'
+            ttl_filename = os.path.join(fileFolder, ttl_filename)
             with open(ttl_filename, 'w') as ttlfile:
                 for t in test.ttl:
                     ttlfile.write(f'{t.millis}\n')
+
+            getVideofile(test.get_id())
             
         case 7:
             rasp_camera.stop_record()
             time.sleep(1)
             ser.write("Camera closed\n".encode())
             test = all_tests[-1]
-            filename = f'Raw lick data - {test.mouse.get_id()} - {str(test.starting_time)}.csv'
-            filename = filename.replace(":",".")
-            with open(filename, 'w') as csvfile: 
+            fileFolder = test.get_id()
+            if not os.path.exists(fileFolder):
+                os.makedirs(fileFolder)
+            filename = f'Raw lick data - {test.get_id()}.csv'
+            filePath = os.path.join(fileFolder,filename)
+            with open(filePath, 'w') as csvfile: 
                 l = ''
                 while (l.strip() != 'Raw data send complete'):
                     #logger.error(ser.in_waiting)
@@ -99,12 +108,12 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             if experiment_parameters.paused or m.reached_limit():
                 ser.write("Do not start\n".encode())
             else:
-                rasp_camera.start_record(f'test{len(all_tests)}')
                 ser.write("Start experiment\n".encode())
                 m = getLastMouse(doors)
                 new_test = Test(m)
                 m.tests.append(new_test)
                 all_tests.append(new_test)
+                rasp_camera.start_record(new_test.get_id())
         case 10:
             m = all_mice[search.group(1)]
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
@@ -141,3 +150,15 @@ def matchCommand(inSer,KNOWNSTATEMENTS):
     if stat_mean == 0:
         logger.error("Unknown message recieved : " + inSer)
     return stat_mean, search
+
+def getVideofile(test_id):
+    ssh = paramiko.SSHClient()
+    ssh.load_system_host_keys()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect("131.111.180.78", username="pi", password="automouse", timeout=3)
+    # SCPCLient takes a paramiko transport as its only argument
+    scp = SCPClient(ssh.get_transport())
+    #scp.put('test.txt', 'test2.txt')
+    scp.get(f'~/code/RPiCameraPlugin/Python/scripts/RPiCameraVideos/{test_id}_experiment_1_recording_1', recursive=True,local_path=test_id)
+    scp.close()
+    ssh.close()
