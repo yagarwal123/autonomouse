@@ -259,10 +259,12 @@ void loop()
     letMouseOut(ID_2);
     lastExitTime = millis();
 
-    Serial.println("Sending raw data");
+    
     //t4.stop(); // stop reading TTL pulse
     // TODO: send file to PC through Serial
     //file.rewind();
+    Serial.println("Stop recording");
+
     while (true){
       while(!Serial.available());
       String serIn = Serial.readStringUntil('\n');
@@ -270,7 +272,8 @@ void loop()
         break;
       }
     }
-
+    
+    Serial.println("Sending raw data");
 
     // open file again
     if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char

@@ -60,7 +60,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     lickCheck = 0; // time taken to lick from stimulus onset
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
-    pr->println(millis()); // write start time in file DELETE ONE
+    //pr->println(millis()); // write start time in file DELETE ONE
     t1.start(); // start 
     //t3.start(); // start saving to file
     //Serial.println(startTime);

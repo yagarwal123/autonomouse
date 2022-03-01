@@ -22,7 +22,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                       '^Check whether to start test - (.+)$',                       #9
                       '^Send parameters: Incoming mouse ID - (.+)$',                #10
                       '^LOGGER:',                                                   #11
-                      '^TTL - (\d+)$'                                               #12
+                      '^TTL - (\d+)$',                                              #12
+                      '^Stop recording$'                                            #13                    
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -77,9 +78,6 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             getVideofile(test.get_id())
             
         case 7:
-            rasp_camera.stop_record()
-            time.sleep(1)
-            ser.write("Camera closed\n".encode())
             test = all_tests[-1]
             fileFolder = test.get_id()
             if not os.path.exists(fileFolder):
@@ -131,6 +129,9 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                     logger.warning("Printng TTL with no test ongoing")
             else:
                 logger.warning("Printng TTL with no test conducted")
+        case 13:
+            rasp_camera.stop_record()
+            ser.write("Camera closed\n".encode())
                 
 
 
