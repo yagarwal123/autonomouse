@@ -39,7 +39,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             m = all_mice[search.group(1)]
             d = int(search.group(2))
             t = myTime(START_TIME,int(search.group(3)))
-            doors.append([t,m,d])
+            doors.insert(0,[t,m,d])
         case 3:
             amp = float(search.group(1))
             live_licks.append(amp)
