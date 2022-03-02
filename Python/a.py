@@ -61,6 +61,7 @@ testT,amps = np.loadtxt("0007A0F7C4_1/Raw lick data - 0007A0F7C4_1.csv", unpack=
 millis = int(TTLarray[0])
 idx = 0
 startTests = [i for i,k in enumerate(testT) if k==0] 
+plt_x = np.array([])
 line, = ax1.plot([],[])
 for k in startTests:
     line.axes.axvline(k,color = 'r')
@@ -75,8 +76,9 @@ while millis<TTLarray[-1]:
         #ax1.clear()
         t = millis - startTime
         s = t-5000 if t>=5000 else 0
-        plt_y = amps[s:t+1]
-        plt_x = np.arange(s,t+1)
+        plt_y = amps[s:t]
+        plt_x = np.append(plt_x,t)
+        plt_x = plt_x[-5000:]
         # clear graph
         line.set_data(plt_x,plt_y)
         line.axes.relim()
