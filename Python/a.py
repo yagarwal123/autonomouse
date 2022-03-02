@@ -56,14 +56,13 @@ file_heading = lick_file.readline()
 startTime = int(lick_file.readline())
 
 
-millis = TTLarray[0] - 1
+millis = TTLarray[0]
 idx = 0
 amps = []
 startTests = []
 x_ax = []
 while millis<TTLarray[-1]:
     #print(millis)
-    millis += 1
     if millis == TTLarray[idx]:
         ret, frame = cap.read()
         #ax2.imshow(frame)
@@ -71,7 +70,7 @@ while millis<TTLarray[-1]:
         idx += 1 
     if millis > startTime:
         data = lick_file.readline().strip().split(',')
-        if len(data) != 2:
+        if len(data) != 2:  #Something is wrong, probably a TTL entry, does not increase millis
             continue
         ax1.clear()
         amps.append(int(data[1]))
@@ -89,5 +88,6 @@ while millis<TTLarray[-1]:
         plt.pause(0.001)
     if millis%10000 == 0:
         print(millis)
+    millis += 1
 
 plt.show()
