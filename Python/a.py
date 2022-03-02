@@ -14,7 +14,7 @@
 #     width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 #     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-# fig, ax = plt.subplots(1,1)
+# fig, (ax1,ax2) = plt.subplots(2,1)
 # plt.ion()
 # plt.show()
 
@@ -31,18 +31,18 @@
 #     plt.plot(x[i],y[i],'or')
 #     plt.pause(0.01)
 
-#     if cv2.waitKey(1) == 27:
+#     if cv2.waitKey(25) & 0xFF == ord('q'):
 #         break
 
-# open TTL file
+# cap.release()
+# cap.destroyAllWindows()
+
+#open TTL file
+from time import sleep
 import cv2
-import csv
 import matplotlib.pyplot as plt
 import numpy as np
-fig, (ax1,ax2) = plt.subplots(2,1)
-plt.ion()
-plt.show()
-t=0
+fig, ax = plt.subplots()
 filename = '0007A0F7C4_1/0007A0F7C4_1_experiment_1_recording_1/rpicamera_video.mp4'
 cap = cv2.VideoCapture(filename)
 
@@ -52,28 +52,32 @@ with open("0007A0F7C4_1/TTL high millis - 0007A0F7C4_1.csv",'r') as ttl_file:
 lick_file = open("0007A0F7C4_1/Raw lick data - 0007A0F7C4_1.csv",'r')
 file_time = lick_file.readline()
 file_heading = lick_file.readline()
-startTime = lick_file.readline()
+startTime = int(lick_file.readline())
 
 
 millis = TTLarray[0]
-ret, frame = cap.read()
-ax1.imshow('Frame',frame)
 idx = 0
 amps = []
 while millis<TTLarray[-1]:
-    fig.clf()
-    millis += 1
-    t+=1
-    if millis == TTLarray[idx+1]:
+    #print(millis)
+    if millis == TTLarray[idx]:
         ret, frame = cap.read()
-        ax1.imshow('Frame',frame)
+        #cv2.imshow('Frame',frame)
         idx += 1 
     if millis > startTime:
-        data = lick_file.readline()
+        data = lick_file.readline().strip().split(',')
+        if len(data) != 2:
+            continue
+        ax.clear()
         amps.append(data[1])
         # clear graph
-        #plot vs t
+        ax.plot(amps)
+        plt.show(block=False)
         if data[0] == 0:
             # print traight line in graph
             pass
-    plt.pause(0.01)
+    millis += 1
+    if millis%10000 == 0:
+        print(millis)
+
+print('done')
