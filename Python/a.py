@@ -42,7 +42,8 @@ from time import sleep
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-fig, ax = plt.subplots()
+fig, (ax1,ax2) = plt.subplots(1,2)
+plt.ion()
 filename = '0007A0F7C4_1/0007A0F7C4_1_experiment_1_recording_1/rpicamera_video.mp4'
 cap = cv2.VideoCapture(filename)
 
@@ -55,29 +56,38 @@ file_heading = lick_file.readline()
 startTime = int(lick_file.readline())
 
 
-millis = TTLarray[0]
+millis = TTLarray[0] - 1
 idx = 0
 amps = []
+startTests = []
+x_ax = []
 while millis<TTLarray[-1]:
     #print(millis)
+    millis += 1
     if millis == TTLarray[idx]:
         ret, frame = cap.read()
-        #cv2.imshow('Frame',frame)
+        #ax2.imshow(frame)
+        cv2.imshow('Video',frame)
         idx += 1 
     if millis > startTime:
         data = lick_file.readline().strip().split(',')
         if len(data) != 2:
             continue
-        ax.clear()
-        amps.append(data[1])
+        ax1.clear()
+        amps.append(int(data[1]))
+        x_ax.append(millis-startTime)
+        amps = amps[-5000:]
+        x_ax = x_ax[-5000:]
         # clear graph
-        ax.plot(amps)
-        plt.show(block=False)
-        if data[0] == 0:
+        ax1.plot(x_ax,amps)
+        ax1.set_ylim(bottom=0)
+        if int(data[0]) == 0:
+            startTests.append(x_ax[-1])
             # print traight line in graph
-            pass
-    millis += 1
+        for t in startTests:
+            ax1.axvline(x=t,color='r')
+        plt.pause(0.001)
     if millis%10000 == 0:
         print(millis)
 
-print('done')
+plt.show()
