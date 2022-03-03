@@ -58,10 +58,11 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             test = all_tests[-1]
             fileFolder = test.get_id()
             filename = f'Test data - {test.get_id()}.csv'
-            #TODO: Remove (?) after better time formatting
             filename = os.path.join(fileFolder, filename)
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
+                csvfile.write("Test Parameters:")
+                csvfile.write(test.test_parameters)
                 csvfile.write('Trial No,Lick Time\n')
                 for idx,trial in enumerate(test.trials):
                     row = f"{idx+1},{trial.value}\n"
@@ -114,6 +115,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 rasp_camera.start_record(new_test.get_id())
         case 10:
             m = all_mice[search.group(1)]
+            t = all_tests[-1]
+            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
             ser.write( ( str(m.waittime) + "\n" ).encode() )

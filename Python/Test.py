@@ -9,6 +9,7 @@ class Test:
         self.trials=[]
         self.odours = []
         self.ttl = []
+        self.test_parameters = TestParameters()
         self.ongoing = True
     
     def add_trial(self,new_trial):
@@ -31,5 +32,21 @@ class Trial:
     def __init__(self,idx, value):
         self.idx = idx
         self.value = value
+
+class TestParameters:
+
+    def __init__(self):
+        self.lick_threshold = None
+        self.liquid_amount = None
+        self.waittime = None
+
+    def set_parameters(self,lick_threshold,liquid_amount,waittime):
+        self.lick_threshold = lick_threshold
+        self.liquid_amount = liquid_amount
+        self.waittime = waittime
+
+    def __repr__(self):
+        attrs = vars(self)
+        return('\n'.join("%s, %s" % item for item in attrs.items()))
     
 
