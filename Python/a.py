@@ -88,10 +88,12 @@ while millis<TTLarray[-1]:
         line.axes.figure.canvas.draw()
         #ax1.set_ylim(bottom=0)
 
-        plt.pause(0.001)
+        #plt.pause(0.001)
     if millis%10000 == 0:
         print(millis)
     millis += 1
+    cv2.waitKey(1)
+    plt.pause(0.001)
 
 plt.show()
 cap.release()
