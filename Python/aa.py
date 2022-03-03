@@ -100,6 +100,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 #matplotlib.use('TkAgg')
 import numpy as np
+import time
 
 # filename = '0007A0F7C4_1/0007A0F7C4_1_experiment_1_recording_1/rpicamera_video.mp4'
 # cap = cv2.VideoCapture(filename)
@@ -155,6 +156,7 @@ while millis<end:
         idx += 1
         ret, frame = cap.read()
         cv2.imshow('Video',frame)
+        cv2.waitKey(1)
     if millis > startTime:
         t = millis - startTime
         s = t-50 if t>=50 else 0
@@ -172,8 +174,8 @@ while millis<end:
         #plt.show()
         #plt.pause(0.0001)
     millis += 1
-    cv2.waitKey(1)
-    plt.pause(0.0001)
+    print(time.time())
+    #plt.pause(0.0001)
 
 # for i in range(100):
 #     fig.clf()
