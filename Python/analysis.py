@@ -112,6 +112,13 @@ cap = cv2.VideoCapture(filename)
 
 with open("0007A0F7C4_1/TTL high millis - 0007A0F7C4_1.csv",'r') as ttl_file:
     TTLarray = np.loadtxt(ttl_file)
+
+with open("0007A0F7C4_1/Test data - 0007A0F7C4_1.csv",'r') as ttl_file:
+    for line in ttl_file:
+        l = line.strip().split(', ')
+        if l[0] == 'lick_threshold':
+            threshold = int(l[1])
+            break
     
 lick_file = open("0007A0F7C4_1/Raw lick data - 0007A0F7C4_1.csv",'r')
 file_time = lick_file.readline()
@@ -119,7 +126,7 @@ file_heading = lick_file.readline()
 startTime = int(lick_file.readline())
 lick_file.close()
 
-threshold = 100
+#threshold = 100
 
 testT,amps = np.loadtxt("0007A0F7C4_1/Raw lick data - 0007A0F7C4_1.csv", unpack=True,delimiter=',',skiprows=3)
 
@@ -145,7 +152,10 @@ while millis<TTLarray[-1]:
         #ax2.imshow(frame)
         cv2.imshow('Video',frame)
         idx += 1 
-        cv2.waitKey(1)
+        if millis < startTime:
+            cv2.waitKey(15)             #To be adjusted according to the PC
+        else:
+            cv2.waitKey(10)
     if millis > startTime:
         #ax1.clear()
         t = millis - startTime
@@ -166,7 +176,6 @@ while millis<TTLarray[-1]:
     if millis%10000 == 0:
         print(millis)
     millis += 1
-    sleep(0.00025)   #To to optimize for the computer
 
 cap.release()
 cv2.destroyAllWindows()

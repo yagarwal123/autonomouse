@@ -36,9 +36,10 @@ if __name__ == "__main__":
     #os.system("\"C:/Program Files (x86)/Arduino/arduino.exe\" --upload \"C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino\"")
     #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
-    cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-    l = subprocess.run(cmd.split())
-    assert(l.returncode == 0)
+    arduinoPath = "C:/PROGRA~2/Arduino/arduino_debug.exe"
+    sketchPath = "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
+    l = subprocess.run([arduinoPath, "--upload", sketchPath])
+    assert l.returncode == 0, 'Could not upload sketch to the teensy'
 
     START_TIME = datetime.datetime.now()
 

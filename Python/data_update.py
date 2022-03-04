@@ -61,8 +61,9 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             filename = os.path.join(fileFolder, filename)
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
-                csvfile.write("Test Parameters:")
-                csvfile.write(test.test_parameters)
+                csvfile.write("Test Parameters:\n")
+                csvfile.write(str(test.test_parameters))
+                csvfile.write('\n\n')
                 csvfile.write('Trial No,Lick Time\n')
                 for idx,trial in enumerate(test.trials):
                     row = f"{idx+1},{trial.value}\n"

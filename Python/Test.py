@@ -45,7 +45,7 @@ class TestParameters:
         self.liquid_amount = liquid_amount
         self.waittime = waittime
 
-    def __repr__(self):
+    def __str__(self):
         attrs = vars(self)
         return('\n'.join("%s, %s" % item for item in attrs.items()))
     
