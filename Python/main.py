@@ -51,7 +51,7 @@ if __name__ == "__main__":
             def write(self,_):
                 pass
             def readline(self):
-                return input()
+                return input().encode()
         ser = FakeSer()
 
     rasp_camera.start_rpi_host()
