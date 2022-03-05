@@ -272,7 +272,7 @@ void loop()
         break;
       }
     }
-    
+    delay(2000);
     Serial.println("Sending raw data");
 
     // open file again
