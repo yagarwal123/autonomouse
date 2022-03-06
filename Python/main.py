@@ -1,6 +1,7 @@
 import subprocess
 import logging.config
 from time import sleep
+from unittest.mock import Mock
 import config
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
@@ -47,12 +48,10 @@ if __name__ == "__main__":
     if config.TEENSY:
         ser = serial.Serial('COM4', 9600)
     else:
-        class FakeSer:
-            def write(self,_):
-                pass
-            def readline(self):
-                return input().encode()
-        ser = FakeSer()
+        ser = Mock()
+        def user_in():
+            return input().encode()
+        ser.readline.side_effect = user_in
 
     rasp_camera.start_rpi_host()
 
