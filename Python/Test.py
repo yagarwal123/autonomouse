@@ -16,7 +16,8 @@ class Test:
         self.trials.append(new_trial)
 
     def add_ttl(self,ttl_time):
-        self.ttl.append(ttl_time)
+        if (not self.ttl) or (self.ttl[-1] != ttl_time):
+            self.ttl.append(ttl_time)
 
     def add_starting_time(self,t):
         if self.starting_time is None:

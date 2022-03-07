@@ -1,14 +1,18 @@
+import subprocess
 import cv2
 import pyqtgraph as pg
 import numpy as np
 
 test_id = '0007A0F7C4_1'
 
-filename = f'{test_id}/{test_id}_experiment_1_recording_1/rpicamera_video.mp4'
-cap = cv2.VideoCapture(filename)
+filename = f'{test_id}/{test_id}_experiment_1_recording_1/rpicamera_video'
+subprocess.run(['ffmpeg','-y','-i',f'{filename}.h264',f'{filename}.mp4'])
+cap = cv2.VideoCapture(f'{filename}.mp4')
 
 with open(f"{test_id}/TTL high millis - {test_id}.csv",'r') as ttl_file:
     TTLarray = np.loadtxt(ttl_file)
+
+TTLarray =  np.unique(TTLarray)
 
 with open(f"{test_id}/Test data - {test_id}.csv",'r') as ttl_file:
     for line in ttl_file:
@@ -25,7 +29,7 @@ lick_file.close()
 
 #threshold = 100
 
-testT,amps = np.loadtxt(f"{test_id}/Raw lick data - {test_id}.csv", unpack=True,delimiter=',',skiprows=3)
+testT,amps = np.genfromtxt(f"{test_id}/Raw lick data - {test_id}.csv", unpack=True,delimiter=',',skip_header=3,skip_footer=1)
 
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
