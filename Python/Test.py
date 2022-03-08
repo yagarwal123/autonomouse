@@ -10,6 +10,7 @@ class Test:
         self.odours = []
         self.ttl = []
         self.test_parameters = TestParameters()
+        self.vid_recording = True
         self.ongoing = True
     
     def add_trial(self,new_trial):

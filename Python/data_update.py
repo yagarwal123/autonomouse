@@ -65,7 +65,6 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 for idx,trial in enumerate(test.trials):
                     row = f"{idx+1},{trial.value}\n"
                     csvfile.write(row)
-            test.ongoing = False
             live_licks.clear()
 
             ttl_filename = f'TTL high millis - {test.get_id()}.csv'
@@ -78,6 +77,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             
         case 7:
             test = all_tests[-1]
+            test.vid_recording = False
             fileFolder = test.get_id()
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
@@ -100,6 +100,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                     
         case 8:
             ser.write("Save complete\n".encode())
+            all_tests[-1].ongoing = False
         case 9:
             m = all_mice[search.group(1)]
             if experiment_parameters.paused or m.reached_limit():
@@ -122,7 +123,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
         case 12:
             if all_tests:
                 test = all_tests[-1]
-                if test.ongoing:
+                if test.vid_recording:
                     t = myTime(START_TIME,int(search.group(1)))
                     test.add_ttl(t)
                 else:
