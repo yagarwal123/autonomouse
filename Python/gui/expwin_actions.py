@@ -92,11 +92,11 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
                     self.pause_exp()
                 self.refillButton.setText('Stop Refill')
                 self.refillLabel.setText('Valve is now open')
-                self.ser.write('Refill'.encode())
+                self.ser.write('Refill\n'.encode())
             else:                               #Experiment is not paused
                 self.refillButton.setText('Refill')
                 self.refillLabel.setText('Valve is now closed')
-                self.ser.write('Stop'.encode())
+                self.ser.write('Stop\n'.encode())
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('A test is ongoing, please wait till it finishes')

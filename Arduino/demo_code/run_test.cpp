@@ -89,6 +89,12 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     t1.start(); // start timer again
     
     while(millis() < downTime){ // downtime of sensor
+      if(Serial.available()){
+        String serIn = Serial.readStringUntil('\n');
+        if (serIn == "Reward"){
+          deliver_reward(rewardPin, liquidAmount);
+        }
+      }
       // other processes - communications etc
     }
     // stop timers

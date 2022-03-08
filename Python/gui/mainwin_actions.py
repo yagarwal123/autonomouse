@@ -102,7 +102,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         except (RuntimeError, AttributeError) as e:
             pass
         if self.all_tests:
-            self.testwin = testwinActions(self.mutex,self.all_tests)
+            self.testwin = testwinActions(self.mutex,self.all_tests,self.ser)
             self.testwin.show()
         else:
             msg = QtWidgets.QMessageBox()

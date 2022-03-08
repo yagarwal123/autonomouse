@@ -111,6 +111,13 @@
     </spacer>
    </item>
    <item row="3" column="0" colspan="3">
+    <widget class="QPushButton" name="rewardButton">
+     <property name="text">
+      <string>Give Reward Now</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
     <widget class="QTableWidget" name="tableWidget">
      <column>
       <property name="text">
