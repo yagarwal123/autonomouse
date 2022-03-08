@@ -1,4 +1,5 @@
 import paramiko
+from scp import SCPClient
 import zmq
 import config
 
@@ -124,3 +125,16 @@ def stop_record():
     if config.RASPBERRY:
         print('stopping recording')
         func_stop(ip_address, port)
+
+def getVideofile(test_id):
+    if config.RASPBERRY:
+        ssh = paramiko.SSHClient()
+        ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect("131.111.180.78", username="pi", password="automouse", timeout=3)
+        # SCPCLient takes a paramiko transport as its only argument
+        scp = SCPClient(ssh.get_transport())
+        #scp.put('test.txt', 'test2.txt')
+        scp.get(f'~/code/RPiCameraPlugin/Python/scripts/RPiCameraVideos/{test_id}_experiment_1_recording_1', recursive=True,local_path=test_id)
+        scp.close()
+        ssh.close()

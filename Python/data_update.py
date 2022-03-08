@@ -1,12 +1,9 @@
-import paramiko
-from scp import SCPClient
 import logging
 import re
 import os
 from myTime import myTime
 from Test import Test, Trial
 import rasp_camera
-import time
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +74,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 for t in test.ttl:
                     ttlfile.write(f'{t.millis}\n')
 
-            getVideofile(test.get_id())
+            rasp_camera.getVideofile(test.get_id())
             
         case 7:
             test = all_tests[-1]
@@ -155,15 +152,3 @@ def matchCommand(inSer,KNOWNSTATEMENTS):
     if stat_mean == 0:
         logger.error("Unknown message recieved : " + inSer)
     return stat_mean, search
-
-def getVideofile(test_id):
-    ssh = paramiko.SSHClient()
-    ssh.load_system_host_keys()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect("131.111.180.78", username="pi", password="automouse", timeout=3)
-    # SCPCLient takes a paramiko transport as its only argument
-    scp = SCPClient(ssh.get_transport())
-    #scp.put('test.txt', 'test2.txt')
-    scp.get(f'~/code/RPiCameraPlugin/Python/scripts/RPiCameraVideos/{test_id}_experiment_1_recording_1', recursive=True,local_path=test_id)
-    scp.close()
-    ssh.close()
