@@ -1,5 +1,4 @@
-
-#include <Servo.h>
+ #include <Servo.h>
 #include <TimeLib.h>
 #include "run_test.h"
 #include "dop.h"
@@ -13,7 +12,7 @@
 //#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
-#define calibration_factor 1008 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor 1020 //This value is obtained using the SparkFun_HX711_Calibration sketch
 // for SD card access--------------------------
 #define SD_FAT_TYPE 3
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
