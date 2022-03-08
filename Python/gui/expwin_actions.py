@@ -3,12 +3,13 @@ from gui.expwin import Ui_expWin
 from ExperimentParameters import ExperimentParameters
 
 class expwinActions(QtWidgets.QWidget, Ui_expWin):
-    def __init__(self,mutex,experiment_parameters,all_mice):
+    def __init__(self,mutex,experiment_parameters,all_mice,ser):
         super().__init__()
         self.setupUi(self)
         self.experiment_parameters = experiment_parameters
         self.all_mice = all_mice
         self.mutex = mutex
+        self.ser = ser
         self.title = "Experiment Parameters"
 
         self.setWindowTitle(self.title) # change title
@@ -30,6 +31,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.changelickButton.clicked.connect(self.change_lick)
         self.changewaittimeButton.clicked.connect(self.change_waittime)
         self.changeMouseLimButton.clicked.connect(self.change_mouse_lim)
+        self.refillButton.clicked.connect(self.refill)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -80,3 +82,14 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         else:                               #Experiment is not paused
             self.pauseButton.setText('Pause Experiment')
             self.pauseLabel.setText('Experiment is ongoing')
+
+    def refill(self):
+        self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
+        if self.experiment_parameters.valve_open:       #Experiment is paused
+            self.refillButton.setText('Stop Refill')
+            self.refillLabel.setText('Valve is now open')
+            self.ser.write('Refill'.encode())
+        else:                               #Experiment is not paused
+            self.refillButton.setText('Refill')
+            self.refillLabel.setText('Valve is now closed')
+            self.ser.write('Stop'.encode())

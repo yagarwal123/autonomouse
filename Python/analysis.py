@@ -5,9 +5,9 @@ import numpy as np
 
 test_id = '0007A0F7C4_1'
 
-filename = f'{test_id}/{test_id}_experiment_1_recording_1/rpicamera_video'
-subprocess.run(['ffmpeg','-y','-i',f'{filename}.h264',f'{filename}.mp4'])
-cap = cv2.VideoCapture(f'{filename}.mp4')
+filename = f'{test_id}/{test_id}_experiment_1_recording_1/rpicamera_video.h264'
+#subprocess.run(['ffmpeg','-y','-i',f'{filename}.h264',f'{filename}.mp4'])
+cap = cv2.VideoCapture(filename)
 
 with open(f"{test_id}/TTL high millis - {test_id}.csv",'r') as ttl_file:
     TTLarray = np.loadtxt(ttl_file)
