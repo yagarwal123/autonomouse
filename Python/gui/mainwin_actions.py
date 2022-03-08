@@ -114,7 +114,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.expwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser)
+        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.all_tests)
         self.expwin.show()
 
 

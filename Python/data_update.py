@@ -106,7 +106,6 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 ser.write("Do not start\n".encode())
             else:
                 ser.write("Start experiment\n".encode())
-                m = getLastMouse(doors)
                 new_test = Test(m)
                 m.tests.append(new_test)
                 all_tests.append(new_test)
@@ -127,9 +126,9 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                     t = myTime(START_TIME,int(search.group(1)))
                     test.add_ttl(t)
                 else:
-                    logger.warning("Printng TTL with no test ongoing")
+                    logger.warning("Printing TTL with no test ongoing")
             else:
-                logger.warning("Printng TTL with no test conducted")
+                logger.warning("Printing TTL with no test conducted")
         case 13:
             rasp_camera.stop_record()
             ser.write("Camera closed\n".encode())

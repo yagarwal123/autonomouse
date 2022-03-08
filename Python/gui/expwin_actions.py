@@ -3,13 +3,14 @@ from gui.expwin import Ui_expWin
 from ExperimentParameters import ExperimentParameters
 
 class expwinActions(QtWidgets.QWidget, Ui_expWin):
-    def __init__(self,mutex,experiment_parameters,all_mice,ser):
+    def __init__(self,mutex,experiment_parameters,all_mice,ser,all_tests):
         super().__init__()
         self.setupUi(self)
         self.experiment_parameters = experiment_parameters
         self.all_mice = all_mice
         self.mutex = mutex
         self.ser = ser
+        self.all_tests = all_tests
         self.title = "Experiment Parameters"
 
         self.setWindowTitle(self.title) # change title
@@ -85,11 +86,18 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
 
     def refill(self):
         self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
-        if self.experiment_parameters.valve_open:       #Experiment is paused
-            self.refillButton.setText('Stop Refill')
-            self.refillLabel.setText('Valve is now open')
-            self.ser.write('Refill'.encode())
-        else:                               #Experiment is not paused
-            self.refillButton.setText('Refill')
-            self.refillLabel.setText('Valve is now closed')
-            self.ser.write('Stop'.encode())
+        if not self.all_tests or not self.all_tests[-1].ongoing:
+            if self.experiment_parameters.valve_open:       #Experiment is paused
+                if not self.experiment_parameters.paused:
+                    self.pause_exp()
+                self.refillButton.setText('Stop Refill')
+                self.refillLabel.setText('Valve is now open')
+                self.ser.write('Refill'.encode())
+            else:                               #Experiment is not paused
+                self.refillButton.setText('Refill')
+                self.refillLabel.setText('Valve is now closed')
+                self.ser.write('Stop'.encode())
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('A test is ongoing, please wait till it finishes')
+            msg.exec()
