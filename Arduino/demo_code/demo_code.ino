@@ -9,6 +9,7 @@
 #include "clear_serial_buffer.h"
 #include "SdFat.h"
 #include "time_functions.h"
+#include "deliver_reward.h"
 //#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
