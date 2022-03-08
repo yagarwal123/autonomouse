@@ -73,7 +73,7 @@ class Ui_testWin(object):
         self.m_id.setText(_translate("testWin", "TextLabel"))
         self.label_3.setText(_translate("testWin", "Test start time - "))
         self.test_start_time.setText(_translate("testWin", "TextLabel"))
-        self.rewardButton.setText(_translate("testWin", "Give Reward Now"))
+        self.rewardButton.setText(_translate("testWin", "Emergency reward"))
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("testWin", "Trial"))
         item = self.tableWidget.horizontalHeaderItem(1)

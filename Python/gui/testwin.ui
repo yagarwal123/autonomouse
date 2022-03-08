@@ -113,7 +113,7 @@
    <item row="3" column="0" colspan="3">
     <widget class="QPushButton" name="rewardButton">
      <property name="text">
-      <string>Give Reward Now</string>
+      <string>Emergency reward</string>
      </property>
     </widget>
    </item>
