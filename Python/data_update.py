@@ -53,8 +53,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             old_test.add_trial(Trial(trial,t))
         case 6:
             test = all_tests[-1]
-            fileFolder = test.get_id()
-            filename = f'Test data - {test.get_id()}.csv'
+            fileFolder = test.id
+            filename = f'Test data - {test.id}.csv'
             filename = os.path.join(fileFolder, filename)
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
@@ -67,21 +67,21 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                     csvfile.write(row)
             live_licks.clear()
 
-            ttl_filename = f'TTL high millis - {test.get_id()}.csv'
+            ttl_filename = f'TTL high millis - {test.id}.csv'
             ttl_filename = os.path.join(fileFolder, ttl_filename)
             with open(ttl_filename, 'w') as ttlfile:
                 for t in test.ttl:
                     ttlfile.write(f'{t.millis}\n')
 
-            rasp_camera.getVideofile(test.get_id())
+            rasp_camera.getVideofile(test.id)
             
         case 7:
             test = all_tests[-1]
             test.vid_recording = False
-            fileFolder = test.get_id()
+            fileFolder = test.id
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
-            filename = f'Raw lick data - {test.get_id()}.csv'
+            filename = f'Raw lick data - {test.id}.csv'
             filePath = os.path.join(fileFolder,filename)
             with open(filePath, 'w') as csvfile: 
                 l = ''
@@ -110,7 +110,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 new_test = Test(m)
                 m.tests.append(new_test)
                 all_tests.append(new_test)
-                rasp_camera.start_record(new_test.get_id())
+                rasp_camera.start_record(new_test.id)
         case 10:
             m = all_mice[search.group(1)]
             t = all_tests[-1]

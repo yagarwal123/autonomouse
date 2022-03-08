@@ -12,6 +12,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.title = "Latest test"
 
         self.rewardButton.clicked.connect(self.give_reward)
+        self.stopButton.clicked.connect(self.stop_test)
 
         self.setWindowTitle(self.title) # change title
         self.timer = QtCore.QTimer(self)
@@ -43,3 +44,9 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
             msg = QtWidgets.QMessageBox()
             msg.setText('No mouse is in')
             msg.exec()
+
+    def stop_test(self):
+        test = self.all_tests[-1]
+        if not test.trials_over:
+            test.trials_over = True
+            self.ser.write('End\n'.encode())

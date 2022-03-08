@@ -15,7 +15,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.setWindowTitle(self.title) # change title
         for t in self.mouse.tests:
             if not t.ongoing:
-                self.test_select.addItem(f'{t.get_id()} - {t.starting_time}')
+                self.test_select.addItem(f'{t.id} - {t.starting_time}')
         self.pltax = None
         
         self.timer = QtCore.QTimer(self)

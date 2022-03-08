@@ -12,6 +12,8 @@ class Test:
         self.test_parameters = TestParameters()
         self.vid_recording = True
         self.ongoing = True
+        self.trials_over = False
+        self.id = f'{self.mouse.get_id()}_{len(self.mouse.tests) + 1}'
     
     def add_trial(self,new_trial):
         self.trials.append(new_trial)
@@ -25,9 +27,6 @@ class Test:
             self.starting_time = t
         else:
             logger.error('Unexpected starting time message. Not updated')
-    
-    def get_id(self):
-        return f'{self.mouse.get_id()}_{len(self.mouse.tests)}'
 
 class Trial:
     """description of class"""

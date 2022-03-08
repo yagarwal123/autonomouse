@@ -36,9 +36,6 @@ Servo door_one;  // create servo object to control a servo
 Servo door_two; // twelve servo objects can be created on most boards
 
 // define constants for RFID
-const int noMouse = 2;
-String KNOWNTAGS[noMouse] = {"0007A0F7C4", "0000000000"};
-String TAGNAMES[noMouse] = {"Stuart", "Little"};
 String ID;
 
 // objects and constants for weighing
@@ -61,15 +58,9 @@ String door1Check(){
   }
   else{
     unsigned long recordTime = millis();
-    //Serial.println(ID);
-    String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
-    //Serial.println(mouseName);
-    if (mouseName != "Mouse does not exist") {
-      String serOut = "";
-      serOut = serOut + "Door Sensor - ID " + ID + " - Door 1 - Time " + recordTime;
-      Serial.println(serOut);
-    }
-    else {ID = "";};
+    String serOut = "";
+    serOut = serOut + "Door Sensor - ID " + ID + " - Door 1 - Time " + recordTime;
+    Serial.println(serOut);
   }
   return ID;
 }
@@ -81,13 +72,9 @@ String door2Check(){
   }
   else{
     unsigned long recordTime = millis();
-    String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
-    if (mouseName != "Mouse does not exist") {
-      String serOut = "";
-      serOut = serOut + "Door Sensor - ID " + ID + " - Door 2 - Time " + recordTime;
-      Serial.println(serOut);
-    }
-    else {ID = "";};
+    String serOut = "";
+    serOut = serOut + "Door Sensor - ID " + ID + " - Door 2 - Time " + recordTime;
+    Serial.println(serOut);
   }
   return ID;
 }
