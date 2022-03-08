@@ -2,6 +2,7 @@ from PyQt6 import QtCore, QtWidgets
 
 import matplotlib.pyplot
 from gui.mousewin import Ui_mouseWin
+from analysis import analysis_window
 
 class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def __init__(self,mutex,mouse):
@@ -12,6 +13,9 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.title = self.mouse.get_id() +  ' - ' + self.mouse.get_name()
 
         self.setWindowTitle(self.title) # change title
+        for t in self.mouse.tests:
+            if not t.ongoing:
+                self.test_select.addItem(f'{t.get_id()} - {t.starting_time}')
         self.pltax = None
         
         self.timer = QtCore.QTimer(self)
@@ -40,6 +44,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.changelickButton.clicked.connect(self.change_lick)
         self.changewaittimeButton.clicked.connect(self.change_waittime)
         self.changeTestLimButton.clicked.connect(self.change_testlim)
+        self.showAnalysisButton.clicked.connect(self.analysis_win)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -118,3 +123,8 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def updatedata(self):
         self.pltgraph()
         self.updatedisplays()
+
+    def analysis_win(self):
+        test_id = self.test_select.currentText().split(' ')[0]
+        if test_id:
+            analysis_window(test_id)

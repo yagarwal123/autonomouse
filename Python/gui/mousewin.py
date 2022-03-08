@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_mouseWin(object):
     def setupUi(self, mouseWin):
         mouseWin.setObjectName("mouseWin")
-        mouseWin.resize(503, 419)
+        mouseWin.resize(509, 487)
         self.gridLayout = QtWidgets.QGridLayout(mouseWin)
         self.gridLayout.setObjectName("gridLayout")
         self.label_5 = QtWidgets.QLabel(mouseWin)
@@ -20,7 +20,7 @@ class Ui_mouseWin(object):
         self.gridLayout.addWidget(self.label_5, 0, 0, 1, 1)
         self.test_no_disp = QtWidgets.QLabel(mouseWin)
         self.test_no_disp.setObjectName("test_no_disp")
-        self.gridLayout.addWidget(self.test_no_disp, 0, 1, 1, 2)
+        self.gridLayout.addWidget(self.test_no_disp, 0, 1, 1, 1)
         self.line = QtWidgets.QFrame(mouseWin)
         self.line.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
@@ -34,7 +34,7 @@ class Ui_mouseWin(object):
         self.gridLayout.addWidget(self.liq_am_disp, 2, 1, 2, 1)
         self.liquidLineEdit = QtWidgets.QLineEdit(mouseWin)
         self.liquidLineEdit.setObjectName("liquidLineEdit")
-        self.gridLayout.addWidget(self.liquidLineEdit, 2, 2, 2, 1)
+        self.gridLayout.addWidget(self.liquidLineEdit, 3, 2, 1, 1)
         self.changeliquidButton = QtWidgets.QPushButton(mouseWin)
         self.changeliquidButton.setObjectName("changeliquidButton")
         self.gridLayout.addWidget(self.changeliquidButton, 3, 3, 1, 1)
@@ -79,10 +79,16 @@ class Ui_mouseWin(object):
         self.line_2.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_2.setObjectName("line_2")
         self.gridLayout.addWidget(self.line_2, 7, 0, 1, 4)
+        self.test_select = QtWidgets.QComboBox(mouseWin)
+        self.test_select.setObjectName("test_select")
+        self.gridLayout.addWidget(self.test_select, 8, 0, 2, 3)
         self.plotWid = MplWidget(mouseWin)
         self.plotWid.setMinimumSize(QtCore.QSize(491, 281))
         self.plotWid.setObjectName("plotWid")
-        self.gridLayout.addWidget(self.plotWid, 8, 0, 1, 4)
+        self.gridLayout.addWidget(self.plotWid, 10, 0, 1, 4)
+        self.showAnalysisButton = QtWidgets.QPushButton(mouseWin)
+        self.showAnalysisButton.setObjectName("showAnalysisButton")
+        self.gridLayout.addWidget(self.showAnalysisButton, 8, 3, 1, 1)
 
         self.retranslateUi(mouseWin)
         QtCore.QMetaObject.connectSlotsByName(mouseWin)
@@ -104,6 +110,7 @@ class Ui_mouseWin(object):
         self.label_4.setText(_translate("mouseWin", "Test Limit"))
         self.test_lim_disp.setText(_translate("mouseWin", "10"))
         self.changeTestLimButton.setText(_translate("mouseWin", "Change"))
+        self.showAnalysisButton.setText(_translate("mouseWin", "Show analysis window"))
 from gui.mplwidget import MplWidget
 
 
