@@ -48,12 +48,17 @@ def analysis_window(test_id):
     while millis<TTLarray[-1]:
         #print(millis)
         if millis == TTLarray[idx]:
-            ret, frame = cap.read()
+            try:
+                _, frame = cap.read()
+                cv2.imshow('Press q to exit',frame)
+            except:
+                break
             #ax2.imshow(frame)
-            cv2.imshow('Press q to exit',frame)
             idx += 1 
+
             #frame_rate to be adjusted according to the PC
-            frame_rate = 15 if millis < startTime else 10
+            #frame_rate = 1 if millis < startTime else 1
+            frame_rate = 1
             if cv2.waitKey(frame_rate) & 0xFF == ord('q'):
                 break
         if millis > startTime:
