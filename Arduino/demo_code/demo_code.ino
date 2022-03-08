@@ -199,7 +199,7 @@ void loop()
       break;
     }
   }
-
+  scale.tare(); // reset scale again
   door_close(door_one);
   door_open(door_two);
   lastMouse = ID_2;
