@@ -92,7 +92,7 @@ String door2Check(){
   return ID;
 }
 
-void waitUntilReceive(String msg){
+void waitUntilReceive(String msg){ // waits for message from python
   while (true){
     while(!Serial.available());
     String serIn = Serial.readStringUntil('\n');
@@ -159,6 +159,17 @@ void setup()
 
 void loop()
 {
+  // refill syringe
+  if(Serial.available()){
+    String serIn = Serial.readStringUntil('\n');
+    if (serIn == "Refill"){
+      digitalWrite(rewardPin, HIGH);
+      waitUntilReceive("Stop");
+      digitalWrite(rewardPin, LOW);
+    }
+  }
+
+  
   // constantly checks until a known mouse appears
   // can make this an interrupt or something
 
@@ -192,6 +203,9 @@ void loop()
   door_close(door_one);
   door_open(door_two);
   lastMouse = ID_2;
+
+  // lure mouse
+  deliver_reward(rewardPin, 100);
 
   // take the weight
   //Uncomment
@@ -283,7 +297,7 @@ void loop()
     file.rewind();
 
     while(file.available()){ // file is available
-      if(Serial.available()){
+      if(Serial.available()){ // python reads slower than teensy sends wait for python to clear in buffer
         String serIn = Serial.readStringUntil('\n');
         if (serIn == "Pause"){
           waitUntilReceive("Resume");
