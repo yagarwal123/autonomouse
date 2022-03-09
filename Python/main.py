@@ -40,13 +40,13 @@ if __name__ == "__main__":
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
 
     if config.TEENSY:
-        l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath])
+        l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath,'--port', config.PORT])
         assert l.returncode == 0, 'Could not upload sketch to the teensy'
 
     START_TIME = datetime.datetime.now()
     
     if config.TEENSY:
-        ser = serial.Serial('COM4', 9600)
+        ser = serial.Serial(config.PORT, 9600)
     else:
         ser = Mock()
         def user_in():

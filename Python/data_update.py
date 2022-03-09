@@ -76,7 +76,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             rasp_camera.getVideofile(test.id)
             
         case 7:
-            
+            test = all_tests[-1]
             fileFolder = test.id
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
