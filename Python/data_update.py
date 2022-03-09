@@ -140,7 +140,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
 
 
 def getLastMouse(doors):
-    for entry in reversed(doors):
+    for entry in doors:
         if entry[2] == 2:
             return entry[1]
 
