@@ -3,3 +3,6 @@ matplotlib
 pyserial
 paramiko
 zmq
+opencv-python
+pyqtgraph
+scp
