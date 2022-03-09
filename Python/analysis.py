@@ -47,20 +47,19 @@ def analysis_window(test_id):
 
     while millis<TTLarray[-1]:
         #print(millis)
-        if millis == TTLarray[idx]:
-            try:
-                _, frame = cap.read()
-                cv2.imshow('Press q to exit',frame)
-            except:
-                break
-            #ax2.imshow(frame)
-            idx += 1 
+        try:
+            _, frame = cap.read()
+            cv2.imshow('Press q to exit',frame)
+        except:
+            break
+        #ax2.imshow(frame)
+        idx += 1 
 
-            #frame_rate to be adjusted according to the PC
-            #frame_rate = 1 if millis < startTime else 1
-            frame_rate = 1
-            if cv2.waitKey(frame_rate) & 0xFF == ord('q'):
-                break
+        #frame_rate to be adjusted according to the PC
+        #frame_rate = 15 if millis < startTime else 10
+        frame_rate = 1
+        if cv2.waitKey(frame_rate) & 0xFF == ord('q'):
+            break
         if millis > startTime:
             #ax1.clear()
             t = millis - startTime
@@ -80,11 +79,11 @@ def analysis_window(test_id):
             #plt.pause(0.001)
         # if millis%10000 == 0:
         #     print(millis)
-        millis += 1
+        millis = TTLarray[idx]
 
     cap.release()
     cv2.destroyAllWindows()
 
 if __name__=='__main__':
-    test_id = '0007A0F7C4_1'
+    test_id = '0007A0F7C4_2'
     analysis_window(test_id)

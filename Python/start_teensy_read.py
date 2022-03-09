@@ -28,5 +28,5 @@ def startTeensyRead(ser,mutex,START_TIME,all_mice,doors,live_licks,all_tests,exp
         # b'792\r\n
         
         mutex.lock()
-        data_update.dataUpdate(START_TIME,ser,serIn,all_mice,doors,live_licks,all_tests,experiment_parameters)  
+        data_update.dataUpdate(START_TIME,mutex,ser,serIn,all_mice,doors,live_licks,all_tests,experiment_parameters)  
         mutex.unlock()

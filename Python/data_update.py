@@ -7,7 +7,7 @@ import rasp_camera
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters):
+def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g - Time (\d+)$',        #1
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
@@ -76,13 +76,13 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
             rasp_camera.getVideofile(test.id)
             
         case 7:
-            test = all_tests[-1]
-            test.vid_recording = False
+            
             fileFolder = test.id
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
             filename = f'Raw lick data - {test.id}.csv'
             filePath = os.path.join(fileFolder,filename)
+            mutex.unlock()
             with open(filePath, 'w') as csvfile: 
                 l = ''
                 while (l.strip() != 'Raw data send complete'):
@@ -97,6 +97,7 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                             l = ser.readline().decode("utf-8")
                             csvfile.write(l)
                         ser.write("Resume\n".encode())
+            mutex.lock()
                     
         case 8:
             ser.write("Save complete\n".encode())
@@ -132,6 +133,8 @@ def dataUpdate(START_TIME,ser, inSer,all_mice,doors,live_licks,all_tests,experim
                 logger.warning("Printing TTL with no test conducted")
         case 13:
             rasp_camera.stop_record()
+            test = all_tests[-1]
+            test.vid_recording = False
             ser.write("Camera closed\n".encode())
                 
 
