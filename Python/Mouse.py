@@ -10,7 +10,7 @@ class Mouse:
         self.weight_times = []
         self.doortimes = []
         self.tests = []
-        self.liquid_amount = 200
+        self.liquid_amount = 50
         self.lick_threshold = 50
         self.waittime = 5000
         self.test_limit = 10
