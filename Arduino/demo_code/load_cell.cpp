@@ -21,9 +21,10 @@ float load_cell(HX711 *scale) { // sliding window for weight: search for stable 
   FIRFilter fir;
   FIRFilter_init(&fir); // initialise buffer
   
-  while(wCounter < 10){ // reach 5 consistent readings - can be changed
+  while(wCounter < 5){ // reach 5 consistent readings - can be changed
     weight = scale->get_units();
     aveWeight = FIRFilter_calc(&fir, weight);
+    Serial.println(aveWeight);
     // if(weight == w1 || weight == w1+0.1 || weight == w1-0.1)
     diff = weight - w1;
     if(diff < 0.1 && diff > -0.1){ // if the difference is within 0.1g

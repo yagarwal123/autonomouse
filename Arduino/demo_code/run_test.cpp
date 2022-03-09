@@ -40,7 +40,8 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   unsigned long startTime = 0;
   unsigned long* timePt = &startTime; // pointer to start time of test
   int i=0;
-  int noLickCounter=0;// counts the number of no licks - stops after no licks found in 5 consequtive trials
+  bool testOngoing = 1; // stops test on command
+  //int noLickCounter = 0; // counts the number of no licks - stops after no licks found in 5 consequtive trials
   // actual number need to be confirmed
   
   // lambda function, pass in outerscope
@@ -52,7 +53,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   Serial.print("Starting test now - "); Serial.println(millis());
   pr->println(millis()); // write start time in file DELETE ONE
   //for(int i=1; i<11; i++){
-  while(noLickCounter<5){
+  while(testOngoing){
     i++; // increment trial number
     //Serial.print("Trial ");
     //Serial.println(i);
@@ -71,7 +72,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
           t2.start(); // start reading at longer intervals if mouse has licked
           lickTime = lickCheck - startTime;
           deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
-          noLickCounter=0; // reset noLickCounter
+          //noLickCounter=0; // reset noLickCounter
           }
         }
       }
@@ -80,7 +81,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     t1.stop();// stop timers whether or not there was licking
     if (lickTime < 0){ // start reading at longer intervals if mouse hasnt licked
       t2.start();
-      noLickCounter++;
+      //noLickCounter++;
     }
     Serial.print("Lick Sensor - Trial ");
     Serial.print(i);
@@ -89,6 +90,15 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     t1.start(); // start timer again
     
     while(millis() < downTime){ // downtime of sensor
+      if(Serial.available()){
+        String serIn = Serial.readStringUntil('\n');
+        if (serIn == "Reward"){
+          deliver_reward(rewardPin, liquidAmount);
+        }
+        if(serIn == "End"){
+          testOngoing = 0;
+        }
+      }
       // other processes - communications etc
     }
     // stop timers

@@ -10,6 +10,6 @@ class myTime:
         self.time = self.START_TIME + datetime.timedelta(milliseconds=self.millis)
     
     def __str__(self):
-        return self.time.strftime("%m-%d-%Y-%H-%M-%S")
+        return self.time.strftime("%d-%m-%Y-%H-%M-%S")
 
 

@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_expWin(object):
     def setupUi(self, expWin):
         expWin.setObjectName("expWin")
-        expWin.resize(334, 149)
+        expWin.resize(334, 220)
         self.gridLayout = QtWidgets.QGridLayout(expWin)
         self.gridLayout.setObjectName("gridLayout")
         self.label_blah = QtWidgets.QLabel(expWin)
@@ -65,12 +65,21 @@ class Ui_expWin(object):
         self.pauseButton = QtWidgets.QPushButton(expWin)
         self.pauseButton.setObjectName("pauseButton")
         self.gridLayout.addWidget(self.pauseButton, 6, 0, 1, 1)
+        self.refillButton = QtWidgets.QPushButton(expWin)
+        self.refillButton.setObjectName("refillButton")
+        self.gridLayout.addWidget(self.refillButton, 7, 0, 1, 1)
         self.pauseLabel = QtWidgets.QLabel(expWin)
         font = QtGui.QFont()
         font.setPointSize(8)
         self.pauseLabel.setFont(font)
         self.pauseLabel.setObjectName("pauseLabel")
         self.gridLayout.addWidget(self.pauseLabel, 6, 1, 1, 2)
+        self.refillLabel = QtWidgets.QLabel(expWin)
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.refillLabel.setFont(font)
+        self.refillLabel.setObjectName("refillLabel")
+        self.gridLayout.addWidget(self.refillLabel, 7, 1, 1, 2)
 
         self.retranslateUi(expWin)
         QtCore.QMetaObject.connectSlotsByName(expWin)
@@ -88,7 +97,9 @@ class Ui_expWin(object):
         self.label_4.setText(_translate("expWin", "Mouse limit per day"))
         self.changeMouseLimButton.setText(_translate("expWin", "Change"))
         self.pauseButton.setText(_translate("expWin", "Pause Experiment"))
+        self.refillButton.setText(_translate("expWin", "Refill"))
         self.pauseLabel.setText(_translate("expWin", "Experiment is ongoing"))
+        self.refillLabel.setText(_translate("expWin", "Valve is closed"))
 
 
 if __name__ == "__main__":

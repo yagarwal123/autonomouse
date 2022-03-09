@@ -1,6 +1,8 @@
 import subprocess
 import logging.config
 from time import sleep
+from unittest.mock import Mock
+import config
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 
@@ -36,14 +38,20 @@ if __name__ == "__main__":
     #os.system("\"C:/Program Files (x86)/Arduino/arduino.exe\" --upload \"C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino\"")
     #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
-    cmd = "C:/PROGRA~2/Arduino/arduino_debug.exe --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-    l = subprocess.run(cmd.split())
-    assert(l.returncode == 0)
+
+    if config.TEENSY:
+        l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath])
+        assert l.returncode == 0, 'Could not upload sketch to the teensy'
 
     START_TIME = datetime.datetime.now()
-
-    ser = serial.Serial('COM4', 9600)
-    # ser = None
+    
+    if config.TEENSY:
+        ser = serial.Serial('COM4', 9600)
+    else:
+        ser = Mock()
+        def user_in():
+            return input().encode()
+        ser.readline.side_effect = user_in
 
     rasp_camera.start_rpi_host()
 

@@ -12,6 +12,7 @@ from gui.testwin_actions import testwinActions
 from gui.expwin_actions import expwinActions
 from start_teensy_read import startTeensyRead
 import rasp_camera
+import config
 from ExperimentParameters import ExperimentParameters
 
 logger = logging.getLogger(__name__)
@@ -54,9 +55,10 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if close == QMessageBox.StandardButton.Yes:
             self.worker.terminate()
-            self.worker.wait()
+            if config.TEENSY:
+                self.worker.wait()
+                self.ser.close()
             rasp_camera.close_record()
-            self.ser.close()
             a0.accept()
         else:
             a0.ignore()
@@ -100,7 +102,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         except (RuntimeError, AttributeError) as e:
             pass
         if self.all_tests:
-            self.testwin = testwinActions(self.mutex,self.all_tests)
+            self.testwin = testwinActions(self.mutex,self.all_tests,self.ser)
             self.testwin.show()
         else:
             msg = QtWidgets.QMessageBox()
@@ -112,7 +114,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.expwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice)
+        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.all_tests)
         self.expwin.show()
 
 

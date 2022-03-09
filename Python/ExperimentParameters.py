@@ -2,6 +2,7 @@ class ExperimentParameters:
     """description of class"""
     def __init__(self):
         self.paused = False
+        self.valve_open = False
 
     @staticmethod
     def update_all_mice_liquid(all_mice,amount):

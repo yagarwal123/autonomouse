@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>334</width>
-    <height>149</height>
+    <height>220</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -108,6 +108,13 @@
      </property>
     </widget>
    </item>
+   <item row="7" column="0">
+    <widget class="QPushButton" name="refillButton">
+     <property name="text">
+      <string>Refill</string>
+     </property>
+    </widget>
+   </item>
    <item row="6" column="1" colspan="2">
     <widget class="QLabel" name="pauseLabel">
      <property name="font">
@@ -117,6 +124,18 @@
      </property>
      <property name="text">
       <string>Experiment is ongoing</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="2">
+    <widget class="QLabel" name="refillLabel">
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Valve is closed</string>
      </property>
     </widget>
    </item>

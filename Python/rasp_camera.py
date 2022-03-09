@@ -1,8 +1,10 @@
 import paramiko
+from scp import SCPClient
 import zmq
+import config
 
 port = 5555
-ip_addresses = ["131.111.180.78"]
+ip_address = "131.111.180.78"
 
 def func_ssh(address, usr, pwd, command, pseudoterminal):
     try:
@@ -98,28 +100,41 @@ def func_stop(address, port):
 
 
 def start_rpi_host():
-    print('start rpi host via ssh')
-    for i in range(0, len(ip_addresses)):
-        print('ip address:' + ip_addresses[i])
-        str = func_ssh(ip_addresses[i], "pi", "automouse",
+    if config.RASPBERRY:
+        print('start rpi host via ssh')
+        print('ip address:' + ip_address)
+        str = func_ssh(ip_address, "pi", "automouse",
                         'python "/home/pi/code/RPiCameraPlugin/Python/scripts/rpi_host.py" plugin', 0)
 
 def start_record(rec_path):
-    print('starting recording')
+    if config.RASPBERRY:
+        print('starting recording')
 
-    # now = datetime.now()
-    # rec_path = now.strftime("%Y%m%d_%H%M%S")
+        # now = datetime.now()
+        # rec_path = now.strftime("%Y%m%d_%H%M%S")
 
-    for i in range(0, len(ip_addresses)):
-        func_start(ip_addresses[i], port, rec_path)
+        func_start(ip_address, port, rec_path)
 
 def close_record():
-    print('closing recording')
-    for i in range(0, len(ip_addresses)):
-        func_close(ip_addresses[i], port)
+    if config.RASPBERRY:
+        print('closing recording')
+        func_close(ip_address, port)
         print('3')
 
 def stop_record():
-    print('stopping recording')
-    for i in range(0, len(ip_addresses)):
-        func_stop(ip_addresses[i], port)
+    if config.RASPBERRY:
+        print('stopping recording')
+        func_stop(ip_address, port)
+
+def getVideofile(test_id):
+    if config.RASPBERRY:
+        ssh = paramiko.SSHClient()
+        ssh.load_system_host_keys()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect("131.111.180.78", username="pi", password="automouse", timeout=3)
+        # SCPCLient takes a paramiko transport as its only argument
+        scp = SCPClient(ssh.get_transport())
+        #scp.put('test.txt', 'test2.txt')
+        scp.get(f'~/code/RPiCameraPlugin/Python/scripts/RPiCameraVideos/{test_id}_experiment_1_recording_1', recursive=True,local_path=test_id)
+        scp.close()
+        ssh.close()

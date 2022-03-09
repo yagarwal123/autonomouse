@@ -3,12 +3,16 @@ from PyQt6 import QtCore, QtWidgets
 from gui.testwin import Ui_testWin
 
 class testwinActions(QtWidgets.QWidget, Ui_testWin):
-    def __init__(self,mutex,all_tests):
+    def __init__(self,mutex,all_tests,ser):
         super().__init__()
         self.setupUi(self)
         self.all_tests = all_tests
         self.mutex = mutex
+        self.ser = ser
         self.title = "Latest test"
+
+        self.rewardButton.clicked.connect(self.give_reward)
+        self.stopButton.clicked.connect(self.stop_test)
 
         self.setWindowTitle(self.title) # change title
         self.timer = QtCore.QTimer(self)
@@ -31,3 +35,18 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
             self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
             self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(trial.value)))
         self.mutex.unlock()
+
+    def give_reward(self):
+        test = self.all_tests[-1]
+        if test.vid_recording:
+            self.ser.write('Reward\n'.encode())
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('No mouse is in')
+            msg.exec()
+
+    def stop_test(self):
+        test = self.all_tests[-1]
+        if not test.trials_over:
+            test.trials_over = True
+            self.ser.write('End\n'.encode())

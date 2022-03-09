@@ -1,5 +1,4 @@
-
-#include <Servo.h>
+ #include <Servo.h>
 #include <TimeLib.h>
 #include "run_test.h"
 #include "dop.h"
@@ -10,10 +9,11 @@
 #include "clear_serial_buffer.h"
 #include "SdFat.h"
 #include "time_functions.h"
+#include "deliver_reward.h"
 //#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
-#define calibration_factor 1004 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor 1020 //This value is obtained using the SparkFun_HX711_Calibration sketch
 // for SD card access--------------------------
 #define SD_FAT_TYPE 3
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
@@ -36,9 +36,6 @@ Servo door_one;  // create servo object to control a servo
 Servo door_two; // twelve servo objects can be created on most boards
 
 // define constants for RFID
-const int noMouse = 2;
-String KNOWNTAGS[noMouse] = {"0007A0F7C4", "0000000000"};
-String TAGNAMES[noMouse] = {"Stuart", "Little"};
 String ID;
 
 // objects and constants for weighing
@@ -61,15 +58,9 @@ String door1Check(){
   }
   else{
     unsigned long recordTime = millis();
-    //Serial.println(ID);
-    String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
-    //Serial.println(mouseName);
-    if (mouseName != "Mouse does not exist") {
-      String serOut = "";
-      serOut = serOut + "Door Sensor - ID " + ID + " - Door 1 - Time " + recordTime;
-      Serial.println(serOut);
-    }
-    else {ID = "";};
+    String serOut = "";
+    serOut = serOut + "Door Sensor - ID " + ID + " - Door 1 - Time " + recordTime;
+    Serial.println(serOut);
   }
   return ID;
 }
@@ -81,18 +72,14 @@ String door2Check(){
   }
   else{
     unsigned long recordTime = millis();
-    String mouseName = check_id_exist(ID, KNOWNTAGS, TAGNAMES, noMouse);
-    if (mouseName != "Mouse does not exist") {
-      String serOut = "";
-      serOut = serOut + "Door Sensor - ID " + ID + " - Door 2 - Time " + recordTime;
-      Serial.println(serOut);
-    }
-    else {ID = "";};
+    String serOut = "";
+    serOut = serOut + "Door Sensor - ID " + ID + " - Door 2 - Time " + recordTime;
+    Serial.println(serOut);
   }
   return ID;
 }
 
-void waitUntilReceive(String msg){
+void waitUntilReceive(String msg){ // waits for message from python
   while (true){
     while(!Serial.available());
     String serIn = Serial.readStringUntil('\n');
@@ -159,6 +146,17 @@ void setup()
 
 void loop()
 {
+  // refill syringe
+  if(Serial.available()){
+    String serIn = Serial.readStringUntil('\n');
+    if (serIn == "Refill"){
+      digitalWrite(rewardPin, HIGH);
+      waitUntilReceive("Stop");
+      digitalWrite(rewardPin, LOW);
+    }
+  }
+
+  
   // constantly checks until a known mouse appears
   // can make this an interrupt or something
 
@@ -188,10 +186,13 @@ void loop()
       break;
     }
   }
-
+  scale.tare(); // reset scale again
   door_close(door_one);
   door_open(door_two);
   lastMouse = ID_2;
+
+  // lure mouse
+  deliver_reward(rewardPin, 100);
 
   // take the weight
   //Uncomment
@@ -272,7 +273,7 @@ void loop()
         break;
       }
     }
-    
+    delay(2000);
     Serial.println("Sending raw data");
 
     // open file again
@@ -283,7 +284,7 @@ void loop()
     file.rewind();
 
     while(file.available()){ // file is available
-      if(Serial.available()){
+      if(Serial.available()){ // python reads slower than teensy sends wait for python to clear in buffer
         String serIn = Serial.readStringUntil('\n');
         if (serIn == "Pause"){
           waitUntilReceive("Resume");
