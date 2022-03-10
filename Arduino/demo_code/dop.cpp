@@ -14,10 +14,10 @@
 //Servo myservo;  // create servo object to control a servo 
                 // twelve servo objects can be created on most boards
  
-void door_open(Servo door) 
+void door_open(Servo door) // might need to decrease speed
 { 
   door.write(90);
-  delay(1000);
+  delay(1000); // why have delay here?
 } 
  
 void door_close(Servo door) 

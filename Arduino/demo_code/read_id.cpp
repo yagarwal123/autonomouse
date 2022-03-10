@@ -27,9 +27,9 @@ String read_id(HardwareSerial &refSer){
       while (!refSer.available()){}; // wait until serial buffer is not empty
       read_byte = refSer.read();//Serial.println(read_byte);
     };//reach the first end of seq
-    //Serial.println("Reached here 2");
+    
     unsigned long strt_time = millis();
-    while ( (i < 11) && ( (millis() - strt_time) < 1000) ) {
+    while ( (i < 11) && ( (millis() - strt_time) < 1000) ) { // why are we reading twice?
       while (refSer.available()){ // better performance
         read_byte = refSer.read();
         //Serial.println(read_byte);
@@ -37,7 +37,6 @@ String read_id(HardwareSerial &refSer){
         i++;
       }
     }
-    //Serial.println("Reached here 3");
     if (check_tag_valid(newTag)){
       String finalTag = newTag;
       finalTag.trim();
