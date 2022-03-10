@@ -1,0 +1,24 @@
+# ignore ALL files with the extension DS_Store
+*.DS_Store
+
+# ignore ALL files with the extension log
+*.log*
+
+# ignore ALL files with the extension csv
+*.csv
+
+# ignore ALL files with the extension json
+*.json
+
+# ignore ALL files with the extension h264
+*.h264
+
+# ignore ALL files with the extension mp4
+*.mp4
+
+# don't ignore mouse_info.csv
+!mouse_info.csv
+
+# ignore ALL files in ANY directory named __pycache__
+__pycache__/      
+

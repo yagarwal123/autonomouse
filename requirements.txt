@@ -1,0 +1,8 @@
+PyQt6
+matplotlib
+pyserial
+paramiko
+zmq
+opencv-python
+pyqtgraph
+scp
