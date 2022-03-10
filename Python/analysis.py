@@ -85,5 +85,5 @@ def analysis_window(test_id):
     cv2.destroyAllWindows()
 
 if __name__=='__main__':
-    test_id = '0007A0F7C4_2'
+    test_id = '00079EB022_1'
     analysis_window(test_id)
