@@ -92,7 +92,8 @@ void waitUntilReceive(String msg){ // waits for message from python
 void letMouseOut(String ID_2){
   clear_serial_buffer(Serial2);
   door_open(door_two);
-  while (door2Check() != ID_2){}
+  // while (door2Check() != ID_2){}
+  while (!Serial2.available()){}; // close door 2 as soon as any mouse is detected
   door_close(door_two);
   door_open(door_one);
 }
