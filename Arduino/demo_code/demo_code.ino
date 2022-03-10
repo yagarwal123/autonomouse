@@ -3,7 +3,6 @@
 #include "run_test.h"
 #include "dop.h"
 #include "read_id.h"
-#include "check_id_exist.h"
 #include "HX711.h"
 #include "load_cell.h"
 #include "clear_serial_buffer.h"
@@ -98,8 +97,9 @@ void letMouseOut(String ID_2){
   door_open(door_one);
 }
 
-void callback4(){ // saves sensor value at regular interval to pr
-    Serial.print("TTL - "); Serial.println(millis());
+void callback4(int TTL_PIN){ // saves sensor value at regular interval to pr
+    Serial.print("TTL - "); 
+    Serial.println(millis());
 }
   
 void setup()
@@ -205,8 +205,14 @@ void loop()
     Serial.print(weight);
     Serial.println("g");
 
-    // add in function to give reward here with customised liquid size: for test ver.
-  }
+/*    if(Serial.available()){
+      String serIn = Serial.readStringUntil('\n');
+      if (serIn == "Reward"){
+        while (!Serial.available());
+        int tempAmount = Serial.readStringUntil('\n').toInt();
+        deliver_reward(rewardPin, tempAmount); // TODO: add this bit to python
+      }*/
+    }
 
   if(weight < 40){ // run test
     String serOut = "";

@@ -14,7 +14,7 @@ https://www.wasyresearch.com/tutorial-c-c-implementation-of-circular-buffer-for-
 
 #include <stdint.h>
 
-#define FIR_FILTER_LENGTH 3
+#define FIR_FILTER_LENGTH 5
 
 //Defining the struct to represent the circular buffer
 typedef struct{

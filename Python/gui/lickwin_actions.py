@@ -26,7 +26,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
 
         self.pltax = self.plotWid.canvas.ax
 
-        self.pltax.plot(self.live_licks[-5000:])
+        self.pltax.plot(self.live_licks[-2500:])
         self.pltax.set_xticks([])
 
         self.plotWid.canvas.draw()
