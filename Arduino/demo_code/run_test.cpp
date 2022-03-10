@@ -93,7 +93,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
       if(Serial.available()){
         String serIn = Serial.readStringUntil('\n');
         if (serIn == "Reward"){
-          deliver_reward(rewardPin, liquidAmount);
+          deliver_reward(rewardPin, liquidAmount); // also customise liquid drop here
         }
         if(serIn == "End"){
           testOngoing = 0;

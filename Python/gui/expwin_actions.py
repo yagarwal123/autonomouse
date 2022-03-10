@@ -23,6 +23,20 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
         self.mouseLimLineEdit.returnPressed.connect(self.changeMouseLimButton.click)
 
+        if self.experiment_parameters.paused:
+            self.pauseButton.setText('Unpause Experiment')
+            self.pauseLabel.setText('Experiment is now paused')
+        else:
+            self.pauseButton.setText('Pause Experiment')
+            self.pauseLabel.setText('Experiment is ongoing')
+
+        if self.experiment_parameters.valve_open:
+            self.refillButton.setText('Stop Refill')
+            self.refillLabel.setText('Valve is now open')
+        else:
+            self.refillButton.setText('Refill')
+            self.refillLabel.setText('Valve is now closed')
+
         self.myactions()
 
     # define actions here
@@ -87,13 +101,13 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
     def refill(self):
         self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
         if not self.all_tests or not self.all_tests[-1].ongoing:
-            if self.experiment_parameters.valve_open:       #Experiment is paused
+            if self.experiment_parameters.valve_open:      
                 if not self.experiment_parameters.paused:
                     self.pause_exp()
                 self.refillButton.setText('Stop Refill')
                 self.refillLabel.setText('Valve is now open')
                 self.ser.write('Refill\n'.encode())
-            else:                               #Experiment is not paused
+            else:                              
                 self.refillButton.setText('Refill')
                 self.refillLabel.setText('Valve is now closed')
                 self.ser.write('Stop\n'.encode())

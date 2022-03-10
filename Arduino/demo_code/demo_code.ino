@@ -146,7 +146,7 @@ void setup()
 
 void loop()
 {
-  // refill syringe
+  // refill syringe function
   if(Serial.available()){
     String serIn = Serial.readStringUntil('\n');
     if (serIn == "Refill"){
@@ -195,22 +195,16 @@ void loop()
   deliver_reward(rewardPin, 100);
 
   // take the weight
-  //Uncomment
   weight = load_cell(&scale);
-  //Comment out
-  //Serial.println("Enter mouse weight:");
-  //while(!Serial.available()){}
-  //weight = Serial.parseFloat();
 
   // optional: if weight is >0 and < 40, close door 2
   while(weight < 15){ // keep taking weight
     weight = load_cell(&scale);
-    //Serial.println("Enter mouse weight:");
-    //while(!Serial.available()){}
-    //weight = 20;
     Serial.print("weight: ");
     Serial.print(weight);
     Serial.println("g");
+
+    // add in function to give reward here with customised liquid size: for test ver.
   }
 
   if(weight < 40){ // run test
@@ -273,7 +267,7 @@ void loop()
         break;
       }
     }
-    delay(2000);
+    delay(2000); // why?
     Serial.println("Sending raw data");
 
     // open file again
@@ -302,7 +296,7 @@ void loop()
     
     Serial.println("Test complete - Start saving to file");
   }
-  else{
+  else{ // if weight > 40g: abolish test
     Serial.println("Invalid weight, abolish");
     letMouseOut(ID_2);
     lastExitTime = millis();
