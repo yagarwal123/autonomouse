@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets
-
+from multiprocessing import Process
 import matplotlib.pyplot
 from gui.mousewin import Ui_mouseWin
 from analysis import analysis_window
@@ -127,4 +127,6 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def analysis_win(self):
         test_id = self.test_select.currentText().split(' ')[0]
         if test_id:
-            analysis_window(test_id)
+            p = Process(target=analysis_window,args=[test_id])
+            p.start()
+            #analysis_window(test_id)
