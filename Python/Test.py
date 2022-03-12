@@ -6,6 +6,7 @@ class Test:
     def __init__(self,mouse):
         self.mouse = mouse
         self.starting_time = None
+        self.weight = None
         self.trials=[]
         self.odours = []
         self.ttl = []

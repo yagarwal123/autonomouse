@@ -11,6 +11,7 @@ from gui.lickwin_actions import lickwinActions
 from gui.testwin_actions import testwinActions
 from gui.expwin_actions import expwinActions
 from start_teensy_read import startTeensyRead
+from data_update import getLastTest
 import rasp_camera
 import config
 from ExperimentParameters import ExperimentParameters
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, ser, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[]):
+    def __init__(self, ser, START_TIME, all_mice,doors=[],live_licks=[]):
         super().__init__()
         self.setupUi(self)
         self.title = 'Main Window'
@@ -29,7 +30,6 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.all_mice = all_mice
         self.doors = doors
         self.live_licks = live_licks
-        self.all_tests = all_tests
         self.experiment_parameters = ExperimentParameters()
 
         self.mutex = QMutex()
@@ -38,7 +38,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
-        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters)
+        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.experiment_parameters)
         self.worker.start()
         self.myactions() # add actions for different buttons
 
@@ -101,34 +101,28 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.testwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        if self.all_tests:
-            self.testwin = testwinActions(self.mutex,self.all_tests,self.ser)
-            self.testwin.show()
-        else:
-            msg = QtWidgets.QMessageBox()
-            msg.setText('No tests have been conducted yet')
-            msg.exec()
+        self.testwin = testwinActions(self.mutex,self.doors,self.ser)
+        self.testwin.show()
 
     def open_exp(self):
         try:
             self.expwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.all_tests)
+        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.doors)
         self.expwin.show()
 
 
 class TeensyRead(QThread):
-    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_parameters):
+    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,experiment_parameters):
         super(TeensyRead, self).__init__()
         self.ser = ser
         self.all_mice = all_mice
         self.doors = doors
         self.live_licks = live_licks
-        self.all_tests = all_tests
         self.START_TIME = START_TIME
         self.mutex = mutex
         self.experiment_parameters = experiment_parameters
 
     def run(self):
-        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters)
+        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.experiment_parameters)

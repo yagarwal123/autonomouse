@@ -1,16 +1,17 @@
 from PyQt6 import QtCore, QtWidgets
+from data_update import getLastTest
 from gui.expwin import Ui_expWin
 from ExperimentParameters import ExperimentParameters
 
 class expwinActions(QtWidgets.QWidget, Ui_expWin):
-    def __init__(self,mutex,experiment_parameters,all_mice,ser,all_tests):
+    def __init__(self,mutex,experiment_parameters,all_mice,ser,doors):
         super().__init__()
         self.setupUi(self)
         self.experiment_parameters = experiment_parameters
         self.all_mice = all_mice
         self.mutex = mutex
         self.ser = ser
-        self.all_tests = all_tests
+        self.doors = doors
         self.title = "Experiment Parameters"
 
         self.setWindowTitle(self.title) # change title
@@ -100,7 +101,8 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
 
     def refill(self):
         self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
-        if not self.all_tests or not self.all_tests[-1].ongoing:
+        test = getLastTest(self.doors)
+        if not test or not test.ongoing:
             if self.experiment_parameters.valve_open:      
                 if not self.experiment_parameters.paused:
                     self.pause_exp()

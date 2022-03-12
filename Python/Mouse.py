@@ -44,5 +44,11 @@ class Mouse:
 
     def reached_limit(self):
         return self.tests_today() >= self.test_limit
+
+    def getRecentTest(self):
+        if self.tests:
+            return self.tests[-1]
+        else:
+            return None
         
 
