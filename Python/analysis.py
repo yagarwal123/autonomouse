@@ -16,7 +16,7 @@ def analysis_window(test_id):
 
     with open(f"{test_id}/Test data - {test_id}.csv",'r') as ttl_file:
         for line in ttl_file:
-            l = line.strip().split(', ')
+            l = line.strip().split(',')
             if l[0] == 'lick_threshold':
                 threshold = int(l[1])
                 break

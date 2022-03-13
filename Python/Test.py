@@ -37,11 +37,6 @@ class Trial:
 
 class TestParameters:
 
-    def __init__(self):
-        self.lick_threshold = None
-        self.liquid_amount = None
-        self.waittime = None
-
     def set_parameters(self,lick_threshold,liquid_amount,waittime):
         self.lick_threshold = lick_threshold
         self.liquid_amount = liquid_amount
@@ -49,6 +44,6 @@ class TestParameters:
 
     def __str__(self):
         attrs = vars(self)
-        return('\n'.join("%s, %s" % item for item in attrs.items()))
+        return('\n'.join("%s,%s" % item for item in attrs.items()))
     
 
