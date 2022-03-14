@@ -198,6 +198,13 @@ void loop()
     Serial.print(weight);
     Serial.println("g");
 
+    if(Serial.available()){
+      String serIn = Serial.readStringUntil('\n');
+      if (serIn == "Manual Start"){
+        weight = 39.99;
+      }
+    }
+
     // add in function to give reward here with customised liquid size: for test ver.
   }
 
@@ -280,7 +287,7 @@ void loop()
       }
       while(Serial.availableForWrite() < 40);
       char line[40];
-      int data = file.fgets(line, sizeof(line));
+      file.fgets(line, sizeof(line));
       //char line = file.read();
       Serial.print(line);
     }

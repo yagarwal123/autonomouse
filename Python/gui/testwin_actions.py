@@ -13,6 +13,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
 
         self.rewardButton.clicked.connect(self.give_reward)
         self.stopButton.clicked.connect(self.stop_test)
+        self.manStartButton.clicked.connect(self.manual_start_test)
 
         self.setWindowTitle(self.title) # change title
         self.timer = QtCore.QTimer(self)
@@ -50,3 +51,8 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         if not test.trials_over:
             test.trials_over = True
             self.ser.write('End\n'.encode())
+
+    def manual_start_test(self):
+        test = self.all_tests[-1]
+        if test.vid_recording and test.starting_time is None:
+            self.ser.write('Manual Start\n'.encode())
