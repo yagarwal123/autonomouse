@@ -2,7 +2,6 @@
 #include <TimeLib.h>
 #include "run_test.h"
 #include "dop.h"
-#include "read_id.h"
 #include "HX711.h"
 #include "load_cell.h"
 #include "clear_serial_buffer.h"
@@ -51,30 +50,26 @@ unsigned long lastExitTime = 0;
 String lastMouse = "";
 
 String door1Check(){
-  ID = read_id(Serial1);
-  if (ID.length() != 10) {
-    ID = "";
-  }
-  else{
+  if (Serial1.available()){
+    ID = Serial1.readStringUntil('\r');
     unsigned long recordTime = millis();
     String serOut = "";
     serOut = serOut + "Door Sensor - ID " + ID + " - Door 1 - Time " + recordTime;
     Serial.println(serOut);
   }
+  else{ID = "";};
   return ID;
 }
 
 String door2Check(){
-  ID = read_id(Serial2);
-  if (ID.length() != 10) {
-    ID = "";
-  }
-  else{
+  if (Serial2.available()){
+    ID = Serial2.readStringUntil('\r');
     unsigned long recordTime = millis();
     String serOut = "";
     serOut = serOut + "Door Sensor - ID " + ID + " - Door 2 - Time " + recordTime;
     Serial.println(serOut);
   }
+  else{ID = "";};
   return ID;
 }
 
