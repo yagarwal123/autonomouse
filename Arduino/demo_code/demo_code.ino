@@ -3,7 +3,6 @@
 #include "run_test.h"
 #include "dop.h"
 #include "read_id.h"
-#include "check_id_exist.h"
 #include "HX711.h"
 #include "load_cell.h"
 #include "clear_serial_buffer.h"

@@ -39,11 +39,15 @@ if __name__ == "__main__":
     #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
 
+    rasp_camera.start_rpi_host()
+
     if config.TEENSY:
         l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath,'--port', config.PORT])
         assert l.returncode == 0, 'Could not upload sketch to the teensy'
 
     START_TIME = datetime.datetime.now()
+
+    sleep(5)
     
     if config.TEENSY:
         ser = serial.Serial(config.PORT, 9600)
@@ -52,8 +56,6 @@ if __name__ == "__main__":
         def user_in():
             return input().encode()
         ser.readline.side_effect = user_in
-
-    rasp_camera.start_rpi_host()
 
     all_mice = {}
     with open('mouse_info.csv',mode='r') as f:
