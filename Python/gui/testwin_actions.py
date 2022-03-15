@@ -18,7 +18,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.setWindowTitle(self.title) # change title
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(lambda:self.popData())
-        self.timer.start(1000)
+        self.timer.start(2000)
         
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
@@ -26,6 +26,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
 
 
     def popData(self):
+        if not self.all_tests: return
         self.mutex.lock()
         test = self.all_tests[-1]
         self.m_name.setText(test.mouse.get_name())
@@ -39,6 +40,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.mutex.unlock()
 
     def give_reward(self):
+        if not self.all_tests: return
         test = self.all_tests[-1]
         if test.vid_recording:
             self.ser.write('Reward\n'.encode())
@@ -48,12 +50,14 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
             msg.exec()
 
     def stop_test(self):
+        if not self.all_tests: return
         test = self.all_tests[-1]
         if not test.trials_over:
             test.trials_over = True
             self.ser.write('End\n'.encode())
 
     def manual_start_test(self):
+        if not self.all_tests: return
         test = self.all_tests[-1]
         if test.vid_recording and test.starting_time is None:
             self.ser.write('Manual Start\n'.encode())

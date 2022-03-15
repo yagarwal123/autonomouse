@@ -53,6 +53,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.open_lick()
             self.open_door()
             self.open_cam()
+            self.open_test()
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         close = QMessageBox()
@@ -109,13 +110,8 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.testwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        if self.all_tests:
-            self.testwin = testwinActions(self.mutex,self.all_tests,self.ser)
-            self.testwin.show()
-        else:
-            msg = QtWidgets.QMessageBox()
-            msg.setText('No tests have been conducted yet')
-            msg.exec()
+        self.testwin = testwinActions(self.mutex,self.all_tests,self.ser)
+        self.testwin.show()
 
     def open_exp(self):
         try:
