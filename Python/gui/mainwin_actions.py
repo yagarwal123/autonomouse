@@ -3,6 +3,7 @@ from PyQt6.QtCore import QThread, QMutex
 from PyQt6.QtWidgets import QMessageBox
 
 import logging
+import os
 
 from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
@@ -23,7 +24,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.title = 'Main Window'
-
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.ser = ser
         self.START_TIME = START_TIME
         self.all_mice = all_mice
@@ -46,6 +47,12 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for id, m in self.all_mice.items():
             self.mouse_id_select.addItem(f'{id} - {m.get_name()}')
+
+        if config.OPEN_WINDOWS:
+            self.open_exp()
+            self.open_lick()
+            self.open_door()
+            self.open_cam()
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         close = QMessageBox()
@@ -70,6 +77,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lickButton.clicked.connect(self.open_lick)
         self.testButton.clicked.connect(self.open_test)
         self.expButton.clicked.connect(self.open_exp)
+        self.cameraButton.clicked.connect(self.open_cam)
 
 
     def open_mouse(self):
@@ -117,6 +125,8 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.all_tests)
         self.expwin.show()
 
+    def open_cam(self):
+        os.system("start microsoft.windows.camera:")
 
 class TeensyRead(QThread):
     def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_parameters):

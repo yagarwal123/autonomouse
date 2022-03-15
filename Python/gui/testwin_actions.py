@@ -35,6 +35,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         for i,trial in enumerate(test.trials):
             self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
             self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(trial.value)))
+        #self.tableWidget.scrollToBottom()
         self.mutex.unlock()
 
     def give_reward(self):

@@ -3,3 +3,4 @@ sketchPath = "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
 TEENSY = True
 RASPBERRY = True
 PORT = 'COM3'
+OPEN_WINDOWS = True

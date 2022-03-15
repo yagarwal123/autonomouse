@@ -1,8 +1,11 @@
 from PyQt6 import QtCore, QtWidgets
 from multiprocessing import Process
 import matplotlib.pyplot
+import logging
 from gui.mousewin import Ui_mouseWin
 from analysis import analysis_window
+
+logger = logging.getLogger(__name__)
 
 class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def __init__(self,mutex,mouse):
@@ -131,6 +134,9 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def analysis_win(self):
         test_id = self.test_select.currentText().split(' ')[0]
         if test_id:
-            p = Process(target=analysis_window,args=[test_id])
-            p.start()
+            try:
+                p = Process(target=analysis_window,args=[test_id])
+                p.start()
+            except Exception as e:
+                logger.error(f'Error in opening analysis window - Test ID {test_id}')
             #analysis_window(test_id)

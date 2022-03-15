@@ -9,13 +9,6 @@ logging.config.dictConfig(LOGGING_CONFIG)
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 #Optional - matplotlib spams a lot of debugs, so setting its level to info
 
-subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
-
 import logging
 import datetime
 from PyQt6 import QtWidgets
@@ -25,6 +18,13 @@ import serial
 
 from Mouse import Mouse
 import rasp_camera
+
+# subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
@@ -40,22 +40,26 @@ if __name__ == "__main__":
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
 
     rasp_camera.start_rpi_host()
+    try:
+        if config.TEENSY:
+            l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath,'--port', config.PORT])
+            assert l.returncode == 0, 'Could not upload sketch to the teensy'
 
-    if config.TEENSY:
-        l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath,'--port', config.PORT])
-        assert l.returncode == 0, 'Could not upload sketch to the teensy'
+        START_TIME = datetime.datetime.now()
 
-    START_TIME = datetime.datetime.now()
-
-    sleep(5)
-    
-    if config.TEENSY:
-        ser = serial.Serial(config.PORT, 9600)
-    else:
-        ser = Mock()
-        def user_in():
-            return input().encode()
-        ser.readline.side_effect = user_in
+        sleep(5)
+        
+        if config.TEENSY:
+            ser = serial.Serial(config.PORT, 9600)
+        else:
+            ser = Mock()
+            def user_in():
+                return input().encode()
+            ser.readline.side_effect = user_in
+    except Exception as e:
+        rasp_camera.close_record()
+        print(e)
+        sys.exit()
 
     all_mice = {}
     with open('mouse_info.csv',mode='r') as f:
