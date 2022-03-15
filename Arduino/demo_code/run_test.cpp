@@ -108,11 +108,6 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
         }
       }else{
       // other processes - communications etc
-      // take weight
-        weight = scale->get_units();
-        Serial.print("weight: ");
-        Serial.print(weight);
-        Serial.println("g");
       }
     }
     // stop timers
