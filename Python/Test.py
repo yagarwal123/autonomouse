@@ -19,7 +19,7 @@ class Test:
         self.trials.append(new_trial)
 
     def add_ttl(self,ttl_time):
-        if (not self.ttl) or (self.ttl[-1] != ttl_time):
+        if (not self.ttl) or (ttl_time.millis-self.ttl[-1].millis>15):
             self.ttl.append(ttl_time)
 
     def add_starting_time(self,t):
@@ -36,11 +36,6 @@ class Trial:
 
 class TestParameters:
 
-    def __init__(self):
-        self.lick_threshold = None
-        self.liquid_amount = None
-        self.waittime = None
-
     def set_parameters(self,lick_threshold,liquid_amount,waittime):
         self.lick_threshold = lick_threshold
         self.liquid_amount = liquid_amount
@@ -48,6 +43,6 @@ class TestParameters:
 
     def __str__(self):
         attrs = vars(self)
-        return('\n'.join("%s, %s" % item for item in attrs.items()))
+        return('\n'.join("%s,%s" % item for item in attrs.items()))
     
 

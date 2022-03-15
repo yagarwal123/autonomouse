@@ -94,6 +94,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     // or take weight here
     String serOut = "";
     float weight = scale->get_units();
+    weight= round(weight*10)/10;
     serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
     Serial.println(serOut);
 

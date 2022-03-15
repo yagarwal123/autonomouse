@@ -117,6 +117,10 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.waittime_disp.setText(str(self.mouse.waittime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
         self.test_no_disp.setText(str(self.mouse.tests_today()))
+        self.test_select.clear()
+        for t in self.mouse.tests:
+            if not t.ongoing:
+                self.test_select.addItem(f'{t.id} - {t.starting_time}')
 
 
     

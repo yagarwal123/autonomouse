@@ -195,9 +195,9 @@ void loop()
   while(weight < 5){ // keep taking weight
     //weight = load_cell(&scale);
     weight = scale.get_units();
-    Serial.print("weight: ");
-    Serial.print(weight);
-    Serial.println("g");
+    // Serial.print("weight: ");
+    // Serial.print(weight);
+    // Serial.println("g");
 
     if(Serial.available()){
       String serIn = Serial.readStringUntil('\n');
@@ -208,9 +208,9 @@ void loop()
   }
 
   if(weight < 40){ // run test
-    String serOut = "";
-    serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
-    Serial.println(serOut);
+    // String serOut = "";
+    // serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
+    // Serial.println(serOut);
     Serial.println("LOGGER: Closing door 2, start test");
     door_close(door_two);
     //t4.start();

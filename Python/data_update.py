@@ -87,14 +87,22 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
                 l = ''
                 while (l.strip() != 'Raw data send complete'):
                     #logger.error(ser.in_waiting)
-                    l = ser.readline().decode("utf-8")
+                    try:
+                        l = ser.readline().decode("utf-8")
+                    except Exception as e:
+                        logger.error(f'{e}: Error while recieving raw data')
+                        continue
                     csvfile.write(l)
                     if (ser.in_waiting > 6000):
                         #logger.error('Panic')
                         ser.write("Pause\n".encode())
                         while (ser.in_waiting > 100):
                             #logger.error(ser.in_waiting)
-                            l = ser.readline().decode("utf-8")
+                            try:
+                                l = ser.readline().decode("utf-8")
+                            except Exception as e:
+                                logger.error(f'{e}: Error while recieving raw data')
+                                continue
                             csvfile.write(l)
                         ser.write("Resume\n".encode())
             mutex.lock()
@@ -122,15 +130,12 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
         case 11:
             pass
         case 12:
-            if all_tests:
+            if all_tests and all_tests[-1].vid_recording:
                 test = all_tests[-1]
-                if test.vid_recording:
-                    t = myTime(START_TIME,int(search.group(1)))
-                    test.add_ttl(t)
-                else:
-                    logger.warning("Printing TTL with no test ongoing")
+                t = myTime(START_TIME,int(search.group(1)))
+                test.add_ttl(t)
             else:
-                logger.warning("Printing TTL with no test conducted")
+                logger.info("Printing TTL with no test ongoing")
         case 13:
             rasp_camera.stop_record()
             test = all_tests[-1]
