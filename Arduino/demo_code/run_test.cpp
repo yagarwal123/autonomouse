@@ -54,6 +54,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   Serial.print("Starting test now - "); Serial.println(millis());
   pr->println(millis()); // write start time in file DELETE ONE
   //for(int i=1; i<11; i++){
+  t1.start();
   while(testOngoing){
     i++; // increment trial number
     //Serial.print("Trial ");
@@ -63,7 +64,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
     //pr->println(millis()); // write start time in file DELETE ONE
-    t1.start(); // start 
+    //t1.start(); // start 
     //t3.start(); // start saving to file
     //Serial.println(startTime);
     while(millis() < responseTime){// response period
@@ -79,7 +80,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
       }
       downTime = millis() + WAITTIME; // count 5s from now
 
-    t1.stop();// stop timers whether or not there was licking
+    //t1.stop();// stop timers whether or not there was licking
     if (lickTime < 0){ // start reading at longer intervals if mouse hasnt licked
       t2.start();
       //noLickCounter++;
@@ -88,9 +89,14 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     Serial.print(i);
     Serial.print(" - Time ");
     Serial.println(lickTime);
-    t1.start(); // start timer again
+    //t1.start(); // start timer again
     
     // or take weight here
+    String serOut = "";
+    float weight = scale->get_units();
+    serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
+    Serial.println(serOut);
+
     while(millis() < downTime){ // downtime of sensor
       if(Serial.available()){
         String serIn = Serial.readStringUntil('\n');
@@ -103,16 +109,17 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
       }else{
       // other processes - communications etc
       // take weight
-        float weight = scale->get_units();
+        weight = scale->get_units();
         Serial.print("weight: ");
         Serial.print(weight);
         Serial.println("g");
       }
     }
     // stop timers
-    t1.stop();
+    //t1.stop();
     t2.stop();
     //t3.stop();
   }
+  t1.stop();
   t3.stop();
 }
