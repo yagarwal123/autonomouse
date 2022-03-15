@@ -3,6 +3,7 @@
 #include "deliver_reward.h"
 #include "lick.h"
 #include "TeensyTimerTool.h"
+#include "HX711.h"
 using namespace TeensyTimerTool; 
 
 PeriodicTimer t1; // timer to run periodic serial print
@@ -34,7 +35,7 @@ void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sen
   pr->println(*sensorAddr);
   }
 
-void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME){
+void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -89,6 +90,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     Serial.println(lickTime);
     t1.start(); // start timer again
     
+    // or take weight here
     while(millis() < downTime){ // downtime of sensor
       if(Serial.available()){
         String serIn = Serial.readStringUntil('\n');
@@ -98,8 +100,14 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
         if(serIn == "End"){
           testOngoing = 0;
         }
-      }
+      }else{
       // other processes - communications etc
+      // take weight
+        float weight = scale->get_units();
+        Serial.print("weight: ");
+        Serial.print(weight);
+        Serial.println("g");
+      }
     }
     // stop timers
     t1.stop();

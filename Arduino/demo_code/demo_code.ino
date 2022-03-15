@@ -11,7 +11,7 @@
 //#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
-#define calibration_factor 1020 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor 1019 //This value is obtained using the SparkFun_HX711_Calibration sketch
 // for SD card access--------------------------
 #define SD_FAT_TYPE 3
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
@@ -189,11 +189,12 @@ void loop()
   deliver_reward(rewardPin, 100);
 
   // take the weight
-  weight = load_cell(&scale);
+  //weight = load_cell(&scale);
+  weight = scale.get_units();
 
-  // optional: if weight is >0 and < 40, close door 2
-  while(weight < 15){ // keep taking weight
-    weight = load_cell(&scale);
+  while(weight < 5){ // keep taking weight
+    //weight = load_cell(&scale);
+    weight = scale.get_units();
     Serial.print("weight: ");
     Serial.print(weight);
     Serial.println("g");
@@ -204,8 +205,6 @@ void loop()
         weight = 39.99;
       }
     }
-
-    // add in function to give reward here with customised liquid size: for test ver.
   }
 
   if(weight < 40){ // run test
@@ -250,15 +249,11 @@ void loop()
     Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
     Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
     
-    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME); // write to file during test
+    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME, &scale); // write to file during test
     file.close(); // close the file
     letMouseOut(ID_2);
     lastExitTime = millis();
 
-    
-    //t4.stop(); // stop reading TTL pulse
-    // TODO: send file to PC through Serial
-    //file.rewind();
     Serial.println("Stop recording");
 
     while (true){
@@ -268,13 +263,13 @@ void loop()
         break;
       }
     }
-    delay(2000); // why?
+    delay(2000); // wait for cam to close
     Serial.println("Sending raw data");
 
     // open file again
     if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char
       Serial.println(F("file.open failed"));
-      // TODO: mission abort;
+      // TODO: error handling
     }
     file.rewind();
 
