@@ -29,7 +29,9 @@ def analysis_window(test_id):
 
     #threshold = 100
 
-    testT,amps = np.genfromtxt(f"{test_id}/Raw lick data - {test_id}.csv", unpack=True,delimiter=',',skip_header=3,skip_footer=1)
+    with open(f"{test_id}/Raw lick data - {test_id}.csv",'r') as inp:
+        filtered_inp = filter(lambda x: ',' in x, inp)
+        testT,amps = np.genfromtxt(filtered_inp,unpack=True,delimiter=',',dtype=int,skip_header=1)
 
     pg.setConfigOption('background', 'w')
     pg.setConfigOption('foreground', 'k')
