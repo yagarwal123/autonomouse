@@ -107,7 +107,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquid
     String serOut = "";
     float weight = scale->get_units();
     weight= round(weight*10)/10;
-    serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
+    serOut = serOut + "Weight Sensor - Weight " + weight + "g";
     Serial.println(serOut);
     t1.start(); // start timer again
 

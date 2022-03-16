@@ -8,7 +8,7 @@ import rasp_camera
 logger = logging.getLogger(__name__)
 
 def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters):
-    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g - Time (\d+)$',        #1
+    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g$',                     #1
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
                       '^Starting test now - (\d+)$',                                #4
@@ -28,10 +28,9 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             return
         case 1:
             weight = float(search.group(1))
-            t = myTime(START_TIME,int(search.group(2)))
+            #t = myTime(START_TIME,int(search.group(2)))
             m = getLastMouse(doors)
-            m.add_weight(weight)
-            m.add_weighing_times(t)
+            m.tests[-1].weights.append(weight)
         case 2:
             m = all_mice[search.group(1)]
             d = int(search.group(2))

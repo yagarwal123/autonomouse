@@ -2,6 +2,7 @@ from PyQt6 import QtCore, QtWidgets
 from multiprocessing import Process
 import matplotlib.pyplot
 import logging
+import numpy as np
 from gui.mousewin import Ui_mouseWin
 from analysis import analysis_window
 
@@ -112,13 +113,21 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         if self.pltax:
             self.pltax.clear()
         
-        x = [0] + [i.millis for i in self.mouse.weight_times]
-        x_lab = ['Start'] + [str(i) for i in self.mouse.weight_times]
-        y = [self.mouse.init_weight] + self.mouse.weights
+        x = [0]
+        x_lab = ['Start']
+        y = [self.mouse.init_weight]
+        for t in self.mouse.tests:
+            test_time = t.starting_time
+            if test_time is None or not t.weights: continue
+            w = t.weights
+            x = x + len(w)*[test_time.millis]
+            x_lab.append(str(test_time))
+            y = y + w
         y = [float(i) for i in y]
 
         self.pltax = self.plotWid.canvas.ax
-        matplotlib.pyplot.setp(self.pltax, xticks=x, xticklabels=x_lab)
+        #assert len(np.unique(x)) == len(x_lab)
+        matplotlib.pyplot.setp(self.pltax, xticks=np.unique(x), xticklabels=x_lab)
         matplotlib.pyplot.setp(self.pltax.xaxis.get_majorticklabels(), rotation=90)
         self.pltax.plot(x,y,'--o')
         self.pltax.set_xlim(left=0)

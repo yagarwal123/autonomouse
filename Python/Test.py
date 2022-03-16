@@ -9,6 +9,7 @@ class Test:
         self.trials=[]
         self.odours = []
         self.ttl = []
+        self.weights = []
         self.test_parameters = TestParameters()
         self.vid_recording = True
         self.ongoing = True
