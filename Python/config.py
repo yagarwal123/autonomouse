@@ -4,7 +4,7 @@ class Config:
         self.sketchPath = "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
         self.TEENSY = True
         self.RASPBERRY = True
-        self.PORT = 'COM3'
+        self.PORT = 'COM4'
         self.OPEN_WINDOWS = True
 
 config = Config()

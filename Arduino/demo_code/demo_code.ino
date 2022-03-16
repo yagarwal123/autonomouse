@@ -43,11 +43,12 @@ float weight;
 // Variables for the lick and reward system
 int rewardPin = 32;
 int lickPin = A1;
-const int TTL_PIN = 33;
+int TTL_PIN = 33;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
 String lastMouse = "";
+int d_count;
 
 String door1Check(){
   if (Serial1.available()){
@@ -90,10 +91,6 @@ void letMouseOut(String ID_2){
   door_close(door_two);
   door_open(door_one);
 }
-
-void callback4(){ // saves sensor value at regular interval to pr
-    Serial.print("TTL - "); Serial.println(millis());
-}
   
 void setup()
 {
@@ -115,7 +112,7 @@ void setup()
   digitalWrite(rewardPin, LOW);
     // pin for TTL pulse camera
   pinMode(TTL_PIN, INPUT);
-  attachInterrupt(digitalPinToInterrupt(TTL_PIN), callback4, RISING);
+  //attachInterrupt(digitalPinToInterrupt(TTL_PIN), callback4, RISING);
 
   // time
   setSyncProvider(getTeensy3Time);
@@ -235,7 +232,8 @@ void loop()
     printNow(&file);
     file.println();
     file.print(F("time(ms), ")); // print headings
-    file.println(F("amplitude"));
+    file.print(F("amplitude, "));
+    file.println(F("TTL"));
     
     Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
     while (!Serial.available());
@@ -249,12 +247,10 @@ void loop()
     Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
     Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
     
-    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME, &scale); // write to file during test
+    run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME, &scale); // write to file during test
     file.close(); // close the file
     letMouseOut(ID_2);
     lastExitTime = millis();
-
-    Serial.println("Stop recording");
 
     while (true){
       while(!Serial.available());
@@ -266,13 +262,15 @@ void loop()
     delay(2000); // wait for cam to close
     Serial.println("Sending raw data");
 
+    delay(2000); // wait for python to be ready
+
     // open file again
     if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char
       Serial.println(F("file.open failed"));
       // TODO: error handling
     }
     file.rewind();
-
+    d_count = 0;
     while(file.available()){ // file is available
       if(Serial.available()){ // python reads slower than teensy sends wait for python to clear in buffer
         String serIn = Serial.readStringUntil('\n');
@@ -285,6 +283,12 @@ void loop()
       file.fgets(line, sizeof(line));
       //char line = file.read();
       Serial.print(line);
+      d_count++;
+      if (d_count > 5){
+        delay(1);
+        d_count = 0;
+      }
+      //delay(1);
     }
     //file.close(); // close the file
     while(Serial.availableForWrite() < 6000); //Wait till 6000 bytes of space is left in out buffer

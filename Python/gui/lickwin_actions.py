@@ -14,7 +14,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(lambda:self.pltgraph())
-        self.timer.start(15)
+        self.timer.start(100)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
@@ -26,7 +26,7 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
 
         self.pltax = self.plotWid.canvas.ax
 
-        self.pltax.plot(self.live_licks[-5000:])
+        self.pltax.plot(self.live_licks[-1000:])
         self.pltax.set_xticks([])
 
         self.plotWid.canvas.draw()

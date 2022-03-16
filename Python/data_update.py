@@ -83,30 +83,25 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             filename = f'Raw lick data - {test.id}.csv'
             filePath = os.path.join(fileFolder,filename)
             mutex.unlock()
+            rec_pause = False
             with open(filePath, 'w') as csvfile: 
                 l = ''
                 while (l.strip() != 'Raw data send complete'):
-                    #logger.error(ser.in_waiting)
                     try:
                         l = ser.readline().decode("utf-8")
                     except Exception as e:
                         logger.error(f'{e}: Error while recieving raw data')
                         continue
                     csvfile.write(l)
-                    if (ser.in_waiting > 6000):
-                        #logger.error('Panic')
+                    #logger.error(ser.in_waiting)
+                    if not rec_pause and (ser.in_waiting > 3000):
                         ser.write("Pause\n".encode())
-                        while (ser.in_waiting > 100):
-                            #logger.error(ser.in_waiting)
-                            try:
-                                l = ser.readline().decode("utf-8")
-                            except Exception as e:
-                                logger.error(f'{e}: Error while recieving raw data')
-                                continue
-                            csvfile.write(l)
+                        rec_pause = True
+                    if rec_pause and (ser.in_waiting < 100):
                         ser.write("Resume\n".encode())
+                        rec_pause = False
             mutex.lock()
-                    
+
         case 8:
             ser.write("Save complete\n".encode())
             all_tests[-1].ongoing = False
@@ -116,17 +111,18 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
                 ser.write("Do not start\n".encode())
             else:
                 ser.write("Start experiment\n".encode())
-                new_test = Test(m)
-                m.tests.append(new_test)
-                all_tests.append(new_test)
-                rasp_camera.start_record(new_test.id)
         case 10:
             m = all_mice[search.group(1)]
+            new_test = Test(m)
+            m.tests.append(new_test)
+            all_tests.append(new_test)
+            rasp_camera.start_record(new_test.id)
             t = all_tests[-1]
             t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
             ser.write( ( str(m.waittime) + "\n" ).encode() )
+
         case 11:
             pass
         case 12:

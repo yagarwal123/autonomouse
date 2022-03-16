@@ -9,10 +9,9 @@ def analysis_window(test_id):
     #subprocess.run(['ffmpeg','-y','-i',f'{filename}.h264',f'{filename}.mp4'])
     cap = cv2.VideoCapture(filename)
 
-    with open(f"{test_id}/TTL high millis - {test_id}.csv",'r') as ttl_file:
-        TTLarray = np.loadtxt(ttl_file)
+    # with open(f"{test_id}/TTL high millis - {test_id}.csv",'r') as ttl_file:
+    #     TTLarray = np.loadtxt(ttl_file)
 
-    TTLarray =  np.unique(TTLarray)
 
     with open(f"{test_id}/Test data - {test_id}.csv",'r') as ttl_file:
         for line in ttl_file:
@@ -29,7 +28,11 @@ def analysis_window(test_id):
 
     #threshold = 100
 
-    testT,amps = np.genfromtxt(f"{test_id}/Raw lick data - {test_id}.csv", unpack=True,delimiter=',',skip_header=3,skip_footer=1,invalid_raise=False,dtype=int)
+    testT,amps,TTLarray = np.genfromtxt(f"{test_id}/Raw lick data - {test_id}.csv", unpack=True,delimiter=',',skip_header=3,skip_footer=1,invalid_raise=False,dtype=int)
+
+    TTLarray = TTLarray[TTLarray != 0]
+    assert np.array_equal(TTLarray,  np.unique(TTLarray)), 'Raw data is corrupted'
+
 
     pg.setConfigOption('background', 'w')
     pg.setConfigOption('foreground', 'k')
@@ -60,21 +63,21 @@ def analysis_window(test_id):
         frame_rate = 1
         if cv2.waitKey(frame_rate) & 0xFF == ord('q'):
             break
-        if millis > startTime:
-            #ax1.clear()
-            t = millis - startTime
-            s = t-5000 if t>=5000 else 0
-            # plt_y = amps[s:t]
-            # plt_x = np.append(plt_x,t)
-            # plt_x = plt_x[-5000:]
-            # # clear graph
-            # line.set_data(plt_x,plt_y)
-            # line.axes.relim()
-            line.setXRange(s,t)
-            
-            # line.axes.autoscale_view()
-            # line.axes.figure.canvas.draw()
-            #ax1.set_ylim(bottom=0)
+        #if millis > startTime:
+        #ax1.clear()
+        t = millis - startTime
+        s = t-5000 if t>=5000 else 0
+        # plt_y = amps[s:t]
+        # plt_x = np.append(plt_x,t)
+        # plt_x = plt_x[-5000:]
+        # # clear graph
+        # line.set_data(plt_x,plt_y)
+        # line.axes.relim()
+        line.setXRange(s,t)
+        
+        # line.axes.autoscale_view()
+        # line.axes.figure.canvas.draw()
+        #ax1.set_ylim(bottom=0)
 
             #plt.pause(0.001)
         # if millis%10000 == 0:
@@ -85,5 +88,5 @@ def analysis_window(test_id):
     cv2.destroyAllWindows()
 
 if __name__=='__main__':
-    test_id = '00079EB022_1'
+    test_id = '0007A0F7C4_1'
     analysis_window(test_id)

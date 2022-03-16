@@ -17,6 +17,9 @@ int lickTime;
 unsigned long RES = 2500;
 int lickCheck = 0;
 
+bool buttonStateRising;
+bool lastButtonStateRising=0;
+
 void callback1(int *sensorAddr){ // to print out sensorValue in regular interval
   //Serial.print("display: ");
   Serial.println(*sensorAddr);
@@ -29,13 +32,22 @@ void callback2(int lickPin, int* sensorAddr) // reads sensor value
   //Serial.println("r");
   }
 
-void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sensor value at regular interval to pr
+void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sensor value at regular interval to pr
   pr->print(millis() - *timePt);
   pr->print(", ");
-  pr->println(*sensorAddr);
+  pr->print(*sensorAddr);
+  pr->print(", ");
+  buttonStateRising = digitalRead(TTL_PIN);
+  if ((buttonStateRising == HIGH) && (lastButtonStateRising == LOW)) {
+    pr->println(millis());
+  }
+  else{
+    pr->println(0);
+  }
+  lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME, HX711 *scale){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -49,7 +61,8 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   // define timers
   t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
   t2.begin([=]{callback2(lickPin, sensorPt);}, 1ms, false); // reads lickPin every 50ms
-  t3.begin([=]{callback3(sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
+  while (digitalRead(TTL_PIN)==LOW);
+  t3.begin([=]{callback3(TTL_PIN, sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
   
   Serial.print("Starting test now - "); Serial.println(millis());
   pr->println(millis()); // write start time in file DELETE ONE
@@ -118,4 +131,5 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   }
   //t1.stop();
   t3.stop();
+  Serial.println("Stop recording");
 }
