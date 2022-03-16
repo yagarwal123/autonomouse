@@ -1,7 +1,7 @@
 import paramiko
 from scp import SCPClient
 import zmq
-import config
+from config import config
 
 port = 5555
 ip_address = "131.111.180.78"

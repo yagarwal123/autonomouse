@@ -2,7 +2,7 @@ import subprocess
 import logging.config
 from time import sleep
 from unittest.mock import Mock
-import config
+from config import config
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 

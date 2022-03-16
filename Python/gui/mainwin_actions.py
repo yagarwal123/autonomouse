@@ -13,7 +13,7 @@ from gui.testwin_actions import testwinActions
 from gui.expwin_actions import expwinActions
 from start_teensy_read import startTeensyRead
 import rasp_camera
-import config
+from config import config
 from ExperimentParameters import ExperimentParameters
 
 logger = logging.getLogger(__name__)
