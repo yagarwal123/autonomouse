@@ -14,7 +14,7 @@ unsigned long responseTime = 0;
 unsigned long downTime = 0;
 int lickTime;
 //unsigned long WAITTIME = 5000;
-unsigned long RES = 2500;
+//unsigned long RES = 2500;
 int lickCheck = 0;
 
 bool buttonStateRising;
@@ -47,7 +47,7 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME, HX711 *scale){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, int RES, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;

@@ -38,6 +38,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
         self.testLimLineEdit.returnPressed.connect(self.changeTestLimButton.click)
+        self.respLineEdit.returnPressed.connect(self.changeRespButton.click)
 
         self.myactions()
 
@@ -48,6 +49,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.changewaittimeButton.clicked.connect(self.change_waittime)
         self.changeTestLimButton.clicked.connect(self.change_testlim)
         self.showAnalysisButton.clicked.connect(self.analysis_win)
+        self.changeRespButton.clicked.connect(self.change_resp)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -94,6 +96,17 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             msg.setText('Invalid input')
             msg.exec()
 
+    def change_resp(self):
+        l = self.respLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.resp_disp.setText(l)
+            self.mouse.response_time = int(l)
+            self.respLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
     def pltgraph(self):
         self.mutex.lock()
         if self.pltax:
@@ -120,6 +133,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.waittime_disp.setText(str(self.mouse.waittime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
         self.test_no_disp.setText(str(self.mouse.tests_today()))
+        self.resp_disp.setText(str(self.mouse.response_time))
         self.test_select.clear()
         for t in self.mouse.tests:
             if not t.ongoing:

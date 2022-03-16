@@ -36,10 +36,11 @@ class Trial:
 
 class TestParameters:
 
-    def set_parameters(self,lick_threshold,liquid_amount,waittime):
+    def set_parameters(self,lick_threshold,liquid_amount,waittime,response_time):
         self.lick_threshold = lick_threshold
         self.liquid_amount = liquid_amount
         self.waittime = waittime
+        self.response_time = response_time
 
     def __str__(self):
         attrs = vars(self)

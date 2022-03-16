@@ -118,10 +118,11 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             all_tests.append(new_test)
             rasp_camera.start_record(new_test.id)
             t = all_tests[-1]
-            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime)
+            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
             ser.write( ( str(m.waittime) + "\n" ).encode() )
+            ser.write( ( str(m.response_time) + "\n" ).encode() )
 
         case 11:
             pass

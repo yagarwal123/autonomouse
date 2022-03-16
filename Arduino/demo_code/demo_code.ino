@@ -242,12 +242,14 @@ void loop()
     int liquidAmount = Serial.readStringUntil('\n').toInt();
     while (!Serial.available());
     int WAITTIME = Serial.readStringUntil('\n').toInt();
-
+    while (!Serial.available());
+    int responseTime = Serial.readStringUntil('\n').toInt();
     Serial.print("LOGGER: Received - Liquid Amount - ");Serial.println(liquidAmount);
     Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
     Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
+    Serial.print("LOGGER: Received - Response Time - ");Serial.println(responseTime);
     
-    run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME, &scale); // write to file during test
+    run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, liquidAmount, responseTime, &file, WAITTIME, &scale); // write to file during test
     file.close(); // close the file
     letMouseOut(ID_2);
     lastExitTime = millis();

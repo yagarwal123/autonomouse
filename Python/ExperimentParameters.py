@@ -24,3 +24,8 @@ class ExperimentParameters:
         for m in all_mice.values():
             m.test_limit = limit
 
+    @staticmethod
+    def update_all_mice_resp(all_mice,resp):
+        for m in all_mice.values():
+            m.response_time = resp
+
