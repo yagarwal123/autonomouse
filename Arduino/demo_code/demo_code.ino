@@ -264,7 +264,7 @@ void loop()
     delay(2000); // wait for cam to close
     Serial.println("Sending raw data");
 
-    delay(2000); // wait for python to be ready
+    waitUntilReceive("Ready"); // wait for python to be ready
 
     // open file again
     if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char

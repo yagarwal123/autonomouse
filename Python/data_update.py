@@ -1,6 +1,7 @@
 import logging
 import re
 import os
+from multiprocessing import Process
 from myTime import myTime
 from Test import Test, Trial
 import rasp_camera
@@ -82,23 +83,9 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             filename = f'Raw lick data - {test.id}.csv'
             filePath = os.path.join(fileFolder,filename)
             mutex.unlock()
-            rec_pause = False
-            with open(filePath, 'w') as csvfile: 
-                l = ''
-                while (l.strip() != 'Raw data send complete'):
-                    try:
-                        l = ser.readline().decode("utf-8")
-                    except Exception as e:
-                        logger.error(f'{e}: Error while recieving raw data')
-                        continue
-                    csvfile.write(l)
-                    #logger.error(ser.in_waiting)
-                    if not rec_pause and (ser.in_waiting > 3000):
-                        ser.write("Pause\n".encode())
-                        rec_pause = True
-                    if rec_pause and (ser.in_waiting < 100):
-                        ser.write("Resume\n".encode())
-                        rec_pause = False
+            p = Process(target=get_raw_data,args=(ser,filePath))
+            p.start()
+            p.join()
             mutex.lock()
 
         case 8:
@@ -156,3 +143,23 @@ def matchCommand(inSer,KNOWNSTATEMENTS):
     if stat_mean == 0:
         logger.error("Unknown message recieved : " + inSer)
     return stat_mean, search
+
+def get_raw_data(ser,filePath):
+    rec_pause = False
+    with open(filePath, 'w') as csvfile: 
+        l = ''
+        ser.write("Ready\n".encode())
+        while (l.strip() != 'Raw data send complete'):
+            try:
+                l = ser.readline().decode("utf-8")
+            except Exception as e:
+                logger.error(f'{e}: Error while recieving raw data')
+                continue
+            csvfile.write(l)
+            #logger.error(ser.in_waiting)
+            if not rec_pause and (ser.in_waiting > 3000):
+                ser.write("Pause\n".encode())
+                rec_pause = True
+            if rec_pause and (ser.in_waiting < 100):
+                ser.write("Resume\n".encode())
+                rec_pause = False
