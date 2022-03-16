@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_testWin(object):
     def setupUi(self, testWin):
         testWin.setObjectName("testWin")
-        testWin.resize(375, 398)
+        testWin.resize(432, 418)
         self.gridLayout = QtWidgets.QGridLayout(testWin)
         self.gridLayout.setObjectName("gridLayout")
         self.label = QtWidgets.QLabel(testWin)
@@ -51,6 +51,15 @@ class Ui_testWin(object):
         self.manStartButton = QtWidgets.QPushButton(testWin)
         self.manStartButton.setObjectName("manStartButton")
         self.gridLayout.addWidget(self.manStartButton, 3, 0, 1, 1)
+        self.stopButton = QtWidgets.QPushButton(testWin)
+        self.stopButton.setObjectName("stopButton")
+        self.gridLayout.addWidget(self.stopButton, 3, 1, 1, 1)
+        self.rewardButton = QtWidgets.QPushButton(testWin)
+        self.rewardButton.setObjectName("rewardButton")
+        self.gridLayout.addWidget(self.rewardButton, 3, 2, 1, 1)
+        self.eDoorButton = QtWidgets.QPushButton(testWin)
+        self.eDoorButton.setObjectName("eDoorButton")
+        self.gridLayout.addWidget(self.eDoorButton, 3, 3, 1, 1)
         self.tableWidget = QtWidgets.QTableWidget(testWin)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(2)
@@ -60,12 +69,6 @@ class Ui_testWin(object):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(1, item)
         self.gridLayout.addWidget(self.tableWidget, 4, 0, 1, 4)
-        self.stopButton = QtWidgets.QPushButton(testWin)
-        self.stopButton.setObjectName("stopButton")
-        self.gridLayout.addWidget(self.stopButton, 3, 1, 1, 1)
-        self.rewardButton = QtWidgets.QPushButton(testWin)
-        self.rewardButton.setObjectName("rewardButton")
-        self.gridLayout.addWidget(self.rewardButton, 3, 2, 1, 2)
 
         self.retranslateUi(testWin)
         QtCore.QMetaObject.connectSlotsByName(testWin)
@@ -80,12 +83,13 @@ class Ui_testWin(object):
         self.label_3.setText(_translate("testWin", "Test start time - "))
         self.test_start_time.setText(_translate("testWin", "TextLabel"))
         self.manStartButton.setText(_translate("testWin", "Manual Start"))
+        self.stopButton.setText(_translate("testWin", "Stop test"))
+        self.rewardButton.setText(_translate("testWin", "Emergency reward"))
+        self.eDoorButton.setText(_translate("testWin", "Emergency Door"))
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("testWin", "Trial"))
         item = self.tableWidget.horizontalHeaderItem(1)
         item.setText(_translate("testWin", "Time"))
-        self.stopButton.setText(_translate("testWin", "Stop test"))
-        self.rewardButton.setText(_translate("testWin", "Emergency reward"))
 
 
 if __name__ == "__main__":

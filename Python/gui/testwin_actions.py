@@ -14,6 +14,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.rewardButton.clicked.connect(self.give_reward)
         self.stopButton.clicked.connect(self.stop_test)
         self.manStartButton.clicked.connect(self.manual_start_test)
+        self.eDoorButton.clicked.connect(self.manual_door)
 
         self.setWindowTitle(self.title) # change title
         self.timer = QtCore.QTimer(self)
@@ -61,3 +62,8 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         test = self.all_tests[-1]
         if test.vid_recording and test.starting_time is None:
             self.ser.write('Manual Start\n'.encode())
+
+    def manual_door(self):
+        test = self.all_tests[-1]
+        if not test.vid_recording and test.ongoing:
+            self.ser.write('door\n'.encode())

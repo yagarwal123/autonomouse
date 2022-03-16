@@ -86,7 +86,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         if len(self.all_mousewin) > 100:
             self.all_mousewin.clear()
         ID = self.mouse_id_select.currentText().split(' - ')[0]
-        self.all_mousewin.append(mousewinActions(self.mutex,self.all_mice[ID]))
+        self.all_mousewin.append(mousewinActions(self.mutex,self.all_mice[ID],self.ser))
         self.all_mousewin[-1].show()
 
     def open_door(self):

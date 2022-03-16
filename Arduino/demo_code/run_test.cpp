@@ -120,6 +120,22 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquid
         if(serIn == "End"){
           testOngoing = 0;
         }
+        if(serIn == "liquid"){
+          while (!Serial.available());
+          liquidAmount = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "th"){
+          while (!Serial.available());
+          THRESHOLD = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "wait"){
+          while (!Serial.available());
+          WAITTIME = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "resp"){
+          while (!Serial.available());
+          RES = Serial.readStringUntil('\n').toInt();
+        }
       }else{
       // other processes - communications etc
       }

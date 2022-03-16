@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>375</width>
-    <height>398</height>
+    <width>432</width>
+    <height>418</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -117,6 +117,27 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="1">
+    <widget class="QPushButton" name="stopButton">
+     <property name="text">
+      <string>Stop test</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QPushButton" name="rewardButton">
+     <property name="text">
+      <string>Emergency reward</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QPushButton" name="eDoorButton">
+     <property name="text">
+      <string>Emergency Door</string>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="0" colspan="4">
     <widget class="QTableWidget" name="tableWidget">
      <column>
@@ -129,20 +150,6 @@
        <string>Time</string>
       </property>
      </column>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QPushButton" name="stopButton">
-     <property name="text">
-      <string>Stop test</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2" colspan="2">
-    <widget class="QPushButton" name="rewardButton">
-     <property name="text">
-      <string>Emergency reward</string>
-     </property>
     </widget>
    </item>
   </layout>

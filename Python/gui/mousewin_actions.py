@@ -8,11 +8,12 @@ from analysis import analysis_window
 logger = logging.getLogger(__name__)
 
 class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
-    def __init__(self,mutex,mouse):
+    def __init__(self,mutex,mouse,ser):
         super().__init__()
         self.setupUi(self)
         self.mouse = mouse
         self.mutex = mutex
+        self.ser = ser
         self.title = self.mouse.get_id() +  ' - ' + self.mouse.get_name()
 
         self.setWindowTitle(self.title) # change title
@@ -57,6 +58,8 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             self.liq_am_disp.setText(l)
             self.mouse.liquid_amount = int(l)
             self.liquidLineEdit.clear()
+            self.ser.write( ( "liquid\n" ).encode() )
+            self.ser.write( ( str(self.mouse.liquid_amount) + "\n" ).encode() )
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
@@ -69,6 +72,8 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             self.lick_thresh_disp.setText(l)
             self.mouse.lick_threshold = int(l)
             self.lickLineEdit.clear()
+            self.ser.write( ( "th\n" ).encode() )
+            self.ser.write( ( str(self.mouse.lick_threshold) + "\n" ).encode() )
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
@@ -80,6 +85,8 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             self.waittime_disp.setText(l)
             self.mouse.waittime = int(l)
             self.waittimeLineEdit.clear()
+            self.ser.write( ( "wait\n" ).encode() )
+            self.ser.write( ( str(self.mouse.waittime) + "\n" ).encode() )
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
@@ -91,6 +98,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             self.test_lim_disp.setText(l)
             self.mouse.test_limit = int(l)
             self.testLimLineEdit.clear()
+            self.ser.write( ( str(self.mouse.test_limit) + "\n" ).encode() )
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
@@ -102,6 +110,8 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             self.resp_disp.setText(l)
             self.mouse.response_time = int(l)
             self.respLineEdit.clear()
+            self.ser.write( ( "resp\n" ).encode() )
+            self.ser.write( ( str(self.mouse.response_time) + "\n" ).encode() )
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')

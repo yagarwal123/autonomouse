@@ -46,8 +46,6 @@ int lickPin = A1;
 int TTL_PIN = 33;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
-unsigned long lastExitTime = 0;
-String lastMouse = "";
 int d_count;
 
 String door1Check(){
@@ -87,7 +85,14 @@ void waitUntilReceive(String msg){ // waits for message from python
 void letMouseOut(String ID_2){
   clear_serial_buffer(Serial2);
   door_open(door_two);
-  while (door2Check() != ID_2){} // either this or just open whenever something is in serial 2
+  while (door2Check() != ID_2){
+    if (Serial.available()){
+      String serIn = Serial.readStringUntil('\n');
+      if (serIn == "door"){
+        break;
+      }
+    }
+  } // either this or just open whenever something is in serial 2
   door_close(door_two);
   door_open(door_one);
 }
@@ -153,12 +158,6 @@ void loop()
 
   String ID_1 = door1Check();
   String ID_2 = door2Check();
-
-  
-  //TODO: dealing with rollover
-  if ( (ID_2 == lastMouse) && ( (millis()-lastExitTime) < INTERVAL_BETWEEN_TESTS ) ){
-    return;
-  }
   
   if ( (ID_2.length() == 0) || (ID_1.length() != 0) ){
     return;
@@ -180,7 +179,6 @@ void loop()
   scale.tare(); // reset scale again
   door_close(door_one);
   door_open(door_two);
-  lastMouse = ID_2;
 
   // lure mouse
   deliver_reward(rewardPin, 100);
@@ -252,7 +250,6 @@ void loop()
     run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, liquidAmount, responseTime, &file, WAITTIME, &scale); // write to file during test
     file.close(); // close the file
     letMouseOut(ID_2);
-    lastExitTime = millis();
 
     while (true){
       while(!Serial.available());
@@ -301,7 +298,6 @@ void loop()
   else{ // if weight > 40g: abolish test
     Serial.println("Invalid weight, abolish");
     letMouseOut(ID_2);
-    lastExitTime = millis();
   }
   //while (door1Check() != ID_2){}
   //door_close(door_one);
