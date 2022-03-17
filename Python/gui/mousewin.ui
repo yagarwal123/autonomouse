@@ -165,13 +165,6 @@
    <item row="10" column="0" rowspan="2" colspan="4">
     <widget class="QComboBox" name="test_select"/>
    </item>
-   <item row="11" column="4">
-    <widget class="QPushButton" name="showAnalysisButton">
-     <property name="text">
-      <string>Show analysis window</string>
-     </property>
-    </widget>
-   </item>
    <item row="12" column="4">
     <widget class="QLabel" name="label_8">
      <property name="text">
@@ -193,9 +186,21 @@
     </widget>
    </item>
    <item row="12" column="2" colspan="2">
-    <widget class="QSlider" name="horizontalSlider">
+    <widget class="QSlider" name="speedSlider">
+     <property name="maximum">
+      <number>30</number>
+     </property>
+     <property name="sliderPosition">
+      <number>15</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="tickPosition">
+      <enum>QSlider::NoTicks</enum>
+     </property>
+     <property name="tickInterval">
+      <number>1</number>
      </property>
     </widget>
    </item>
@@ -206,6 +211,13 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="4" rowspan="2">
+    <widget class="QPushButton" name="showAnalysisButton">
+     <property name="text">
+      <string>Show analysis window</string>
      </property>
     </widget>
    </item>

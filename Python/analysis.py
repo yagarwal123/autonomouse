@@ -4,7 +4,7 @@ import numpy as np
 
 #test_id = '0007A0F7C4_1'
 
-def analysis_window(test_id):
+def analysis_window(test_id,frame_rate):
     filename = f'{test_id}/{test_id}_experiment_1_recording_1/rpicamera_video.h264'
     #subprocess.run(['ffmpeg','-y','-i',f'{filename}.h264',f'{filename}.mp4'])
     cap = cv2.VideoCapture(filename)
@@ -60,7 +60,7 @@ def analysis_window(test_id):
 
         #frame_rate to be adjusted according to the PC
         #frame_rate = 15 if millis < startTime else 10
-        frame_rate = 1
+        #frame_rate = 1
         if cv2.waitKey(frame_rate) & 0xFF == ord('q'):
             break
         #if millis > startTime:
