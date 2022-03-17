@@ -156,9 +156,9 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
 
     def analysis_win(self):
         test_id = self.test_select.currentText().split(' ')[0]
-        f = self.speedSlider.value()
         if test_id:
             try:
+                f = 31 - self.speedSlider.value()
                 p = Process(target=analysis_window,args=(test_id,f))
                 p.start()
             except Exception as e:
