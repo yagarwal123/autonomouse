@@ -257,10 +257,10 @@ void loop()
     letMouseOut(ID_2);
     lastExitTime = millis();
 
-    delay(2000); // wait for cam to close
-    Serial.println("Sending raw data");
+    Serial.println("Test complete - Start saving to file");
 
-    waitUntilReceive("Ready"); // wait for python to be ready
+    Serial.println("Sending raw data");
+    waitUntilReceive("Ready"); // wait for python to be ready to receive data
 
     // open file again
     if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char
@@ -292,7 +292,6 @@ void loop()
     while(Serial.availableForWrite() < 6000); //Wait till 6000 bytes of space is left in out buffer
     Serial.println("Raw data send complete");
     waitUntilReceive("Reconnected");
-    Serial.println("Test complete - Start saving to file");
   }
   else{ // if weight > 40g: abolish test
     Serial.println("Invalid weight, abolish");
@@ -302,13 +301,8 @@ void loop()
   //while (door1Check() != ID_2){}
   //door_close(door_one);
   Serial.println("Waiting for the save to complete");
-  while (true){
-    while(!Serial.available());
-    String serIn = Serial.readStringUntil('\n');
-    if (serIn == "Save complete"){
-      break;
-    }
-  }
+  waitUntilReceive("Save complete");
+
   Serial.println("LOGGER: Test complete");
   clear_serial_buffer(Serial1);
   clear_serial_buffer(Serial2);
