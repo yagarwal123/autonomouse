@@ -3,6 +3,7 @@
 #include "deliver_reward.h"
 #include "lick.h"
 #include "TeensyTimerTool.h"
+#include "HX711.h"
 using namespace TeensyTimerTool; 
 
 PeriodicTimer t1; // timer to run periodic serial print
@@ -34,7 +35,7 @@ void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sen
   pr->println(*sensorAddr);
   }
 
-void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME){
+void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -53,6 +54,7 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   Serial.print("Starting test now - "); Serial.println(millis());
   pr->println(millis()); // write start time in file DELETE ONE
   //for(int i=1; i<11; i++){
+  //t1.start();
   while(testOngoing){
     i++; // increment trial number
     //Serial.print("Trial ");
@@ -87,26 +89,33 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     Serial.print(i);
     Serial.print(" - Time ");
     Serial.println(lickTime);
-    t1.start(); // start timer again
     
+    // or take weight here
+    String serOut = "";
+    float weight = scale->get_units();
+    weight= round(weight*10)/10;
+    serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
+    Serial.println(serOut);
+    t1.start(); // start timer again
+
     while(millis() < downTime){ // downtime of sensor
       if(Serial.available()){
         String serIn = Serial.readStringUntil('\n');
         if (serIn == "Reward"){
-          //while (!Serial.available());
-          //int tempAmount = Serial.readStringUntil('\n').toInt();
           deliver_reward(rewardPin, liquidAmount); // also customise liquid drop here
         }
         if(serIn == "End"){
           testOngoing = 0;
         }
-      }
+      }else{
       // other processes - communications etc
+      }
     }
     // stop timers
     t1.stop();
     t2.stop();
     //t3.stop();
   }
+  //t1.stop();
   t3.stop();
 }

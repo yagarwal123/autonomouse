@@ -22,7 +22,6 @@ void FIRFilter_init(FIRFilter *fir){ //use pointer to FIRFilter variable so that
 
 //function to calculate (process) the filter output
 float FIRFilter_calc(FIRFilter *fir, float inputVal){
-
     /*Implementing CIRCULAR BUFER*/
     // store the old sample value in variable
     float  old = fir->buff[fir->buffIndex];
@@ -36,7 +35,12 @@ float FIRFilter_calc(FIRFilter *fir, float inputVal){
     }
 
     //Compute the filtered sample with moving average filter
-    fir->out = fir->out + ((inputVal - old)/FIR_FILTER_LENGTH); // out + (new-old)/window
-    //return the filtered data
-    return fir->out;
+    if(old < 1){
+        return inputVal; // return input value when the buffer is not full
+    }
+    else{
+        fir->out = fir->out + ((inputVal - old)/FIR_FILTER_LENGTH); // out + (new-old)/window
+        //return the filtered data
+        return fir->out;
+    }
 }

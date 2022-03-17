@@ -2,7 +2,6 @@
 #include <TimeLib.h>
 #include "run_test.h"
 #include "dop.h"
-#include "read_id.h"
 #include "HX711.h"
 #include "load_cell.h"
 #include "clear_serial_buffer.h"
@@ -12,7 +11,7 @@
 //#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
-#define calibration_factor 1020 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor 1019 //This value is obtained using the SparkFun_HX711_Calibration sketch
 // for SD card access--------------------------
 #define SD_FAT_TYPE 3
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
@@ -51,30 +50,26 @@ unsigned long lastExitTime = 0;
 String lastMouse = "";
 
 String door1Check(){
-  ID = read_id(Serial1);
-  if (ID.length() != 10) {
-    ID = "";
-  }
-  else{
+  if (Serial1.available()){
+    ID = Serial1.readStringUntil('\r');
     unsigned long recordTime = millis();
     String serOut = "";
     serOut = serOut + "Door Sensor - ID " + ID + " - Door 1 - Time " + recordTime;
     Serial.println(serOut);
   }
+  else{ID = "";};
   return ID;
 }
 
 String door2Check(){
-  ID = read_id(Serial2);
-  if (ID.length() != 10) {
-    ID = "";
-  }
-  else{
+  if (Serial2.available()){
+    ID = Serial2.readStringUntil('\r');
     unsigned long recordTime = millis();
     String serOut = "";
     serOut = serOut + "Door Sensor - ID " + ID + " - Door 2 - Time " + recordTime;
     Serial.println(serOut);
   }
+  else{ID = "";};
   return ID;
 }
 
@@ -91,15 +86,13 @@ void waitUntilReceive(String msg){ // waits for message from python
 void letMouseOut(String ID_2){
   clear_serial_buffer(Serial2);
   door_open(door_two);
-  // while (door2Check() != ID_2){}
-  while (!Serial2.available()){}; // close door 2 as soon as any mouse is detected
+  while (door2Check() != ID_2){} // either this or just open whenever something is in serial 2
   door_close(door_two);
   door_open(door_one);
 }
 
-void callback4(int TTL_PIN){ // saves sensor value at regular interval to pr
-    Serial.print("TTL - "); 
-    Serial.println(millis());
+void callback4(){ // saves sensor value at regular interval to pr
+    Serial.print("TTL - "); Serial.println(millis());
 }
   
 void setup()
@@ -196,28 +189,28 @@ void loop()
   deliver_reward(rewardPin, 100);
 
   // take the weight
-  weight = load_cell(&scale);
+  //weight = load_cell(&scale);
+  weight = scale.get_units();
 
-  // optional: if weight is >0 and < 40, close door 2
-  while(weight < 15){ // keep taking weight
-    weight = load_cell(&scale);
-    Serial.print("weight: ");
-    Serial.print(weight);
-    Serial.println("g");
+  while(weight < 5){ // keep taking weight
+    //weight = load_cell(&scale);
+    weight = scale.get_units();
+    // Serial.print("weight: ");
+    // Serial.print(weight);
+    // Serial.println("g");
 
-/*    if(Serial.available()){
+    if(Serial.available()){
       String serIn = Serial.readStringUntil('\n');
-      if (serIn == "Reward"){
-        while (!Serial.available());
-        int tempAmount = Serial.readStringUntil('\n').toInt();
-        deliver_reward(rewardPin, tempAmount); // TODO: add this bit to python
-      }*/
+      if (serIn == "Manual Start"){
+        weight = 39.99;
+      }
     }
+  }
 
   if(weight < 40){ // run test
-    String serOut = "";
-    serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
-    Serial.println(serOut);
+    // String serOut = "";
+    // serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
+    // Serial.println(serOut);
     Serial.println("LOGGER: Closing door 2, start test");
     door_close(door_two);
     //t4.start();
@@ -256,15 +249,11 @@ void loop()
     Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
     Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
     
-    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME); // write to file during test
+    run_test(lickPin, THRESHOLD, rewardPin, liquidAmount, &file, WAITTIME, &scale); // write to file during test
     file.close(); // close the file
     letMouseOut(ID_2);
     lastExitTime = millis();
 
-    
-    //t4.stop(); // stop reading TTL pulse
-    // TODO: send file to PC through Serial
-    //file.rewind();
     Serial.println("Stop recording");
 
     while (true){
@@ -274,13 +263,13 @@ void loop()
         break;
       }
     }
-    delay(2000); // why?
+    delay(2000); // wait for cam to close
     Serial.println("Sending raw data");
 
     // open file again
     if (!file.open(buf, FILE_WRITE)) { // filename needs to be in char
       Serial.println(F("file.open failed"));
-      // TODO: mission abort;
+      // TODO: error handling
     }
     file.rewind();
 
@@ -293,7 +282,7 @@ void loop()
       }
       while(Serial.availableForWrite() < 40);
       char line[40];
-      int data = file.fgets(line, sizeof(line));
+      file.fgets(line, sizeof(line));
       //char line = file.read();
       Serial.print(line);
     }
