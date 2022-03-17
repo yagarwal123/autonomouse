@@ -251,16 +251,12 @@ void loop()
     
     run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, liquidAmount, responseTime, &file, WAITTIME, &scale); // write to file during test
     file.close(); // close the file
+    
+    waitUntilReceive("Camera closed");
+
     letMouseOut(ID_2);
     lastExitTime = millis();
 
-    while (true){
-      while(!Serial.available());
-      String serIn = Serial.readStringUntil('\n');
-      if (serIn == "Camera closed"){
-        break;
-      }
-    }
     delay(2000); // wait for cam to close
     Serial.println("Sending raw data");
 
