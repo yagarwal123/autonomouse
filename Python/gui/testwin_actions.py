@@ -58,12 +58,15 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
             self.ser.write('End\n'.encode())
 
     def manual_start_test(self):
-        if not self.all_tests: return
-        test = self.all_tests[-1]
-        if test.vid_recording and test.starting_time is None:
-            self.ser.write('Manual Start\n'.encode())
+        self.ser.write('Manual Start\n'.encode())
+        # if not self.all_tests: return
+        # test = self.all_tests[-1]
+        # #if test.vid_recording and test.starting_time is None:
+        # if test.starting_time is None:
+        #     self.ser.write('Manual Start\n'.encode())
 
     def manual_door(self):
-        test = self.all_tests[-1]
-        if not test.vid_recording and test.ongoing:
-            self.ser.write('door\n'.encode())
+        self.ser.write('door\n'.encode())
+        # test = self.all_tests[-1]
+        # if not test.vid_recording and test.ongoing:
+        #     self.ser.write('door\n'.encode())

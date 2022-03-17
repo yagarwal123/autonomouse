@@ -85,14 +85,14 @@ void waitUntilReceive(String msg){ // waits for message from python
 void letMouseOut(String ID_2){
   clear_serial_buffer(Serial2);
   door_open(door_two);
-  while (door2Check() != ID_2){
+  while (door2Check() != ID_2){ // either this or just open whenever something is in serial 2
     if (Serial.available()){
       String serIn = Serial.readStringUntil('\n');
       if (serIn == "door"){
         break;
       }
     }
-  } // either this or just open whenever something is in serial 2
+  } 
   door_close(door_two);
   door_open(door_one);
 }
@@ -160,7 +160,21 @@ void loop()
   String ID_2 = door2Check();
   
   if ( (ID_2.length() == 0) || (ID_1.length() != 0) ){
-    return;
+    if (Serial.available()){
+      String serIn = Serial.readStringUntil('\n');
+      if (serIn == "door"){
+        ID_2 = "00079EB022";
+        unsigned long recordTime = millis();
+        String serOut = "";
+        serOut = serOut + "Door Sensor - ID " + ID_2 + " - Door 2 - Time " + recordTime;
+        Serial.println(serOut);
+      }else{
+        Serial.println("not door");
+        Serial.println(serIn);
+        return;
+        }
+    }else{
+      return;}
   }
 
   Serial.print("Check whether to start test - "); Serial.println(ID_2);
@@ -233,6 +247,10 @@ void loop()
     file.print(F("amplitude, "));
     file.println(F("TTL"));
     
+    while (Serial.available()) { 
+      Serial.read();
+    }// clear in buffer
+
     Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
     while (!Serial.available());
     int THRESHOLD = Serial.readStringUntil('\n').toInt();
@@ -251,14 +269,16 @@ void loop()
     file.close(); // close the file
     letMouseOut(ID_2);
 
-    while (true){
-      while(!Serial.available());
-      String serIn = Serial.readStringUntil('\n');
-      if (serIn == "Camera closed"){
-        break;
-      }
-    }
+    // while (true){
+    //   while(!Serial.available());
+    //   String serIn = Serial.readStringUntil('\n');
+    //   if (serIn == "Camera closed"){
+    //     break;
+    //   }
+    // }
     delay(2000); // wait for cam to close
+    Serial.println("Test complete - Start saving to file");
+
     Serial.println("Sending raw data");
 
     delay(2000); // wait for python to be ready
@@ -293,7 +313,7 @@ void loop()
     while(Serial.availableForWrite() < 6000); //Wait till 6000 bytes of space is left in out buffer
     Serial.println("Raw data send complete");
     
-    Serial.println("Test complete - Start saving to file");
+    //Serial.println("Test complete - Start saving to file");
   }
   else{ // if weight > 40g: abolish test
     Serial.println("Invalid weight, abolish");
