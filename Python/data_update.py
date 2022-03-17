@@ -5,6 +5,8 @@ from multiprocessing import Process
 from myTime import myTime
 from Test import Test, Trial
 import rasp_camera
+import serial
+from config import config
 
 logger = logging.getLogger(__name__)
 
@@ -83,9 +85,11 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             filename = f'Raw lick data - {test.id}.csv'
             filePath = os.path.join(fileFolder,filename)
             mutex.unlock()
-            p = Process(target=get_raw_data,args=(ser,filePath))
+            ser.close()
+            p = Process(target=get_raw_data,args=[filePath])
             p.start()
             p.join()
+            ser.open()
             mutex.lock()
 
         case 8:
@@ -144,8 +148,9 @@ def matchCommand(inSer,KNOWNSTATEMENTS):
         logger.error("Unknown message recieved : " + inSer)
     return stat_mean, search
 
-def get_raw_data(ser,filePath):
+def get_raw_data(filePath):
     rec_pause = False
+    ser = serial.Serial(config.PORT, 9600)
     with open(filePath, 'w') as csvfile: 
         l = ''
         ser.write("Ready\n".encode())
@@ -163,3 +168,4 @@ def get_raw_data(ser,filePath):
             if rec_pause and (ser.in_waiting < 100):
                 ser.write("Resume\n".encode())
                 rec_pause = False
+    ser.close()
