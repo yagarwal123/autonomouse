@@ -6,7 +6,7 @@ from myTime import myTime
 from Test import Test, Trial
 import rasp_camera
 import serial
-from config import config
+from config import CONFIG
 
 logger = logging.getLogger(__name__)
 
@@ -86,10 +86,12 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             filePath = os.path.join(fileFolder,filename)
             mutex.unlock()
             ser.close()
-            p = Process(target=get_raw_data,args=[filePath])
-            p.start()
-            p.join()
+            if CONFIG.TEENSY:
+                p = Process(target=get_raw_data,args=[filePath])
+                p.start()
+                p.join()
             ser.open()
+            ser.write("Reconnected\n".encode())
             mutex.lock()
 
         case 8:
@@ -150,7 +152,7 @@ def matchCommand(inSer,KNOWNSTATEMENTS):
 
 def get_raw_data(filePath):
     rec_pause = False
-    ser = serial.Serial(config.PORT, 9600)
+    ser = serial.Serial(CONFIG.PORT, 9600)
     with open(filePath, 'w') as csvfile: 
         l = ''
         ser.write("Ready\n".encode())

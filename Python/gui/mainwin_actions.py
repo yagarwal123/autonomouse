@@ -13,7 +13,7 @@ from gui.testwin_actions import testwinActions
 from gui.expwin_actions import expwinActions
 from start_teensy_read import startTeensyRead
 import rasp_camera
-from config import config
+from config import CONFIG
 from ExperimentParameters import ExperimentParameters
 
 logger = logging.getLogger(__name__)
@@ -48,7 +48,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         for id, m in self.all_mice.items():
             self.mouse_id_select.addItem(f'{id} - {m.get_name()}')
 
-        if config.OPEN_WINDOWS:
+        if CONFIG.OPEN_WINDOWS:
             self.open_exp()
             self.open_lick()
             self.open_door()
@@ -63,7 +63,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if close == QMessageBox.StandardButton.Yes:
             self.worker.terminate()
-            if config.TEENSY:
+            if CONFIG.TEENSY:
                 self.worker.wait()
                 self.ser.close()
             rasp_camera.close_record()

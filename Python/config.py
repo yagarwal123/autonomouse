@@ -7,4 +7,4 @@ class Config:
         self.PORT = 'COM4'
         self.OPEN_WINDOWS = True
 
-config = Config()
+CONFIG = Config()

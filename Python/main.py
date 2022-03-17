@@ -2,7 +2,7 @@ import subprocess
 import logging.config
 from time import sleep
 from unittest.mock import Mock
-from config import config
+from config import CONFIG
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 
@@ -41,16 +41,16 @@ if __name__ == "__main__":
 
     rasp_camera.start_rpi_host()
     try:
-        if config.TEENSY:
-            l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath,'--port', config.PORT])
+        if CONFIG.TEENSY:
+            l = subprocess.run([CONFIG.arduinoPath, "--upload", CONFIG.sketchPath,'--port', CONFIG.PORT])
             assert l.returncode == 0, 'Could not upload sketch to the teensy'
 
         START_TIME = datetime.datetime.now()
 
         sleep(5)
         
-        if config.TEENSY:
-            ser = serial.Serial(config.PORT, 9600)
+        if CONFIG.TEENSY:
+            ser = serial.Serial(CONFIG.PORT, 9600)
         else:
             ser = Mock()
             def user_in():

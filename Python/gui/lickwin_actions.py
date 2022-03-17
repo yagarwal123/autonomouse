@@ -20,15 +20,16 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
 
     def pltgraph(self):
-        self.mutex.lock()
-        if self.pltax:
-            self.pltax.clear()
+        if self.live_licks:
+            self.mutex.lock()
+            if self.pltax:
+                self.pltax.clear()
 
-        self.pltax = self.plotWid.canvas.ax
+            self.pltax = self.plotWid.canvas.ax
 
-        self.pltax.plot(self.live_licks[-1000:])
-        self.pltax.set_xticks([])
+            self.pltax.plot(self.live_licks[-1000:])
+            self.pltax.set_xticks([])
 
-        self.plotWid.canvas.draw()
-        self.mutex.unlock()
+            self.plotWid.canvas.draw()
+            self.mutex.unlock()
 

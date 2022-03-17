@@ -291,7 +291,7 @@ void loop()
     //file.close(); // close the file
     while(Serial.availableForWrite() < 6000); //Wait till 6000 bytes of space is left in out buffer
     Serial.println("Raw data send complete");
-    
+    waitUntilReceive("Reconnected");
     Serial.println("Test complete - Start saving to file");
   }
   else{ // if weight > 40g: abolish test
