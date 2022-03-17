@@ -103,6 +103,7 @@ class Ui_mouseWin(object):
         self.plotWid.setObjectName("plotWid")
         self.gridLayout.addWidget(self.plotWid, 13, 0, 1, 5)
         self.speedSlider = QtWidgets.QSlider(mouseWin)
+        self.speedSlider.setMinimum(1)
         self.speedSlider.setMaximum(30)
         self.speedSlider.setSliderPosition(15)
         self.speedSlider.setOrientation(QtCore.Qt.Orientation.Horizontal)
@@ -144,7 +145,7 @@ class Ui_mouseWin(object):
         self.label_8.setText(_translate("mouseWin", "Faster"))
         self.label_7.setText(_translate("mouseWin", "Slower"))
         self.showAnalysisButton.setText(_translate("mouseWin", "Show analysis window"))
-from mplwidget import MplWidget
+from gui.mplwidget import MplWidget
 
 
 if __name__ == "__main__":
