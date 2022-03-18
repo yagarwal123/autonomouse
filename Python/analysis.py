@@ -1,11 +1,12 @@
 import cv2
 import pyqtgraph as pg
 import numpy as np
+from config import CONFIG
 
 #test_id = '0007A0F7C4_1'
 
 def analysis_window(test_id,frame_rate):
-    filename = f'{test_id}/{test_id}_experiment_1_recording_1/rpicamera_video.h264'
+    filename = f'{CONFIG.application_path}/{test_id}/{test_id}_experiment_1_recording_1/rpicamera_video.h264'
     #subprocess.run(['ffmpeg','-y','-i',f'{filename}.h264',f'{filename}.mp4'])
     cap = cv2.VideoCapture(filename)
 
@@ -13,14 +14,14 @@ def analysis_window(test_id,frame_rate):
     #     TTLarray = np.loadtxt(ttl_file)
 
 
-    with open(f"{test_id}/Test data - {test_id}.csv",'r') as ttl_file:
+    with open(f"{CONFIG.application_path}/{test_id}/Test data - {test_id}.csv",'r') as ttl_file:
         for line in ttl_file:
             l = line.strip().split(',')
             if l[0] == 'lick_threshold':
                 threshold = int(l[1])
                 break
         
-    lick_file = open(f"{test_id}/Raw lick data - {test_id}.csv",'r')
+    lick_file = open(f"{CONFIG.application_path}/{test_id}/Raw lick data - {test_id}.csv",'r')
     _ = lick_file.readline()    #file_time
     _ = lick_file.readline()    #file_heading
     startTime = int(lick_file.readline())
@@ -28,7 +29,7 @@ def analysis_window(test_id,frame_rate):
 
     #threshold = 100
 
-    testT,amps,TTLarray = np.genfromtxt(f"{test_id}/Raw lick data - {test_id}.csv", unpack=True,delimiter=',',skip_header=3,skip_footer=1,invalid_raise=False,dtype=int)
+    testT,amps,TTLarray = np.genfromtxt(f"{CONFIG.application_path}/{test_id}/Raw lick data - {test_id}.csv", unpack=True,delimiter=',',skip_header=3,skip_footer=1,invalid_raise=False,dtype=int)
 
     TTLarray = TTLarray[TTLarray != 0]
     assert np.array_equal(TTLarray,  np.unique(TTLarray)), 'Raw data is corrupted'

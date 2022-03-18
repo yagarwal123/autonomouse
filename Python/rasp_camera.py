@@ -1,6 +1,7 @@
 import paramiko
 from scp import SCPClient
 import zmq
+import os
 from config import CONFIG
 
 port = 5555
@@ -135,6 +136,6 @@ def getVideofile(test_id):
         # SCPCLient takes a paramiko transport as its only argument
         scp = SCPClient(ssh.get_transport())
         #scp.put('test.txt', 'test2.txt')
-        scp.get(f'~/code/RPiCameraPlugin/Python/scripts/RPiCameraVideos/{test_id}_experiment_1_recording_1', recursive=True,local_path=test_id)
+        scp.get(f'~/code/RPiCameraPlugin/Python/scripts/RPiCameraVideos/{test_id}_experiment_1_recording_1', recursive=True,local_path=os.path.join(CONFIG.application_path,test_id))
         scp.close()
         ssh.close()

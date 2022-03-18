@@ -57,7 +57,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             test = all_tests[-1]
             fileFolder = test.id
             filename = f'Test data - {test.id}.csv'
-            filename = os.path.join(fileFolder, filename)
+            filename = os.path.join(CONFIG.application_path, fileFolder, filename)
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvfile.write("Test Parameters:\n")
@@ -70,7 +70,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             live_licks.clear()
 
             ttl_filename = f'TTL high millis - {test.id}.csv'
-            ttl_filename = os.path.join(fileFolder, ttl_filename)
+            ttl_filename = os.path.join(CONFIG.application_path,fileFolder, ttl_filename)
             with open(ttl_filename, 'w') as ttlfile:
                 for t in test.ttl:
                     ttlfile.write(f'{t.millis}\n')
@@ -83,7 +83,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
             filename = f'Raw lick data - {test.id}.csv'
-            filePath = os.path.join(fileFolder,filename)
+            filePath = os.path.join(CONFIG.application_path,fileFolder,filename)
             mutex.unlock()
             ser.close()
             if CONFIG.TEENSY:

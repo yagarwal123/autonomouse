@@ -15,6 +15,7 @@ from PyQt6 import QtWidgets
 from gui.mainwin_actions import mainwinActions
 import sys
 import serial
+import multiprocessing
 
 from Mouse import Mouse
 import rasp_camera
@@ -32,6 +33,7 @@ import rasp_camera
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
 
     #m = subprocess.run(['C:/Program Files (x86)/Arduino/arduino.exe','--upload','C:\\Users\\lab\\AppData\\Local\\Temp\\arduino_build_680162/demo_code.ino.hex'])
     #m = subprocess.run(['"C:/PROGRA~2/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"'],shell=True,encoding='UTF-8')
@@ -62,7 +64,7 @@ if __name__ == "__main__":
         sys.exit()
 
     all_mice = {}
-    with open('mouse_info.csv',mode='r') as f:
+    with open(f'{CONFIG.application_path}/mouse_info.csv',mode='r') as f:
         assert(f.readline().strip() == 'ID,Name,Weight')
         for line in f:
             info = line.strip().split(',')
