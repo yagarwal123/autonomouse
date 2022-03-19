@@ -34,6 +34,8 @@ import rasp_camera
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('--arduinoPath',metavar='',help="Arduino exe location")
     parser.add_argument('--sketchPath',metavar='',help="Sketch ino location")
@@ -51,8 +53,6 @@ if __name__ == "__main__":
     if arg.PORT is not None: CONFIG.PORT = arg.PORT
     if arg.OPEN_WINDOWS is not None: CONFIG.OPEN_WINDOWS = arg.OPEN_WINDOWS
     if arg.application_path is not None: CONFIG.application_path = arg.application_path
-
-    multiprocessing.freeze_support()
 
     #m = subprocess.run(['C:/Program Files (x86)/Arduino/arduino.exe','--upload','C:\\Users\\lab\\AppData\\Local\\Temp\\arduino_build_680162/demo_code.ino.hex'])
     #m = subprocess.run(['"C:/PROGRA~2/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"'],shell=True,encoding='UTF-8')
