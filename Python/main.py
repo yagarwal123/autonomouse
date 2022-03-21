@@ -43,7 +43,7 @@ if __name__ == "__main__":
     parser.add_argument('--RASPBERRY',action=argparse.BooleanOptionalAction)
     parser.add_argument('--PORT',metavar='',help="Specify port")
     parser.add_argument('--OPEN_WINDOWS',action=argparse.BooleanOptionalAction)
-    parser.add_argument('--application_path',metavar='',help="Specify mouse_info location and where to save files")
+    # parser.add_argument('--application_path',metavar='',help="Specify mouse_info location and where to save files")
     arg = parser.parse_args()
 
     if arg.arduinoPath is not None: CONFIG.arduinoPath = arg.arduinoPath
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     if arg.RASPBERRY is not None: CONFIG.RASPBERRY = arg.RASPBERRY
     if arg.PORT is not None: CONFIG.PORT = arg.PORT
     if arg.OPEN_WINDOWS is not None: CONFIG.OPEN_WINDOWS = arg.OPEN_WINDOWS
-    if arg.application_path is not None: CONFIG.application_path = arg.application_path
+    # if arg.application_path is not None: CONFIG.application_path = arg.application_path
 
     #m = subprocess.run(['C:/Program Files (x86)/Arduino/arduino.exe','--upload','C:\\Users\\lab\\AppData\\Local\\Temp\\arduino_build_680162/demo_code.ino.hex'])
     #m = subprocess.run(['"C:/PROGRA~2/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"'],shell=True,encoding='UTF-8')

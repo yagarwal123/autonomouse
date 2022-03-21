@@ -1,12 +1,12 @@
 import logging
-
+from config import CONFIG
 import data_update
 
 logger = logging.getLogger(__name__)
 
 serInlogger = logging.getLogger('Logger')
 formatter = logging.Formatter('%(asctime)s - "%(message)s"')
-fileHandler = logging.FileHandler('Serial_inputs.log', mode='a')   
+fileHandler = logging.FileHandler(f'{CONFIG.application_path}/Serial_inputs.log', mode='a')   
 fileHandler.setFormatter(formatter)
 serInlogger.addHandler(fileHandler)
 #Question: This will overwrite files, do we want that? Or we do want to save previous runs?
