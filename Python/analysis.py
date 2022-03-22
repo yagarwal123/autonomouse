@@ -39,6 +39,7 @@ def analysis_window(test_id):
 
     millis = int(TTLarray[0])
     idx = 0
+        # TODO: interpolate data for missing values during data save
     startTests = [i for i,k in enumerate(testT) if k==0] 
     line = pg.plot(amps,pen='b')
     for k in startTests:
@@ -86,6 +87,19 @@ def analysis_window(test_id):
 
     cap.release()
     cv2.destroyAllWindows()
+
+# def fix_array(oldTestArray,oldAmps):
+#     missingI = []
+#     missingV = []
+#     for i in range(len(oldTestArray)): # find missing values
+#         diff = oldTestArray[i+1] - oldTestArray[i]
+#         if diff != 1 and oldTestArray[i+1] != 0:
+#             for j in range(diff-1): 
+#               missingI.append[i] # append index
+#               missingV.append[oldTestArray[i]+j+1]
+#     #insert correct values into both oldTestArray and oldAmps
+#     fixed = np.insert(oldAmps, missingI, missingV)
+#     return fixed
 
 if __name__=='__main__':
     test_id = '0007A0F7C4_1'
