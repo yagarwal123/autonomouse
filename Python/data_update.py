@@ -10,7 +10,7 @@ from config import CONFIG
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters):
+def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters,test_start_signal):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g$',                     #1
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
@@ -104,6 +104,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             else:
                 ser.write("Start experiment\n".encode())
         case 10:
+            test_start_signal.emit()
             m = all_mice[search.group(1)]
             new_test = Test(m)
             m.tests.append(new_test)

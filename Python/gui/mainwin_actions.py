@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtGui
-from PyQt6.QtCore import QThread, QMutex, QPoint
+from PyQt6.QtCore import QThread, QMutex, QPoint, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 import logging
@@ -40,6 +40,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
         self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters)
+        self.worker.test_start_signal.connect(self.open_all_win)
         self.worker.start()
         self.myactions() # add actions for different buttons
 
@@ -123,12 +124,15 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def open_all_win(self):
         self.open_exp(QPoint(0,0))
-        self.open_lick(QPoint(0,1500))
-        self.open_door(QPoint(1500,0))
-        self.open_test(QPoint(1500,1500))
+        self.open_lick(QPoint(380,0))
+        self.open_door(QPoint(756,0))
+        self.open_test(QPoint(1200,0))
         self.open_cam()
 
 class TeensyRead(QThread):
+
+    test_start_signal = pyqtSignal()
+
     def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_parameters):
         super(TeensyRead, self).__init__()
         self.ser = ser
@@ -141,4 +145,4 @@ class TeensyRead(QThread):
         self.experiment_parameters = experiment_parameters
 
     def run(self):
-        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters)
+        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters,self.test_start_signal)
