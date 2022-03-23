@@ -2,13 +2,14 @@ from PyQt6 import QtCore, QtWidgets
 from gui.lickwin import Ui_lickWin
 
 class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
-    def __init__(self,mutex,live_licks):
+    def __init__(self,mutex,live_licks,pos=None):
         super().__init__()
         self.setupUi(self)
         self.live_licks = live_licks
         self.mutex = mutex
         self.title = "Lick Sensor"
 
+        if pos is not None: self.move(pos)
         self.setWindowTitle(self.title) # change title
         self.pltax = None
         

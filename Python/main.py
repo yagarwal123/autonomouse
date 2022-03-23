@@ -74,9 +74,7 @@ if __name__ == "__main__":
             ser = serial.Serial(CONFIG.PORT, 9600)
         else:
             ser = Mock()
-            def user_in():
-                return input().encode()
-            ser.readline.side_effect = user_in
+            ser.readline.side_effect = lambda: input().encode()
     except Exception as e:
         rasp_camera.close_record()
         print(e)

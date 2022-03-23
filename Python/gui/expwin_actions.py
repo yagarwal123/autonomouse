@@ -3,7 +3,7 @@ from gui.expwin import Ui_expWin
 from ExperimentParameters import ExperimentParameters
 
 class expwinActions(QtWidgets.QWidget, Ui_expWin):
-    def __init__(self,mutex,experiment_parameters,all_mice,ser,all_tests):
+    def __init__(self,mutex,experiment_parameters,all_mice,ser,all_tests,pos=None):
         super().__init__()
         self.setupUi(self)
         self.experiment_parameters = experiment_parameters
@@ -13,6 +13,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.all_tests = all_tests
         self.title = "Experiment Parameters"
 
+        if pos is not None: self.move(pos)
         self.setWindowTitle(self.title) # change title
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)

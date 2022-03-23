@@ -3,7 +3,7 @@ from PyQt6 import QtCore, QtWidgets
 from gui.testwin import Ui_testWin
 
 class testwinActions(QtWidgets.QWidget, Ui_testWin):
-    def __init__(self,mutex,all_tests,ser):
+    def __init__(self,mutex,all_tests,ser,pos=None):
         super().__init__()
         self.setupUi(self)
         self.all_tests = all_tests
@@ -15,6 +15,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.stopButton.clicked.connect(self.stop_test)
         self.manStartButton.clicked.connect(self.manual_start_test)
 
+        if pos is not None: self.move(pos)
         self.setWindowTitle(self.title) # change title
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(lambda:self.popData())

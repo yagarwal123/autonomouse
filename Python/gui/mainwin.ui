@@ -18,9 +18,9 @@
     <item row="4" column="0" colspan="3">
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="1">
-       <widget class="QPushButton" name="irButton">
+       <widget class="QPushButton" name="openAllButton">
         <property name="text">
-         <string>IR Sensor</string>
+         <string>Open all Windows</string>
         </property>
        </widget>
       </item>

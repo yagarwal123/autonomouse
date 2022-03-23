@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtGui
-from PyQt6.QtCore import QThread, QMutex
+from PyQt6.QtCore import QThread, QMutex, QPoint
 from PyQt6.QtWidgets import QMessageBox
 
 import logging
@@ -49,11 +49,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.mouse_id_select.addItem(f'{id} - {m.get_name()}')
 
         if CONFIG.OPEN_WINDOWS:
-            self.open_exp()
-            self.open_lick()
-            self.open_door()
-            self.open_cam()
-            self.open_test()
+            self.open_all_win()
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         close = QMessageBox()
@@ -73,12 +69,13 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # define actions here
     def myactions(self):
-        self.mouse_button.clicked.connect(self.open_mouse)
-        self.doorButton.clicked.connect(self.open_door)
-        self.lickButton.clicked.connect(self.open_lick)
-        self.testButton.clicked.connect(self.open_test)
-        self.expButton.clicked.connect(self.open_exp)
-        self.cameraButton.clicked.connect(self.open_cam)
+        self.mouse_button.clicked.connect(lambda: self.open_mouse())
+        self.doorButton.clicked.connect(lambda: self.open_door())
+        self.lickButton.clicked.connect(lambda: self.open_lick())
+        self.testButton.clicked.connect(lambda: self.open_test())
+        self.expButton.clicked.connect(lambda: self.open_exp())
+        self.cameraButton.clicked.connect(lambda: self.open_cam())
+        self.openAllButton.clicked.connect(lambda: self.open_all_win())
 
 
     def open_mouse(self):
@@ -89,40 +86,47 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.all_mousewin.append(mousewinActions(self.mutex,self.all_mice[ID]))
         self.all_mousewin[-1].show()
 
-    def open_door(self):
+    def open_door(self,pos=None):
         try:
             self.doorwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.doorwin = doorwinActions(self.mutex,self.doors)
+        self.doorwin = doorwinActions(self.mutex,self.doors,pos)
         self.doorwin.show()
 
-    def open_lick(self):
+    def open_lick(self,pos=None):
         try:
             self.lickwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.lickwin = lickwinActions(self.mutex,self.live_licks)
+        self.lickwin = lickwinActions(self.mutex,self.live_licks,pos)
         self.lickwin.show()
 
-    def open_test(self):
+    def open_test(self,pos=None):
         try:
             self.testwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.testwin = testwinActions(self.mutex,self.all_tests,self.ser)
+        self.testwin = testwinActions(self.mutex,self.all_tests,self.ser,pos)
         self.testwin.show()
 
-    def open_exp(self):
+    def open_exp(self,pos=None):
         try:
             self.expwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.all_tests)
+        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.all_tests,pos)
         self.expwin.show()
 
     def open_cam(self):
         os.system("start microsoft.windows.camera:")
+
+    def open_all_win(self):
+        self.open_exp(QPoint(0,0))
+        self.open_lick(QPoint(0,1500))
+        self.open_door(QPoint(1500,0))
+        self.open_test(QPoint(1500,1500))
+        self.open_cam()
 
 class TeensyRead(QThread):
     def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_parameters):

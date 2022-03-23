@@ -19,9 +19,9 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.irButton = QtWidgets.QPushButton(self.centralwidget)
-        self.irButton.setObjectName("irButton")
-        self.gridLayout_2.addWidget(self.irButton, 0, 1, 1, 1)
+        self.openAllButton = QtWidgets.QPushButton(self.centralwidget)
+        self.openAllButton.setObjectName("openAllButton")
+        self.gridLayout_2.addWidget(self.openAllButton, 0, 1, 1, 1)
         self.cameraButton = QtWidgets.QPushButton(self.centralwidget)
         self.cameraButton.setObjectName("cameraButton")
         self.gridLayout_2.addWidget(self.cameraButton, 1, 1, 1, 1)
@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.irButton.setText(_translate("MainWindow", "IR Sensor"))
+        self.openAllButton.setText(_translate("MainWindow", "Open all Windows"))
         self.cameraButton.setText(_translate("MainWindow", "Cameras"))
         self.testButton.setText(_translate("MainWindow", "Last test"))
         self.weightButton.setText(_translate("MainWindow", "Weight Sensor"))
