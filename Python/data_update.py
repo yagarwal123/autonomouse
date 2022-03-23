@@ -1,14 +1,17 @@
 import logging
 import re
 import os
+from multiprocessing import Process
 from myTime import myTime
 from Test import Test, Trial
 import rasp_camera
+import serial
+from config import CONFIG
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,experiment_parameters):
-    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g - Time (\d+)$',        #1
+def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters):
+    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g$',                     #1
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
                       '^Starting test now - (\d+)$',                                #4
@@ -28,11 +31,9 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,experiment_
             return
         case 1:
             weight = float(search.group(1))
-            t = myTime(START_TIME,int(search.group(2)))
+            #t = myTime(START_TIME,int(search.group(2)))
             m = getLastMouse(doors)
-            m.getRecentTest().weight = weight
-            m.add_weight(weight)
-            m.add_weighing_times(t)
+            m.tests[-1].weights.append(weight)
         case 2:
             m = all_mice[search.group(1)]
             d = int(search.group(2))
@@ -43,7 +44,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,experiment_
             live_licks.append(amp)
         case 4:
             t = myTime(START_TIME,int(search.group(1)))
-            getLastTest(doors).add_starting_time(t)
+            all_tests[-1].add_starting_time(t)
         case 5:
             trial = int(search.group(1))
             t = int(search.group(2))
@@ -53,16 +54,15 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,experiment_
                 logger.error("Retrieving the wrong test")
             old_test.add_trial(Trial(trial,t))
         case 6:
-            test = getLastTest(doors)
+            test = all_tests[-1]
             fileFolder = test.id
             filename = f'Test data - {test.id}.csv'
-            filename = os.path.join(fileFolder, filename)
+            filename = os.path.join(CONFIG.application_path, fileFolder, filename)
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvfile.write("Test Parameters:\n")
                 csvfile.write(str(test.test_parameters))
-                csvfile.write('\n')
-                csvfile.write(f'Weight:{test.weight}\n\n')
+                csvfile.write('\n\n')
                 csvfile.write('Trial No,Lick Time\n')
                 for idx,trial in enumerate(test.trials):
                     row = f"{idx+1},{trial.value}\n"
@@ -70,7 +70,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,experiment_
             live_licks.clear()
 
             ttl_filename = f'TTL high millis - {test.id}.csv'
-            ttl_filename = os.path.join(fileFolder, ttl_filename)
+            ttl_filename = os.path.join(CONFIG.application_path,fileFolder, ttl_filename)
             with open(ttl_filename, 'w') as ttlfile:
                 for t in test.ttl:
                     ttlfile.write(f'{t.millis}\n')
@@ -78,61 +78,56 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,experiment_
             rasp_camera.getVideofile(test.id)
             
         case 7:
-            test = getLastTest(doors)
+            test = all_tests[-1]
             fileFolder = test.id
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
             filename = f'Raw lick data - {test.id}.csv'
-            filePath = os.path.join(fileFolder,filename)
+            filePath = os.path.join(CONFIG.application_path,fileFolder,filename)
             mutex.unlock()
-            with open(filePath, 'w') as csvfile: 
-                l = ''
-                while (l.strip() != 'Raw data send complete'):
-                    #logger.error(ser.in_waiting)
-                    l = ser.readline().decode("utf-8")
-                    csvfile.write(l)
-                    if (ser.in_waiting > 6000):
-                        #logger.error('Panic')
-                        ser.write("Pause\n".encode())
-                        while (ser.in_waiting > 100):
-                            #logger.error(ser.in_waiting)
-                            l = ser.readline().decode("utf-8")
-                            csvfile.write(l)
-                        ser.write("Resume\n".encode())
+            ser.close()
+            if CONFIG.TEENSY:
+                p = Process(target=get_raw_data,args=[filePath])
+                p.start()
+                p.join()
+            ser.open()
+            ser.write("Reconnected\n".encode())
             mutex.lock()
-                    
+
         case 8:
             ser.write("Save complete\n".encode())
-            getLastTest(doors).ongoing = False
+            all_tests[-1].ongoing = False
         case 9:
             m = all_mice[search.group(1)]
             if experiment_parameters.paused or m.reached_limit():
                 ser.write("Do not start\n".encode())
             else:
                 ser.write("Start experiment\n".encode())
-                new_test = Test(m)
-                m.tests.append(new_test)
-                rasp_camera.start_record(new_test.id)
         case 10:
             m = all_mice[search.group(1)]
-            t = getLastTest(doors)
-            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime)
+            new_test = Test(m)
+            m.tests.append(new_test)
+            all_tests.append(new_test)
+            rasp_camera.start_record(new_test.id)
+            t = all_tests[-1]
+            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
             ser.write( ( str(m.waittime) + "\n" ).encode() )
+            ser.write( ( str(m.response_time) + "\n" ).encode() )
+
         case 11:
             pass
         case 12:
-            test = getLastTest(doors)
-            if test and test.vid_recording:
+            if all_tests and all_tests[-1].vid_recording:
+                test = all_tests[-1]
                 t = myTime(START_TIME,int(search.group(1)))
                 test.add_ttl(t)
             else:
-                logger.warning("Printing TTL with no test ongoing")
-
+                logger.info("Printing TTL with no test ongoing")
         case 13:
             rasp_camera.stop_record()
-            test = getLastTest(doors)
+            test = all_tests[-1]
             test.vid_recording = False
             ser.write("Camera closed\n".encode())
                 
@@ -142,14 +137,6 @@ def getLastMouse(doors):
     for entry in doors:
         if entry[2] == 2:
             return entry[1]
-    return None
-
-def getLastTest(doors):
-    m = getLastMouse(doors)
-    if m:
-        return m.getRecentTest()
-    else:
-        return None
 
 def matchCommand(inSer,KNOWNSTATEMENTS):
     stat_mean = 0
@@ -162,3 +149,25 @@ def matchCommand(inSer,KNOWNSTATEMENTS):
     if stat_mean == 0:
         logger.error("Unknown message recieved : " + inSer)
     return stat_mean, search
+
+def get_raw_data(filePath):
+    rec_pause = False
+    ser = serial.Serial(CONFIG.PORT, 9600)
+    with open(filePath, 'w') as csvfile: 
+        l = ''
+        ser.write("Ready\n".encode())
+        while (l.strip() != 'Raw data send complete'):
+            try:
+                l = ser.readline().decode("utf-8")
+            except Exception as e:
+                logger.error(f'{e}: Error while recieving raw data')
+                continue
+            csvfile.write(l)
+            #logger.error(ser.in_waiting)
+            if not rec_pause and (ser.in_waiting > 3000):
+                ser.write("Pause\n".encode())
+                rec_pause = True
+            if rec_pause and (ser.in_waiting < 100):
+                ser.write("Resume\n".encode())
+                rec_pause = False
+    ser.close()

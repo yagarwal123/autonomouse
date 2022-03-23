@@ -2,19 +2,12 @@ import subprocess
 import logging.config
 from time import sleep
 from unittest.mock import Mock
-import config
+from config import CONFIG
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 #Optional - matplotlib spams a lot of debugs, so setting its level to info
-
-subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
 
 import logging
 import datetime
@@ -22,9 +15,18 @@ from PyQt6 import QtWidgets
 from gui.mainwin_actions import mainwinActions
 import sys
 import serial
+import multiprocessing
+import argparse
 
 from Mouse import Mouse
 import rasp_camera
+
+# subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
@@ -32,6 +34,25 @@ import rasp_camera
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--arduinoPath',metavar='',help="Arduino exe location")
+    parser.add_argument('--sketchPath',metavar='',help="Sketch ino location")
+    parser.add_argument('--TEENSY',action=argparse.BooleanOptionalAction)
+    parser.add_argument('--RASPBERRY',action=argparse.BooleanOptionalAction)
+    parser.add_argument('--PORT',metavar='',help="Specify port")
+    parser.add_argument('--OPEN_WINDOWS',action=argparse.BooleanOptionalAction)
+    # parser.add_argument('--application_path',metavar='',help="Specify mouse_info location and where to save files")
+    arg = parser.parse_args()
+
+    if arg.arduinoPath is not None: CONFIG.arduinoPath = arg.arduinoPath
+    if arg.sketchPath is not None: CONFIG.sketchPath = arg.sketchPath
+    if arg.TEENSY is not None: CONFIG.TEENSY = arg.TEENSY
+    if arg.RASPBERRY is not None: CONFIG.RASPBERRY = arg.RASPBERRY
+    if arg.PORT is not None: CONFIG.PORT = arg.PORT
+    if arg.OPEN_WINDOWS is not None: CONFIG.OPEN_WINDOWS = arg.OPEN_WINDOWS
+    # if arg.application_path is not None: CONFIG.application_path = arg.application_path
 
     #m = subprocess.run(['C:/Program Files (x86)/Arduino/arduino.exe','--upload','C:\\Users\\lab\\AppData\\Local\\Temp\\arduino_build_680162/demo_code.ino.hex'])
     #m = subprocess.run(['"C:/PROGRA~2/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"'],shell=True,encoding='UTF-8')
@@ -39,24 +60,28 @@ if __name__ == "__main__":
     #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
     #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
 
-    if config.TEENSY:
-        l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath,'--port', config.PORT])
-        assert l.returncode == 0, 'Could not upload sketch to the teensy'
-
-    START_TIME = datetime.datetime.now()
-    
-    if config.TEENSY:
-        ser = serial.Serial(config.PORT, 9600)
-    else:
-        ser = Mock()
-        def user_in():
-            return input().encode()
-        ser.readline.side_effect = user_in
-
     rasp_camera.start_rpi_host()
+    try:
+        if CONFIG.TEENSY:
+            l = subprocess.run([CONFIG.arduinoPath, "--upload", CONFIG.sketchPath,'--port', CONFIG.PORT])
+            assert l.returncode == 0, 'Could not upload sketch to the teensy'
+
+        START_TIME = datetime.datetime.now()
+
+        sleep(5)
+        
+        if CONFIG.TEENSY:
+            ser = serial.Serial(CONFIG.PORT, 9600)
+        else:
+            ser = Mock()
+            ser.readline.side_effect = lambda: input().encode()
+    except Exception as e:
+        rasp_camera.close_record()
+        print(e)
+        sys.exit()
 
     all_mice = {}
-    with open('mouse_info.csv',mode='r') as f:
+    with open(f'{CONFIG.application_path}/mouse_info.csv',mode='r') as f:
         assert(f.readline().strip() == 'ID,Name,Weight')
         for line in f:
             info = line.strip().split(',')

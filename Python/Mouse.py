@@ -6,26 +6,19 @@ class Mouse:
         self.id = id
         self.name = name
         self.init_weight = init_weight
-        self.weights = []
-        self.weight_times = []
         self.doortimes = []
         self.tests = []
         self.liquid_amount = 50
         self.lick_threshold = 50
         self.waittime = 5000
         self.test_limit = 10
+        self.response_time = 2500
 
     def get_name(self):
         return self.name
     
     def get_id(self):
         return self.id
-
-    def add_weight(self,w):
-        self.weights.append(w)
-
-    def add_weighing_times(self,t):
-        self.weight_times.append(t)
 
     def add_doortimes(self,t):
         self.doortimes.append(t)
@@ -44,11 +37,5 @@ class Mouse:
 
     def reached_limit(self):
         return self.tests_today() >= self.test_limit
-
-    def getRecentTest(self):
-        if self.tests:
-            return self.tests[-1]
-        else:
-            return None
         
 

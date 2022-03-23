@@ -1,3 +1,4 @@
+from config import CONFIG
 LOGGING_CONFIG = {
     'version': 1,
     'loggers': {
@@ -22,7 +23,7 @@ LOGGING_CONFIG = {
             'level': 'INFO',
             'formatter': 'info',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'info.log',
+            'filename': f'{CONFIG.application_path}/info.log',
             'mode': 'a',
             'maxBytes': 1048576,
             'backupCount': 10
@@ -31,7 +32,7 @@ LOGGING_CONFIG = {
             'level': 'WARNING',
             'formatter': 'warning',
             'class': 'logging.FileHandler',
-            'filename': 'warning.log',
+            'filename': f'{CONFIG.application_path}/warning.log',
             'mode': 'a',
         },
     },

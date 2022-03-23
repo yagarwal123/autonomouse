@@ -1,8 +1,12 @@
 from PyQt6 import QtCore, QtWidgets
 from multiprocessing import Process
 import matplotlib.pyplot
+import logging
+import numpy as np
 from gui.mousewin import Ui_mouseWin
 from analysis import analysis_window
+
+logger = logging.getLogger(__name__)
 
 class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def __init__(self,mutex,mouse):
@@ -35,6 +39,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
         self.testLimLineEdit.returnPressed.connect(self.changeTestLimButton.click)
+        self.respLineEdit.returnPressed.connect(self.changeRespButton.click)
 
         self.myactions()
 
@@ -45,6 +50,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.changewaittimeButton.clicked.connect(self.change_waittime)
         self.changeTestLimButton.clicked.connect(self.change_testlim)
         self.showAnalysisButton.clicked.connect(self.analysis_win)
+        self.changeRespButton.clicked.connect(self.change_resp)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -91,18 +97,37 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             msg.setText('Invalid input')
             msg.exec()
 
+    def change_resp(self):
+        l = self.respLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.resp_disp.setText(l)
+            self.mouse.response_time = int(l)
+            self.respLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
     def pltgraph(self):
         self.mutex.lock()
         if self.pltax:
             self.pltax.clear()
         
-        x = [0] + [i.millis for i in self.mouse.weight_times]
-        x_lab = ['Start'] + [str(i) for i in self.mouse.weight_times]
-        y = [self.mouse.init_weight] + self.mouse.weights
+        x = [0]
+        x_lab = ['Start']
+        y = [self.mouse.init_weight]
+        for t in self.mouse.tests:
+            test_time = t.starting_time
+            if test_time is None or not t.weights: continue
+            w = t.weights
+            x = x + len(w)*[test_time.millis]
+            x_lab.append(str(test_time))
+            y = y + w
         y = [float(i) for i in y]
 
         self.pltax = self.plotWid.canvas.ax
-        matplotlib.pyplot.setp(self.pltax, xticks=x, xticklabels=x_lab)
+        #assert len(np.unique(x)) == len(x_lab)
+        matplotlib.pyplot.setp(self.pltax, xticks=np.unique(x), xticklabels=x_lab)
         matplotlib.pyplot.setp(self.pltax.xaxis.get_majorticklabels(), rotation=90)
         self.pltax.plot(x,y,'--o')
         self.pltax.set_xlim(left=0)
@@ -117,6 +142,11 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.waittime_disp.setText(str(self.mouse.waittime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
         self.test_no_disp.setText(str(self.mouse.tests_today()))
+        self.resp_disp.setText(str(self.mouse.response_time))
+        self.test_select.clear()
+        for t in self.mouse.tests:
+            if not t.ongoing:
+                self.test_select.addItem(f'{t.id} - {t.starting_time}')
 
 
     
@@ -127,6 +157,10 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def analysis_win(self):
         test_id = self.test_select.currentText().split(' ')[0]
         if test_id:
-            p = Process(target=analysis_window,args=[test_id])
-            p.start()
+            try:
+                f = 31 - self.speedSlider.value()
+                p = Process(target=analysis_window,args=(test_id,f))
+                p.start()
+            except Exception as e:
+                logger.error(f'Error in opening analysis window - Test ID {test_id}')
             #analysis_window(test_id)

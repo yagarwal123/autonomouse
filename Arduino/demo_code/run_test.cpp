@@ -3,6 +3,7 @@
 #include "deliver_reward.h"
 #include "lick.h"
 #include "TeensyTimerTool.h"
+#include "HX711.h"
 using namespace TeensyTimerTool; 
 
 PeriodicTimer t1; // timer to run periodic serial print
@@ -13,8 +14,11 @@ unsigned long responseTime = 0;
 unsigned long downTime = 0;
 int lickTime;
 //unsigned long WAITTIME = 5000;
-unsigned long RES = 2500;
+//unsigned long RES = 2500;
 int lickCheck = 0;
+
+bool buttonStateRising;
+bool lastButtonStateRising=0;
 
 void callback1(int *sensorAddr){ // to print out sensorValue in regular interval
   //Serial.print("display: ");
@@ -28,13 +32,22 @@ void callback2(int lickPin, int* sensorAddr) // reads sensor value
   //Serial.println("r");
   }
 
-void callback3(int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sensor value at regular interval to pr
+void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){ // saves sensor value at regular interval to pr
   pr->print(millis() - *timePt);
   pr->print(", ");
-  pr->println(*sensorAddr);
+  pr->print(*sensorAddr);
+  pr->print(", ");
+  buttonStateRising = digitalRead(TTL_PIN);
+  if ((buttonStateRising == HIGH) && (lastButtonStateRising == LOW)) {
+    pr->println(millis());
+  }
+  else{
+    pr->println(0);
+  }
+  lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFile* pr, int WAITTIME){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, int RES, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -48,11 +61,13 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
   // define timers
   t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
   t2.begin([=]{callback2(lickPin, sensorPt);}, 1ms, false); // reads lickPin every 50ms
-  t3.begin([=]{callback3(sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
+  while (digitalRead(TTL_PIN)==LOW);
+  t3.begin([=]{callback3(TTL_PIN, sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
   
   Serial.print("Starting test now - "); Serial.println(millis());
   pr->println(millis()); // write start time in file DELETE ONE
   //for(int i=1; i<11; i++){
+  //t1.start();
   while(testOngoing){
     i++; // increment trial number
     //Serial.print("Trial ");
@@ -87,8 +102,15 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
     Serial.print(i);
     Serial.print(" - Time ");
     Serial.println(lickTime);
-    t1.start(); // start timer again
     
+    // or take weight here
+    String serOut = "";
+    float weight = scale->get_units();
+    weight= round(weight*10)/10;
+    serOut = serOut + "Weight Sensor - Weight " + weight + "g";
+    Serial.println(serOut);
+    t1.start(); // start timer again
+
     while(millis() < downTime){ // downtime of sensor
       if(Serial.available()){
         String serIn = Serial.readStringUntil('\n');
@@ -98,13 +120,16 @@ void run_test(int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, FsFil
         if(serIn == "End"){
           testOngoing = 0;
         }
-      }
+      }else{
       // other processes - communications etc
+      }
     }
     // stop timers
     t1.stop();
     t2.stop();
     //t3.stop();
   }
+  //t1.stop();
   t3.stop();
+  Serial.println("Stop recording");
 }

@@ -2,13 +2,14 @@ from PyQt6 import QtCore, QtWidgets
 from gui.doorwin import Ui_doorWin
 
 class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
-    def __init__(self,mutex,doors):
+    def __init__(self,mutex,doors,pos=None):
         super().__init__()
         self.setupUi(self)
         self.doors = doors
         self.mutex = mutex
         self.title = "Doors"
 
+        if pos is not None: self.move(pos)
         self.setWindowTitle(self.title) # change title
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(lambda:self.popTable())

@@ -6,10 +6,10 @@ class Test:
     def __init__(self,mouse):
         self.mouse = mouse
         self.starting_time = None
-        self.weight = None
         self.trials=[]
         self.odours = []
         self.ttl = []
+        self.weights = []
         self.test_parameters = TestParameters()
         self.vid_recording = True
         self.ongoing = True
@@ -20,7 +20,7 @@ class Test:
         self.trials.append(new_trial)
 
     def add_ttl(self,ttl_time):
-        if (not self.ttl) or (self.ttl[-1] != ttl_time):
+        if (not self.ttl) or (ttl_time.millis-self.ttl[-1].millis>15):
             self.ttl.append(ttl_time)
 
     def add_starting_time(self,t):
@@ -37,10 +37,11 @@ class Trial:
 
 class TestParameters:
 
-    def set_parameters(self,lick_threshold,liquid_amount,waittime):
+    def set_parameters(self,lick_threshold,liquid_amount,waittime,response_time):
         self.lick_threshold = lick_threshold
         self.liquid_amount = liquid_amount
         self.waittime = waittime
+        self.response_time = response_time
 
     def __str__(self):
         attrs = vars(self)
