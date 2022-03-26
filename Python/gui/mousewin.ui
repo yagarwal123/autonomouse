@@ -49,16 +49,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="3" rowspan="2">
-    <widget class="QLineEdit" name="liquidLineEdit"/>
-   </item>
-   <item row="4" column="4">
-    <widget class="QPushButton" name="changeliquidButton">
-     <property name="text">
-      <string>Change</string>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="0" colspan="2">
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -221,6 +211,16 @@
     <widget class="QPushButton" name="showAnalysisButton">
      <property name="text">
       <string>Show analysis window</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLineEdit" name="liquidLineEdit"/>
+   </item>
+   <item row="3" column="4">
+    <widget class="QPushButton" name="changeliquidButton">
+     <property name="text">
+      <string>Change</string>
      </property>
     </widget>
    </item>
