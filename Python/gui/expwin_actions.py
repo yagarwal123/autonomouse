@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from gui.expwin import Ui_expWin
 from ExperimentParameters import ExperimentParameters
 
@@ -6,6 +6,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
     def __init__(self,mutex,experiment_parameters,all_mice,ser,all_tests,pos=None):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.experiment_parameters = experiment_parameters
         self.all_mice = all_mice
         self.mutex = mutex

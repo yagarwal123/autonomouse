@@ -1,10 +1,11 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from gui.doorwin import Ui_doorWin
 
 class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
     def __init__(self,mutex,doors,pos=None):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.doors = doors
         self.mutex = mutex
         self.title = "Doors"

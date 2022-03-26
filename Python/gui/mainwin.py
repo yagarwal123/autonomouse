@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file './Python/gui/mainwin.ui'
+# Form implementation generated from reading ui file '.\Python\gui\mainwin.ui'
 #
 # Created by: PyQt6 UI code generator 6.2.3
 #
@@ -28,9 +28,9 @@ class Ui_MainWindow(object):
         self.testButton = QtWidgets.QPushButton(self.centralwidget)
         self.testButton.setObjectName("testButton")
         self.gridLayout_2.addWidget(self.testButton, 1, 2, 1, 1)
-        self.weightButton = QtWidgets.QPushButton(self.centralwidget)
-        self.weightButton.setObjectName("weightButton")
-        self.gridLayout_2.addWidget(self.weightButton, 0, 2, 1, 1)
+        self.detMouseButton = QtWidgets.QPushButton(self.centralwidget)
+        self.detMouseButton.setObjectName("detMouseButton")
+        self.gridLayout_2.addWidget(self.detMouseButton, 0, 2, 1, 1)
         self.doorButton = QtWidgets.QPushButton(self.centralwidget)
         self.doorButton.setObjectName("doorButton")
         self.gridLayout_2.addWidget(self.doorButton, 0, 0, 1, 1)
@@ -107,7 +107,7 @@ class Ui_MainWindow(object):
         self.openAllButton.setText(_translate("MainWindow", "Open all Windows"))
         self.cameraButton.setText(_translate("MainWindow", "Cameras"))
         self.testButton.setText(_translate("MainWindow", "Last test"))
-        self.weightButton.setText(_translate("MainWindow", "Weight Sensor"))
+        self.detMouseButton.setText(_translate("MainWindow", "Mouse Details"))
         self.doorButton.setText(_translate("MainWindow", "Door"))
         self.lickButton.setText(_translate("MainWindow", "Lick Detector"))
         self.mouse_button.setText(_translate("MainWindow", "Go"))

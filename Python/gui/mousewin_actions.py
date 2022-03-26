@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from multiprocessing import Process
 import matplotlib.pyplot
 import logging
@@ -12,6 +12,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def __init__(self,mutex,mouse):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.mouse = mouse
         self.mutex = mutex
         self.title = self.mouse.get_id() +  ' - ' + self.mouse.get_name()
