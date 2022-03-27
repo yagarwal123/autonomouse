@@ -26,6 +26,7 @@ import rasp_camera
 # subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/detmousewin.ui -o ./Python/gui/detmousewin.py".split())
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
