@@ -38,12 +38,6 @@ if __name__ == "__main__":
 
     CONFIG.parse_arg()
 
-    #m = subprocess.run(['C:/Program Files (x86)/Arduino/arduino.exe','--upload','C:\\Users\\lab\\AppData\\Local\\Temp\\arduino_build_680162/demo_code.ino.hex'])
-    #m = subprocess.run(['"C:/PROGRA~2/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"'],shell=True,encoding='UTF-8')
-    #os.system("\"C:/Program Files (x86)/Arduino/arduino.exe\" --upload \"C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino\"")
-    #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-    #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
-
     rasp_camera.start_rpi_host()
     try:
         if CONFIG.TEENSY:
