@@ -100,10 +100,10 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
         case 9:
             m = all_mice[search.group(1)]
             if experiment_parameters.paused:
-                print('Experiment is paused')
+                logger.info('Experiment is paused')
                 ser.write("Do not start\n".encode())
             elif m.reached_limit():
-                print(f'Mouse Limit is reached - {m.id}')
+                logger.info(f'Mouse Limit is reached - {m.id}')
                 ser.write("Do not start\n".encode())
             else:
                 ser.write("Start experiment\n".encode())
