@@ -1,10 +1,11 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from gui.lickwin import Ui_lickWin
 
 class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
     def __init__(self,mutex,live_licks,pos=None):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.live_licks = live_licks
         self.mutex = mutex
         self.title = "Lick Sensor"

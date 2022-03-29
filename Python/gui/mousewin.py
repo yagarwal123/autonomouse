@@ -32,12 +32,6 @@ class Ui_mouseWin(object):
         self.liq_am_disp = QtWidgets.QLabel(mouseWin)
         self.liq_am_disp.setObjectName("liq_am_disp")
         self.gridLayout.addWidget(self.liq_am_disp, 2, 2, 3, 1)
-        self.liquidLineEdit = QtWidgets.QLineEdit(mouseWin)
-        self.liquidLineEdit.setObjectName("liquidLineEdit")
-        self.gridLayout.addWidget(self.liquidLineEdit, 3, 3, 2, 1)
-        self.changeliquidButton = QtWidgets.QPushButton(mouseWin)
-        self.changeliquidButton.setObjectName("changeliquidButton")
-        self.gridLayout.addWidget(self.changeliquidButton, 4, 4, 1, 1)
         self.label_2 = QtWidgets.QLabel(mouseWin)
         self.label_2.setObjectName("label_2")
         self.gridLayout.addWidget(self.label_2, 5, 0, 1, 2)
@@ -118,6 +112,12 @@ class Ui_mouseWin(object):
         self.showAnalysisButton = QtWidgets.QPushButton(mouseWin)
         self.showAnalysisButton.setObjectName("showAnalysisButton")
         self.gridLayout.addWidget(self.showAnalysisButton, 10, 4, 2, 1)
+        self.liquidLineEdit = QtWidgets.QLineEdit(mouseWin)
+        self.liquidLineEdit.setObjectName("liquidLineEdit")
+        self.gridLayout.addWidget(self.liquidLineEdit, 3, 3, 1, 1)
+        self.changeliquidButton = QtWidgets.QPushButton(mouseWin)
+        self.changeliquidButton.setObjectName("changeliquidButton")
+        self.gridLayout.addWidget(self.changeliquidButton, 3, 4, 1, 1)
 
         self.retranslateUi(mouseWin)
         QtCore.QMetaObject.connectSlotsByName(mouseWin)
@@ -129,7 +129,6 @@ class Ui_mouseWin(object):
         self.test_no_disp.setText(_translate("mouseWin", "0"))
         self.label.setText(_translate("mouseWin", "Current Liquid Amount:"))
         self.liq_am_disp.setText(_translate("mouseWin", "1000"))
-        self.changeliquidButton.setText(_translate("mouseWin", "Change"))
         self.label_2.setText(_translate("mouseWin", "Current Lick Threshold:"))
         self.lick_thresh_disp.setText(_translate("mouseWin", "2000"))
         self.changelickButton.setText(_translate("mouseWin", "Change"))
@@ -145,6 +144,7 @@ class Ui_mouseWin(object):
         self.label_8.setText(_translate("mouseWin", "Faster"))
         self.label_7.setText(_translate("mouseWin", "Slower"))
         self.showAnalysisButton.setText(_translate("mouseWin", "Show analysis window"))
+        self.changeliquidButton.setText(_translate("mouseWin", "Change"))
 from gui.mplwidget import MplWidget
 
 

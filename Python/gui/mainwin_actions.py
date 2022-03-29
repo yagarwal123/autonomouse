@@ -11,6 +11,7 @@ from gui.doorwin_actions import doorwinActions
 from gui.lickwin_actions import lickwinActions
 from gui.testwin_actions import testwinActions
 from gui.expwin_actions import expwinActions
+from gui.detmousewin_actions import detmousewinActions
 from start_teensy_read import startTeensyRead
 import rasp_camera
 from config import CONFIG
@@ -23,8 +24,8 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, ser, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[]):
         super().__init__()
         self.setupUi(self)
-        self.title = 'Main Window'
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
+        self.title = 'Main Window'
         self.ser = ser
         self.START_TIME = START_TIME
         self.all_mice = all_mice
@@ -77,6 +78,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.expButton.clicked.connect(lambda: self.open_exp())
         self.cameraButton.clicked.connect(lambda: self.open_cam())
         self.openAllButton.clicked.connect(lambda: self.open_all_win())
+        self.detMouseButton.clicked.connect(lambda: self.open_detmouse())
 
 
     def open_mouse(self):
@@ -119,6 +121,14 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.all_tests,pos)
         self.expwin.show()
 
+    def open_detmouse(self,pos=None):
+        try:
+            self.detmouse.close()
+        except (RuntimeError, AttributeError) as e:
+            pass
+        self.detmouse = detmousewinActions(self.mutex,self.all_mice,pos)
+        self.detmouse.show()
+
     def open_cam(self):
         os.system("start microsoft.windows.camera:")
 
@@ -126,8 +136,9 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.open_exp(QPoint(0,0))
         self.open_lick(QPoint(380,0))
         self.open_door(QPoint(756,0))
-        self.open_test(QPoint(1200,0))
+        self.open_test(QPoint(1182,0))
         self.open_cam()
+        self.open_detmouse(QPoint(0,292))
 
 class TeensyRead(QThread):
 

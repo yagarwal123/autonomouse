@@ -1,10 +1,11 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from gui.doorwin import Ui_doorWin
 
 class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
     def __init__(self,mutex,doors,pos=None):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.doors = doors
         self.mutex = mutex
         self.title = "Doors"
@@ -17,6 +18,7 @@ class doorwinActions(QtWidgets.QWidget, Ui_doorWin):
         
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
+        self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.EditTrigger.NoEditTriggers)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch) 
         self.tableWidget.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents) 
 

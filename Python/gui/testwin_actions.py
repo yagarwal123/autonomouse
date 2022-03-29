@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 
 from gui.testwin import Ui_testWin
 
@@ -6,6 +6,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
     def __init__(self,mutex,all_tests,ser,pos=None):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.all_tests = all_tests
         self.mutex = mutex
         self.ser = ser
@@ -23,6 +24,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
+        self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.EditTrigger.NoEditTriggers)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch) 
 
 

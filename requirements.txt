@@ -2,6 +2,7 @@ PyQt6
 matplotlib
 pyserial
 paramiko
+setuptools
 zmq
 opencv-python
 pyqtgraph
