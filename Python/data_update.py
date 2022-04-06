@@ -56,6 +56,8 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
         case 6:
             test = all_tests[-1]
             fileFolder = test.id
+            if not os.path.exists(fileFolder):
+                os.makedirs(fileFolder)
             filename = f'Test data - {test.id}.csv'
             filename = os.path.join(CONFIG.application_path, fileFolder, filename)
             with open(filename, 'w') as csvfile: 

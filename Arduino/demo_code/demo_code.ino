@@ -88,8 +88,8 @@ void letMouseOut(String ID_2){
   clear_serial_buffer(Serial2);
   door_open(door_two);
   while (door2Check() != ID_2){} // either this or just open whenever something is in serial 2
-  door_close(door_two);
   door_open(door_one);
+  door_close(door_two);
 }
   
 void setup()
