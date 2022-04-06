@@ -93,8 +93,8 @@ void letMouseOut(String ID_2){
       }
     }
   } 
-  door_close(door_two);
   door_open(door_one);
+  door_close(door_two);
 }
   
 void setup()
