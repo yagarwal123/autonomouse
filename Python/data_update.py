@@ -64,9 +64,6 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
                 csvfile.write(str(test.test_parameters))
                 csvfile.write('\n\n')
                 csvfile.write('Trial No,Lick Time\n')
-                for idx,trial in enumerate(test.trials):
-                    row = f"{idx+1},{trial.value}\n"
-                    csvfile.write(row)
             live_licks.clear()
 
             ttl_filename = f'TTL high millis - {test.id}.csv'
