@@ -169,8 +169,8 @@ void loop()
         serOut = serOut + "Door Sensor - ID " + ID_2 + " - Door 2 - Time " + recordTime;
         Serial.println(serOut);
       }else{
-        Serial.println("not door");
-        Serial.println(serIn);
+        //Serial.println("not door");
+        //Serial.println(serIn);
         return;
         }
     }else{
