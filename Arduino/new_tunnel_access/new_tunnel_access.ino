@@ -1,4 +1,4 @@
- #include <Servo.h>
+#include <Servo.h>
 #include <TimeLib.h>
 #include "dop.h"
 #include "HX711.h"
@@ -150,7 +150,7 @@ void loop()
     Serial.println("LOGGER: Closing door 2, start test");
     door_close(door_two);
     Serial.println(ID_2);
-    Serial.println("Start test");
+    Serial.println("Start test, enter 'Stop test' to stop");
 
     waitUntilReceive("Stop test");
     letMouseOut(ID_2);
@@ -163,7 +163,9 @@ void loop()
     door_open(door_one);
   }
 
-  Serial.println("LOGGER: Test complete");
+  Serial.println("LOGGER: Test complete, enter 'End':");
+  waitUntilReceive("End");
   clear_serial_buffer(Serial1);
   clear_serial_buffer(Serial2);
+  Serial.println("Test ended");
 }
