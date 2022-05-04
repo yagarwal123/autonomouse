@@ -122,8 +122,8 @@ void loop()
       }
     }
   }
-
-  if(weight < 40){ // run test  
+  //if(weight < 40){ // for >1 mice 
+  if(weight > 5){ // run test  
       
     door_open(door_two);
     lastMouse = ID_2;
@@ -158,10 +158,10 @@ void loop()
 
     Serial.println("Test complete - Start saving to file");
   }
-  else{ // if weight > 40g: abolish test
+/*  else{ // if weight > 40g: abolish test
     Serial.println("Invalid weight, abolish");
     door_open(door_one);
-  }
+  }*/
 
   Serial.println("LOGGER: Test complete, enter 'End':");
   waitUntilReceive("End");
