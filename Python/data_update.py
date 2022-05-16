@@ -37,7 +37,9 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             m = all_mice[search.group(1)]
             d = int(search.group(2))
             t = myTime(START_TIME,int(search.group(3)))
-            doors.insert(0,[t,m,d])
+            last_entry = doors[0] if doors else None
+            if last_entry is None or (str(last_entry[0]) != str(t)) or (last_entry[1] != m) or (last_entry[2] != d):
+                doors.insert(0,[t,m,d])
         case 3:
             amp = float(search.group(1))
             live_licks.append(amp)

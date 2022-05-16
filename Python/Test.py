@@ -10,7 +10,7 @@ class Test:
         self.starting_time = None
         self.trials=[]
         self.ttl = []
-        self.weights = []
+        self.weights = [0]
         self.test_parameters = TestParameters()
         self.vid_recording = True
         self.ongoing = True

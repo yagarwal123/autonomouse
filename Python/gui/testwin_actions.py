@@ -35,6 +35,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.m_name.setText(test.mouse.get_name())
         self.m_id.setText(test.mouse.get_id())
         self.test_start_time.setText(str(test.starting_time))
+        self.weights_max.setText(str(max(test.weights)))
         self.tableWidget.setRowCount(len(test.trials))
         for i,trial in enumerate(test.trials):
             self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
