@@ -18,13 +18,10 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.title = self.mouse.get_id() +  ' - ' + self.mouse.get_name()
 
         self.setWindowTitle(self.title) # change title
-        for t in self.mouse.tests:
-            if not t.ongoing:
-                self.test_select.addItem(f'{t.id} - {t.starting_time}')
         self.pltax = None
         
         self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(lambda:self.updatedata())
+        self.timer.timeout.connect(self.updatedisplays)
         self.timer.start(1000)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -34,7 +31,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
         self.waittime_disp.setText(str(self.mouse.waittime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
-        self.test_no_disp.setText(str(self.mouse.tests_today()))
+        self.test_no_disp.setText(str(self.mouse.tests_today))
 
         self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
@@ -117,13 +114,11 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         x = [0]
         x_lab = ['Start']
         y = [self.mouse.init_weight]
-        for t in self.mouse.tests:
-            test_time = t.starting_time
-            if test_time is None or not t.weights: continue
-            w = t.weights
-            x = x + len(w)*[test_time.millis]
-            x_lab.append(str(test_time))
-            y = y + w
+        for t in self.mouse.test_times:
+            if t is None: continue
+            x.append(t.millis)
+            x_lab.append(str(t))
+        y = y + self.mouse.final_weights
         y = [float(i) for i in y]
 
         self.pltax = self.plotWid.canvas.ax
@@ -142,18 +137,13 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
         self.waittime_disp.setText(str(self.mouse.waittime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
-        self.test_no_disp.setText(str(self.mouse.tests_today()))
+        self.test_no_disp.setText(str(self.mouse.tests_today))
         self.resp_disp.setText(str(self.mouse.response_time))
-        self.test_select.clear()
-        for t in self.mouse.tests:
-            if not t.ongoing:
-                self.test_select.addItem(f'{t.id} - {t.starting_time}')
-
-
-    
-    def updatedata(self):
-        self.pltgraph()
-        self.updatedisplays()
+        if self.test_select.count() != len(self.mouse.test_ids):
+            self.test_select.clear()
+            for id,t in zip(self.mouse.test_ids,self.mouse.test_times):
+                self.test_select.addItem(f'{id} - {t}')
+            self.pltgraph()
 
     def analysis_win(self):
         test_id = self.test_select.currentText().split(' ')[0]

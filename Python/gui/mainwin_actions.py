@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QMessageBox
 
 import logging
 import os
+from Test import Test
 
 from gui.mainwin import Ui_MainWindow
 from gui.mousewin_actions import mousewinActions
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self, ser, START_TIME, all_mice,doors=[],live_licks=[],all_tests=[]):
+    def __init__(self, ser, START_TIME, all_mice,doors=[],live_licks=[],last_test=Test()):
         super().__init__()
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
@@ -31,7 +32,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.all_mice = all_mice
         self.doors = doors
         self.live_licks = live_licks
-        self.all_tests = all_tests
+        self.last_test = last_test
         self.experiment_parameters = ExperimentParameters()
 
         self.mutex = QMutex()
@@ -40,7 +41,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
-        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters)
+        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.last_test,self.experiment_parameters)
         self.worker.test_start_signal.connect(self.open_all_win)
         self.worker.start()
         self.myactions() # add actions for different buttons
@@ -110,7 +111,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.testwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.testwin = testwinActions(self.mutex,self.all_tests,self.ser,pos)
+        self.testwin = testwinActions(self.mutex,self.last_test,self.ser,pos)
         self.testwin.show()
 
     def open_exp(self,pos=None):
@@ -118,7 +119,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.expwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.all_tests,pos)
+        self.expwin = expwinActions(self.mutex,self.experiment_parameters,self.all_mice,self.ser,self.last_test,pos)
         self.expwin.show()
 
     def open_detmouse(self,pos=None):
@@ -144,16 +145,16 @@ class TeensyRead(QThread):
 
     test_start_signal = pyqtSignal()
 
-    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,all_tests,experiment_parameters):
+    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,last_test,experiment_parameters):
         super(TeensyRead, self).__init__()
         self.ser = ser
         self.all_mice = all_mice
         self.doors = doors
         self.live_licks = live_licks
-        self.all_tests = all_tests
+        self.last_test = last_test
         self.START_TIME = START_TIME
         self.mutex = mutex
         self.experiment_parameters = experiment_parameters
 
     def run(self):
-        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.all_tests,self.experiment_parameters,self.test_start_signal)
+        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.last_test,self.experiment_parameters,self.test_start_signal)
