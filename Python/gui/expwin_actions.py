@@ -114,7 +114,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
 
     def refill(self):
         self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
-        if not self.last_test or not self.last_test.ongoing:
+        if not vars(self.last_test) or not self.last_test.ongoing:
             if self.experiment_parameters.valve_open:      
                 if not self.experiment_parameters.paused:
                     self.pause_exp()
