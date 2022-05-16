@@ -35,12 +35,13 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.m_name.setText(test.mouse.get_name())
         self.m_id.setText(test.mouse.get_id())
         self.test_start_time.setText(str(test.starting_time))
-        self.weights_max.setText(str(max(test.weights)))
-        self.tableWidget.setRowCount(len(test.trials))
-        for i,trial in enumerate(test.trials):
-            self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
-            self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(trial.value)))
-        #self.tableWidget.scrollToBottom()
+        self.weight_max.setText(str(max(test.weights)))
+        if self.tableWidget.rowCount() != len(test.trials):
+            self.tableWidget.setRowCount(len(test.trials))
+            for i,trial in enumerate(test.trials):
+                self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
+                self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(trial.value)))
+            #self.tableWidget.scrollToBottom()
         self.mutex.unlock()
 
     def give_reward(self):
