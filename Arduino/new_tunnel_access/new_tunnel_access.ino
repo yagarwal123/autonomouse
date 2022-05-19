@@ -6,7 +6,7 @@
 #include "clear_serial_buffer.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
-#define calibration_factor 1019 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor -417 //This value is obtained using the SparkFun_HX711_Calibration sketch
 
 // define objects for door
 Servo door_one;  // create servo object to control a servo
