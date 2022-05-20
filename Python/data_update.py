@@ -51,7 +51,9 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             t = int(search.group(2))
             if ( len(last_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
-            last_test.add_trial(Trial(trial,t))
+            #TODO: set stimuli here
+            stimuli = [0,1]
+            last_test.add_trial(Trial(trial,t,stimuli))
         case 6:
             test = last_test
             fileFolder = test.id

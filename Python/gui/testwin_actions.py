@@ -36,11 +36,17 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.m_id.setText(test.mouse.get_id())
         self.test_start_time.setText(str(test.starting_time))
         self.weight_max.setText(str(max(test.weights)))
-        if self.tableWidget.rowCount() != len(test.trials):
-            self.tableWidget.setRowCount(len(test.trials))
-            for i,trial in enumerate(test.trials):
-                self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
-                self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(trial.value)))
+        #if self.tableWidget.rowCount() != len(test.trials):
+        self.tableWidget.setRowCount(len(test.trials))
+        
+        if test.trials and (self.tableWidget.columnCount() != 2+len(test.trials[0].stimuli)):
+            self.tableWidget.setColumnCount(2+len(test.trials[0].stimuli))
+            h = ['-']*(len(self.last_test.trials[0].stimuli)-1)
+            self.tableWidget.setHorizontalHeaderLabels(['Trial','Time','Stimuli']+h)
+        for i,trial in enumerate(test.trials):
+            self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
+            self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(trial.value)))
+            self.add_row(trial.stimuli,i,2)
             #self.tableWidget.scrollToBottom()
         self.mutex.unlock()
 
@@ -66,3 +72,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         test = self.last_test
         if test.vid_recording and test.starting_time is None:
             self.ser.write('Manual Start\n'.encode())
+
+    def add_row(self,entries,row,start_column=0):
+        for i,e in enumerate(entries):
+            self.tableWidget.setItem(row,start_column+i,QtWidgets.QTableWidgetItem(str(e)))

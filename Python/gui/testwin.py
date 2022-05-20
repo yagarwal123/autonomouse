@@ -70,12 +70,14 @@ class Ui_testWin(object):
         self.gridLayout.addWidget(self.rewardButton, 4, 2, 1, 1)
         self.tableWidget = QtWidgets.QTableWidget(testWin)
         self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(2)
+        self.tableWidget.setColumnCount(3)
         self.tableWidget.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(2, item)
         self.gridLayout.addWidget(self.tableWidget, 5, 0, 1, 3)
 
         self.retranslateUi(testWin)
@@ -99,6 +101,8 @@ class Ui_testWin(object):
         item.setText(_translate("testWin", "Trial"))
         item = self.tableWidget.horizontalHeaderItem(1)
         item.setText(_translate("testWin", "Time"))
+        item = self.tableWidget.horizontalHeaderItem(2)
+        item.setText(_translate("testWin", "Stimuli"))
 
 
 if __name__ == "__main__":

@@ -175,6 +175,11 @@
        <string>Time</string>
       </property>
      </column>
+     <column>
+      <property name="text">
+       <string>Stimuli</string>
+      </property>
+     </column>
     </widget>
    </item>
   </layout>

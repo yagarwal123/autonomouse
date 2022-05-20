@@ -37,6 +37,7 @@ class Test:
 class Trial:
     idx: int
     value: int
+    stimuli: list
 
 class TestParameters:
 
