@@ -33,5 +33,8 @@ class Config:
         if arg.OPEN_WINDOWS is not None: self.OPEN_WINDOWS = arg.OPEN_WINDOWS
         # if arg.application_path is not None: self.application_path = arg.application_path
 
+        if not self.TEENSY: 
+            self.RASPBERRY = False
+
 CONFIG = Config()
 
