@@ -37,10 +37,8 @@ class Mouse:
         return self.tests_today >= self.test_limit
 
     def get_tests_today(self):
-        if date.today() == self.last_test_date:
-            return self.tests_today
-        else:
+        if date.today() != self.last_test_date:
             self.tests_today = 0
-            return self.tests_today
+        return self.tests_today
         
 
