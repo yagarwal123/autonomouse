@@ -27,12 +27,6 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
 
-        self.liq_am_disp.setText(str(self.mouse.liquid_amount))
-        self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
-        self.waittime_disp.setText(str(self.mouse.waittime))
-        self.test_lim_disp.setText(str(self.mouse.test_limit))
-        self.test_no_disp.setText(str(self.mouse.tests_today))
-
         self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
@@ -137,7 +131,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
         self.waittime_disp.setText(str(self.mouse.waittime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
-        self.test_no_disp.setText(str(self.mouse.tests_today))
+        self.test_no_disp.setText(str(self.mouse.get_tests_today()))
         self.resp_disp.setText(str(self.mouse.response_time))
         if self.test_select.count() != len(self.mouse.test_ids):
             self.test_select.clear()

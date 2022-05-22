@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 
 class Mouse:
     """description of class"""
@@ -35,5 +35,10 @@ class Mouse:
 
     def reached_limit(self):
         return self.tests_today >= self.test_limit
+
+    def get_tests_today(self):
+        if date.today() != self.last_test_date:
+            self.tests_today = 0
+        return self.tests_today
         
 
