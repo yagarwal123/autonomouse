@@ -3,7 +3,7 @@ from gui.expwin import Ui_expWin
 from ExperimentParameters import ExperimentParameters
 
 class expwinActions(QtWidgets.QWidget, Ui_expWin):
-    def __init__(self,mutex,experiment_parameters,all_mice,ser,all_tests,pos=None):
+    def __init__(self,mutex,experiment_parameters,all_mice,ser,last_test,pos=None):
         super().__init__()
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
@@ -11,7 +11,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.all_mice = all_mice
         self.mutex = mutex
         self.ser = ser
-        self.all_tests = all_tests
+        self.last_test = last_test
         self.title = "Experiment Parameters"
 
         if pos is not None: self.move(pos)
@@ -114,7 +114,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
 
     def refill(self):
         self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
-        if not self.all_tests or not self.all_tests[-1].ongoing:
+        if not vars(self.last_test) or not self.last_test.ongoing:
             if self.experiment_parameters.valve_open:      
                 if not self.experiment_parameters.paused:
                     self.pause_exp()

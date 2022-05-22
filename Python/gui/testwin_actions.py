@@ -3,11 +3,11 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from gui.testwin import Ui_testWin
 
 class testwinActions(QtWidgets.QWidget, Ui_testWin):
-    def __init__(self,mutex,all_tests,ser,pos=None):
+    def __init__(self,mutex,last_test,ser,pos=None):
         super().__init__()
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
-        self.all_tests = all_tests
+        self.last_test = last_test
         self.mutex = mutex
         self.ser = ser
         self.title = "Latest test"
@@ -29,22 +29,30 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
 
 
     def popData(self):
-        if not self.all_tests: return
+        if not vars(self.last_test): return
         self.mutex.lock()
-        test = self.all_tests[-1]
+        test = self.last_test
         self.m_name.setText(test.mouse.get_name())
         self.m_id.setText(test.mouse.get_id())
         self.test_start_time.setText(str(test.starting_time))
+        self.weight_max.setText(str(max(test.weights)))
+        #if self.tableWidget.rowCount() != len(test.trials):
         self.tableWidget.setRowCount(len(test.trials))
+        
+        if test.trials and (self.tableWidget.columnCount() != 2+len(test.trials[0].stimuli)):
+            self.tableWidget.setColumnCount(2+len(test.trials[0].stimuli))
+            h = ['-']*(len(self.last_test.trials[0].stimuli)-1)
+            self.tableWidget.setHorizontalHeaderLabels(['Trial','Time','Stimuli']+h)
         for i,trial in enumerate(test.trials):
             self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(trial.idx)))
             self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(trial.value)))
-        #self.tableWidget.scrollToBottom()
+            self.add_row(trial.stimuli,i,2)
+            #self.tableWidget.scrollToBottom()
         self.mutex.unlock()
 
     def give_reward(self):
-        if not self.all_tests: return
-        test = self.all_tests[-1]
+        if not vars(self.last_test): return
+        test = self.last_test
         if test.vid_recording:
             self.ser.write('Reward\n'.encode())
         else:
@@ -53,14 +61,18 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
             msg.exec()
 
     def stop_test(self):
-        if not self.all_tests: return
-        test = self.all_tests[-1]
+        if not vars(self.last_test): return
+        test = self.last_test
         if not test.trials_over:
             test.trials_over = True
             self.ser.write('End\n'.encode())
 
     def manual_start_test(self):
-        if not self.all_tests: return
-        test = self.all_tests[-1]
+        if not vars(self.last_test): return
+        test = self.last_test
         if test.vid_recording and test.starting_time is None:
             self.ser.write('Manual Start\n'.encode())
+
+    def add_row(self,entries,row,start_column=0):
+        for i,e in enumerate(entries):
+            self.tableWidget.setItem(row,start_column+i,QtWidgets.QTableWidgetItem(str(e)))

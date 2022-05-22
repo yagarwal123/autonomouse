@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 
 class Mouse:
     """description of class"""
@@ -6,8 +6,11 @@ class Mouse:
         self.id = id
         self.name = name
         self.init_weight = init_weight
-        self.doortimes = []
-        self.tests = []
+        self.final_weights = []
+        self.test_times = []
+        self.test_ids = []
+        self.tests_today = 0
+        self.last_test_date = None
         self.liquid_amount = 50
         self.lick_threshold = 50
         self.waittime = 5000
@@ -20,22 +23,24 @@ class Mouse:
     def get_id(self):
         return self.id
 
-    def add_doortimes(self,t):
-        self.doortimes.append(t)
-
-    def tests_today(self):
-        d = datetime.date.today()
-        no_of_tests = 0
-        for t in reversed(self.tests):
-            if t.starting_time is None:
-                continue
-            if t.starting_time.time.date() == d:
-                no_of_tests += 1
-            else:
-                break
-        return no_of_tests
+    def add_test(self,test):
+        self.test_ids.append(test.id)
+        self.test_times.append(test.starting_time)
+        self.final_weights.append(test.final_weight())
+        if self.last_test_date == test.starting_time.time.date():
+            self.tests_today += 1
+        else:
+            self.tests_today = 1
+            self.last_test_date = test.starting_time.time.date()
 
     def reached_limit(self):
-        return self.tests_today() >= self.test_limit
+        return self.tests_today >= self.test_limit
+
+    def get_tests_today(self):
+        if date.today() == self.last_test_date:
+            return self.tests_today
+        else:
+            self.tests_today = 0
+            return self.tests_today
         
 

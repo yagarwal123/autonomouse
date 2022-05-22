@@ -3,14 +3,14 @@ import re
 import os
 from multiprocessing import Process
 from myTime import myTime
-from Test import Test, Trial
+from Test import Trial
 import rasp_camera
 import serial
 from config import CONFIG
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters,test_start_signal):
+def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,experiment_parameters,test_start_signal):
     KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g$',                     #1
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
@@ -32,29 +32,30 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
         case 1:
             weight = float(search.group(1))
             #t = myTime(START_TIME,int(search.group(2)))
-            m = getLastMouse(doors)
-            m.tests[-1].weights.append(weight)
+            last_test.weights.append(weight)
         case 2:
             m = all_mice[search.group(1)]
             d = int(search.group(2))
             t = myTime(START_TIME,int(search.group(3)))
-            doors.insert(0,[t,m,d])
+            last_entry = doors[0] if doors else None
+            if last_entry is None or (str(last_entry[0]) != str(t)) or (last_entry[1] != m) or (last_entry[2] != d):
+                doors.insert(0,[t,m,d])
         case 3:
             amp = float(search.group(1))
             live_licks.append(amp)
         case 4:
             t = myTime(START_TIME,int(search.group(1)))
-            all_tests[-1].add_starting_time(t)
+            last_test.add_starting_time(t)
         case 5:
             trial = int(search.group(1))
             t = int(search.group(2))
-            m = getLastMouse(doors)
-            old_test = m.tests[-1]
-            if ( len(old_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
+            if ( len(last_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
-            old_test.add_trial(Trial(trial,t))
+            #TODO: set stimuli here
+            stimuli = [0,1]
+            last_test.add_trial(Trial(trial,t,stimuli))
         case 6:
-            test = all_tests[-1]
+            test = last_test
             fileFolder = test.id
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
@@ -80,10 +81,8 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
             rasp_camera.getVideofile(test.id)
             
         case 7:
-            test = all_tests[-1]
+            test = last_test
             fileFolder = test.id
-            if not os.path.exists(fileFolder):
-                os.makedirs(fileFolder)
             filename = f'Raw lick data - {test.id}.csv'
             filePath = os.path.join(CONFIG.application_path,fileFolder,filename)
             mutex.unlock()
@@ -98,7 +97,10 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
 
         case 8:
             ser.write("Save complete\n".encode())
-            all_tests[-1].ongoing = False
+            last_test.ongoing = False
+            m = last_test.mouse
+            m.add_test(last_test)
+
         case 9:
             m = all_mice[search.group(1)]
             if experiment_parameters.paused:
@@ -109,14 +111,12 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
                 ser.write("Do not start\n".encode())
             else:
                 ser.write("Start experiment\n".encode())
+                last_test.reset(m)
         case 10:
             test_start_signal.emit()
             m = all_mice[search.group(1)]
-            new_test = Test(m)
-            m.tests.append(new_test)
-            all_tests.append(new_test)
-            rasp_camera.start_record(new_test.id)
-            t = all_tests[-1]
+            rasp_camera.start_record(last_test.id)
+            t = last_test
             t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
@@ -126,15 +126,15 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,e
         case 11:
             pass
         case 12:
-            if all_tests and all_tests[-1].vid_recording:
-                test = all_tests[-1]
+            if last_test and last_test.vid_recording:
+                test = last_test
                 t = myTime(START_TIME,int(search.group(1)))
                 test.add_ttl(t)
             else:
                 logger.info("Printing TTL with no test ongoing")
         case 13:
             rasp_camera.stop_record()
-            test = all_tests[-1]
+            test = last_test
             test.vid_recording = False
             ser.write("Camera closed\n".encode())
                 

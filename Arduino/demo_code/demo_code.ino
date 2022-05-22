@@ -199,7 +199,7 @@ void loop()
     if(Serial.available()){
       String serIn = Serial.readStringUntil('\n');
       if (serIn == "Manual Start"){
-        weight = 39.99;
+        weight = 5;
       }
     }
   }

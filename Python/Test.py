@@ -1,20 +1,21 @@
 import logging
 logger = logging.getLogger(__name__)
 
+from dataclasses import dataclass
+
 class Test:
     """description of class"""
-    def __init__(self,mouse):
+    def reset(self,mouse):
         self.mouse = mouse
         self.starting_time = None
         self.trials=[]
-        self.odours = []
         self.ttl = []
-        self.weights = []
+        self.weights = [0]
         self.test_parameters = TestParameters()
         self.vid_recording = True
         self.ongoing = True
         self.trials_over = False
-        self.id = f'{self.mouse.get_id()}_{len(self.mouse.tests) + 1}'
+        self.id = f'{self.mouse.get_id()}_{len(self.mouse.test_ids) + 1}'
     
     def add_trial(self,new_trial):
         self.trials.append(new_trial)
@@ -28,12 +29,15 @@ class Test:
             self.starting_time = t
         else:
             logger.error('Unexpected starting time message. Not updated')
+    
+    def final_weight(self):
+        return max(self.weights)
 
+@dataclass
 class Trial:
-    """description of class"""
-    def __init__(self,idx, value):
-        self.idx = idx
-        self.value = value
+    idx: int
+    value: int
+    stimuli: list
 
 class TestParameters:
 
