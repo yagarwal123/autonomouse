@@ -3,6 +3,6 @@
 #include "SdFat.h"
 #include "HX711.h"
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, int RES, FsFile* pr, int WAITTIME, HX711 *scale);
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, int RES, int stimProb, FsFile* pr, int WAITTIME, HX711 *scale);
 
 #endif

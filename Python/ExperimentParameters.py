@@ -29,3 +29,9 @@ class ExperimentParameters:
         for m in all_mice.values():
             m.response_time = resp
 
+    @staticmethod
+    def update_all_stim_prob(all_mice,prob):
+        for m in all_mice.values():
+            m.stim_prob = prob
+        
+

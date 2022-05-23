@@ -25,6 +25,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
         self.mouseLimLineEdit.returnPressed.connect(self.changeMouseLimButton.click)
         self.mouseRespLineEdit.returnPressed.connect(self.changeMouseRespButton.click)
+        self.stimProbLineEdit.returnPressed.connect(self.changeStimProbButton.click)
 
         if self.experiment_parameters.paused:
             self.pauseButton.setText('Unpause Experiment')
@@ -50,6 +51,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.changewaittimeButton.clicked.connect(self.change_waittime)
         self.changeMouseLimButton.clicked.connect(self.change_mouse_lim)
         self.changeMouseRespButton.clicked.connect(self.change_mouse_resp)
+        self.changeStimProbButton.clicked.connect(self.change_stim_prob)
         self.refillButton.clicked.connect(self.refill)
 
     def change_liquid(self):
@@ -98,6 +100,16 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         if l.isnumeric():                   #Only positive integers (0-9)
             ExperimentParameters.update_all_mice_resp(self.all_mice,int(l))
             self.mouseRespLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def change_stim_prob(self):
+        l = self.stimProbLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            ExperimentParameters.update_all_stim_prob(self.all_mice,int(l))
+            self.stimProbLineEdit.clear()
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')

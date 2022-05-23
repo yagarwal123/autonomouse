@@ -47,7 +47,7 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, int RES, FsFile* pr, int WAITTIME, HX711 *scale){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, int RES, int stimProb, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -56,6 +56,8 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquid
   bool testOngoing = 1; // stops test on command
   //int noLickCounter = 0; // counts the number of no licks - stops after no licks found in 5 consequtive trials
   // actual number need to be confirmed
+
+  int stimulus;
   
   // lambda function, pass in outerscope
   // define timers
@@ -74,6 +76,13 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquid
     //Serial.println(i);
     lickTime = -1; // time takes to lick: if not licked return -1
     lickCheck = 0; // time taken to lick from stimulus onset
+    if (random(100) < stimProb){
+      stimulus = 1;
+    }
+    else{
+      stimulus = 0;
+    }
+    //TODO: send_signal(stimulus);
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
     //pr->println(millis()); // write start time in file DELETE ONE
@@ -98,17 +107,11 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquid
       t2.start();
       //noLickCounter++;
     }
-    Serial.print("Lick Sensor - Trial ");
+    Serial.print("Lick - Stimulus "); Serial.print(stimulus); Serial.print(" - Trial ");
     Serial.print(i);
     Serial.print(" - Time ");
     Serial.println(lickTime);
     
-    // or take weight here
-    String serOut = "";
-    float weight = scale->get_units();
-    weight= round(weight*10)/10;
-    serOut = serOut + "Weight Sensor - Weight " + weight + "g";
-    Serial.println(serOut);
     t1.start(); // start timer again
 
     while(millis() < downTime){ // downtime of sensor

@@ -55,14 +55,14 @@
     </widget>
    </item>
    <item row="6" column="3">
-    <widget class="QPushButton" name="changeMouseRespButton_2">
+    <widget class="QPushButton" name="changeStimProbButton">
      <property name="text">
       <string>Change</string>
      </property>
     </widget>
    </item>
    <item row="6" column="2">
-    <widget class="QLineEdit" name="mouseRespLineEdit_2"/>
+    <widget class="QLineEdit" name="stimProbLineEdit"/>
    </item>
    <item row="4" column="3">
     <widget class="QPushButton" name="changeMouseLimButton">

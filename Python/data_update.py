@@ -15,7 +15,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
                       '^Starting test now - (\d+)$',                                #4
-                      '^Lick Sensor - Trial (\d+) - Time (-?\d+)$',                 #5
+                      '^Lick - Stimulus (\d+) - Trial (\d+) - Time (-?\d+)$',       #5
                       '^Test complete - Start saving to file$',                     #6
                       '^Sending raw data$',                                         #7
                       '^Waiting for the save to complete$',                         #8
@@ -47,12 +47,13 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             t = myTime(START_TIME,int(search.group(1)))
             last_test.add_starting_time(t)
         case 5:
-            trial = int(search.group(1))
-            t = int(search.group(2))
+            s = int(search.group(1))
+            trial = int(search.group(2))
+            t = int(search.group(3))
             if ( len(last_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
-            #TODO: set stimuli here
-            stimuli = [0,1]
+            #TODO: lookup table for stimulus
+            stimuli = [s]
             last_test.add_trial(Trial(trial,t,stimuli))
         case 6:
             test = last_test
@@ -122,6 +123,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
             ser.write( ( str(m.waittime) + "\n" ).encode() )
             ser.write( ( str(m.response_time) + "\n" ).encode() )
+            ser.write( ( str(m.stim_prob) + "\n" ).encode() )
 
         case 11:
             pass

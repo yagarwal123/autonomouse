@@ -16,6 +16,7 @@ class Mouse:
         self.waittime = 5000
         self.test_limit = 10
         self.response_time = 2500
+        self.stim_prob = 70
 
     def get_name(self):
         return self.name
