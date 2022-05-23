@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>503</width>
-    <height>482</height>
+    <height>502</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
+   <item row="0" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>Tests attempted today:</string>
@@ -28,28 +28,31 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="5">
+   <item row="1" column="0" rowspan="2" colspan="6">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" rowspan="3" colspan="2">
+   <item row="2" column="3" rowspan="3">
+    <widget class="QLineEdit" name="liquidLineEdit"/>
+   </item>
+   <item row="3" column="0" rowspan="2">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Current Liquid Amount:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="2" rowspan="3">
+   <item row="3" column="2" rowspan="2">
     <widget class="QLabel" name="liq_am_disp">
      <property name="text">
       <string>1000</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="5" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Current Lick Threshold:</string>
@@ -66,14 +69,7 @@
    <item row="5" column="3">
     <widget class="QLineEdit" name="lickLineEdit"/>
    </item>
-   <item row="5" column="4">
-    <widget class="QPushButton" name="changelickButton">
-     <property name="text">
-      <string>Change</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="2">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Current Wait Time (ms):</string>
@@ -89,13 +85,6 @@
    </item>
    <item row="6" column="3">
     <widget class="QLineEdit" name="waittimeLineEdit"/>
-   </item>
-   <item row="6" column="4">
-    <widget class="QPushButton" name="changewaittimeButton">
-     <property name="text">
-      <string>Change</string>
-     </property>
-    </widget>
    </item>
    <item row="7" column="0">
     <widget class="QLabel" name="label_4">
@@ -114,14 +103,7 @@
    <item row="7" column="3">
     <widget class="QLineEdit" name="testLimLineEdit"/>
    </item>
-   <item row="7" column="4">
-    <widget class="QPushButton" name="changeTestLimButton">
-     <property name="text">
-      <string>Change</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0" colspan="2">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
       <string>Response Time (ms):</string>
@@ -138,44 +120,51 @@
    <item row="8" column="3">
     <widget class="QLineEdit" name="respLineEdit"/>
    </item>
-   <item row="8" column="4">
-    <widget class="QPushButton" name="changeRespButton">
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_9">
      <property name="text">
-      <string>Change</string>
+      <string>Stimulus Probability:</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="5">
+   <item row="9" column="2">
+    <widget class="QLabel" name="stim_prob_disp">
+     <property name="text">
+      <string>70</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="3">
+    <widget class="QLineEdit" name="stimProbLineEdit"/>
+   </item>
+   <item row="10" column="0" colspan="6">
     <widget class="Line" name="line_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="10" column="0" rowspan="2" colspan="4">
+   <item row="11" column="0" rowspan="2" colspan="4">
     <widget class="QComboBox" name="test_select"/>
    </item>
-   <item row="12" column="4">
-    <widget class="QLabel" name="label_8">
+   <item row="12" column="4" colspan="2">
+    <widget class="QPushButton" name="showAnalysisButton">
      <property name="text">
-      <string>Faster</string>
+      <string>Show analysis window</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Slower</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="13" column="0" colspan="5">
-    <widget class="MplWidget" name="plotWid" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>491</width>
-       <height>281</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="2" colspan="2">
+   <item row="13" column="1" colspan="3">
     <widget class="QSlider" name="speedSlider">
      <property name="minimum">
       <number>1</number>
@@ -197,28 +186,63 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="0" colspan="2">
-    <widget class="QLabel" name="label_7">
+   <item row="13" column="4">
+    <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>Slower</string>
+      <string>Faster</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="10" column="4" rowspan="2">
-    <widget class="QPushButton" name="showAnalysisButton">
-     <property name="text">
-      <string>Show analysis window</string>
+   <item row="14" column="0" colspan="6">
+    <widget class="MplWidget" name="plotWid" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>491</width>
+       <height>281</height>
+      </size>
      </property>
     </widget>
    </item>
-   <item row="3" column="3">
-    <widget class="QLineEdit" name="liquidLineEdit"/>
-   </item>
-   <item row="3" column="4">
+   <item row="4" column="4" colspan="2">
     <widget class="QPushButton" name="changeliquidButton">
+     <property name="text">
+      <string>Change</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="4" colspan="2">
+    <widget class="QPushButton" name="changelickButton">
+     <property name="text">
+      <string>Change</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="4" colspan="2">
+    <widget class="QPushButton" name="changewaittimeButton">
+     <property name="text">
+      <string>Change</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="4" colspan="2">
+    <widget class="QPushButton" name="changeTestLimButton">
+     <property name="text">
+      <string>Change</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="4" colspan="2">
+    <widget class="QPushButton" name="changeRespButton">
+     <property name="text">
+      <string>Change</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="4" colspan="2">
+    <widget class="QPushButton" name="changeStimButton">
      <property name="text">
       <string>Change</string>
      </property>
