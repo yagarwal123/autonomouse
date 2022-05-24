@@ -192,7 +192,7 @@ void loop()
       break;
       }
     }
-    Serial.print("LOGGER: Mouse not on - "); Serial.println(weight, 1);
+    Serial.print("LOGGER: Mouse not on - "); Serial.println(weight);
     weight = scale.get_units();
   }
   for (int i = 0; i < 10; i++){
@@ -216,8 +216,9 @@ void loop()
   while (true){
     if (scale.get_units() < 2){
       w_zero++;
-      if (w_zero >= 10){break;};
+      if (w_zero >= 15){break;};
     }
+    else{w_zero=0;};
     if(Serial.available()){
       String serIn = Serial.readStringUntil('\n');
       if (serIn == "Manual Start"){
