@@ -22,8 +22,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                       '^Check whether to start test - (.+)$',                       #9
                       '^Send parameters: Incoming mouse ID - (.+)$',                #10
                       '^LOGGER:',                                                   #11
-                      '^TTL - (\d+)$',                                              #12
-                      '^Stop recording$'                                            #13                    
+                      '^Stop recording$'                                            #12                    
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -73,12 +72,6 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                     csvfile.write(row)
             live_licks.clear()
 
-            ttl_filename = f'TTL high millis - {test.id}.csv'
-            ttl_filename = os.path.join(CONFIG.application_path,fileFolder, ttl_filename)
-            with open(ttl_filename, 'w') as ttlfile:
-                for t in test.ttl:
-                    ttlfile.write(f'{t.millis}\n')
-
             rasp_camera.getVideofile(test.id)
             
         case 7:
@@ -118,7 +111,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             m = all_mice[search.group(1)]
             rasp_camera.start_record(last_test.id)
             t = last_test
-            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time)
+            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time,m.stim_prob)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
             ser.write( ( str(m.waittime) + "\n" ).encode() )
@@ -128,13 +121,6 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
         case 11:
             pass
         case 12:
-            if last_test and last_test.vid_recording:
-                test = last_test
-                t = myTime(START_TIME,int(search.group(1)))
-                test.add_ttl(t)
-            else:
-                logger.info("Printing TTL with no test ongoing")
-        case 13:
             rasp_camera.stop_record()
             test = last_test
             test.vid_recording = False

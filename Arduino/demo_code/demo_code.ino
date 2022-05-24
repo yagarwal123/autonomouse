@@ -11,7 +11,7 @@
 //#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
-#define calibration_factor 1019 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor -417 //This value is obtained using the SparkFun_HX711_Calibration sketch
 // for SD card access--------------------------
 #define SD_FAT_TYPE 3
 #define SD_CONFIG SdioConfig(FIFO_SDIO)
@@ -42,8 +42,9 @@ float weight;
 
 // Variables for the lick and reward system
 int rewardPin = 32;
-int lickPin = A1;
+int lickPin = A14;
 int TTL_PIN = 33;
+int stimPin = 8;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -108,7 +109,7 @@ void setup()
   scale.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
 
   //Needs to be an unconnected pin
-  randomSeed(analogRead(0));
+  randomSeed(analogRead(17));
   
   //Setting up the pins for the reward system
   pinMode(rewardPin, OUTPUT);
@@ -180,16 +181,23 @@ void loop()
       break;
     }
   }
-  scale.tare(); // reset scale again
   door_close(door_one);
   
   // or take weight here
+  weight = scale.get_units();
+  while (weight < 10){   //wait for mouse to get on
+    if(Serial.available()){
+      String serIn = Serial.readStringUntil('\n');
+      if (serIn == "Manual Start"){
+      break;
+      }
+    }
+    Serial.print("LOGGER: Mouse not on - "); Serial.println(weight, 1);
+    weight = scale.get_units();
+  }
   for (int i = 0; i < 10; i++){
-    String serOut = "";
-    float weight = scale.get_units();
-    weight= round(weight*10)/10;
-    serOut = serOut + "Weight Sensor - Weight " + weight + "g";
-    Serial.println(serOut);
+    weight = scale.get_units();
+    Serial.print("Weight Sensor - Weight "); Serial.print(weight,1); Serial.println("g");
     delay(500); //So the readings are spaced out. TODO: To discuss
   }
 
@@ -204,6 +212,19 @@ void loop()
   // String serOut = "";
   // serOut = serOut + "Weight Sensor - Weight " + weight + "g - Time " + millis();
   // Serial.println(serOut);
+  unsigned w_zero = 0;
+  while (true){
+    if (scale.get_units() < 2){
+      w_zero++;
+      if (w_zero >= 10){break;};
+    }
+    if(Serial.available()){
+      String serIn = Serial.readStringUntil('\n');
+      if (serIn == "Manual Start"){
+      break;
+      }
+    }
+  }
   Serial.println("LOGGER: Closing door 2, start test");
   door_close(door_two);
   //t4.start();
@@ -248,7 +269,7 @@ void loop()
   Serial.print("LOGGER: Received - Response Time - ");Serial.println(responseTime);
   Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb);
   
-  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, liquidAmount, responseTime, stimProb, &file, WAITTIME, &scale); // write to file during test
+  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, &file, WAITTIME, &scale); // write to file during test
   file.close(); // close the file
   
   waitUntilReceive("Camera closed");

@@ -9,7 +9,6 @@ class Test:
         self.mouse = mouse
         self.starting_time = None
         self.trials=[]
-        self.ttl = []
         self.weights = [0]
         self.test_parameters = TestParameters()
         self.vid_recording = True
@@ -41,11 +40,12 @@ class Trial:
 
 class TestParameters:
 
-    def set_parameters(self,lick_threshold,liquid_amount,waittime,response_time):
+    def set_parameters(self,lick_threshold,liquid_amount,waittime,response_time,stim_prob):
         self.lick_threshold = lick_threshold
         self.liquid_amount = liquid_amount
         self.waittime = waittime
         self.response_time = response_time
+        self.stim_prob = stim_prob
 
     def __str__(self):
         attrs = vars(self)

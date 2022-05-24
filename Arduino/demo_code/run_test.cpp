@@ -4,6 +4,7 @@
 #include "lick.h"
 #include "TeensyTimerTool.h"
 #include "HX711.h"
+#include "stimulus.h"
 using namespace TeensyTimerTool; 
 
 PeriodicTimer t1; // timer to run periodic serial print
@@ -47,7 +48,7 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquidAmount, int RES, int stimProb, FsFile* pr, int WAITTIME, HX711 *scale){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin, int liquidAmount, int RES, int stimProb, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -57,13 +58,13 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquid
   //int noLickCounter = 0; // counts the number of no licks - stops after no licks found in 5 consequtive trials
   // actual number need to be confirmed
 
-  int stimulus;
+  unsigned stimulus;
   
   // lambda function, pass in outerscope
   // define timers
   t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
   t2.begin([=]{callback2(lickPin, sensorPt);}, 1ms, false); // reads lickPin every 50ms
-  while (digitalRead(TTL_PIN)==LOW);
+  //while (digitalRead(TTL_PIN)==LOW);
   t3.begin([=]{callback3(TTL_PIN, sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
   
   Serial.print("Starting test now - "); Serial.println(millis());
@@ -76,13 +77,9 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquid
     //Serial.println(i);
     lickTime = -1; // time takes to lick: if not licked return -1
     lickCheck = 0; // time taken to lick from stimulus onset
-    if (random(100) < stimProb){
-      stimulus = 1;
-    }
-    else{
-      stimulus = 0;
-    }
-    //TODO: send_signal(stimulus);
+    
+    stimulus = start_stimulus(stimPin, stimProb);
+    
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
     //pr->println(millis()); // write start time in file DELETE ONE
@@ -95,7 +92,9 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int liquid
         if (lickCheck > 0){
           t2.start(); // start reading at longer intervals if mouse has licked
           lickTime = lickCheck - startTime;
-          deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
+          if (stimulus==1){
+            deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
+          }
           //noLickCounter=0; // reset noLickCounter
           }
         }
