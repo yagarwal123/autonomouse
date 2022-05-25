@@ -7,7 +7,7 @@ class Config:
         self.sketchPath = "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
         self.TEENSY = True
         self.RASPBERRY = True
-        self.PORT = 'COM4'
+        self.PORT = 'COM3'
         self.OPEN_WINDOWS = True
         if getattr(sys, "frozen", False):
             self.application_path = os.path.dirname(sys.executable)
