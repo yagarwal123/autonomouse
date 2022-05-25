@@ -82,7 +82,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             mutex.unlock()
             ser.close()
             if CONFIG.TEENSY:
-                p = Process(target=get_raw_data,args=[filePath])
+                p = Process(target=get_raw_data,args=[filePath,CONFIG.PORT])
                 p.start()
                 p.join()
             ser.open()
@@ -145,9 +145,9 @@ def matchCommand(inSer,KNOWNSTATEMENTS):
         logger.error("Unknown message recieved : " + inSer)
     return stat_mean, search
 
-def get_raw_data(filePath):
+def get_raw_data(filePath, port):
     rec_pause = False
-    ser = serial.Serial(CONFIG.PORT, 9600)
+    ser = serial.Serial(port, 9600)
     with open(filePath, 'w') as csvfile: 
         l = ''
         ser.write("Ready\n".encode())
