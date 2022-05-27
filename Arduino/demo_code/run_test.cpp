@@ -64,7 +64,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
   // define timers
   t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
   t2.begin([=]{callback2(lickPin, sensorPt);}, 1ms, false); // reads lickPin every 50ms
-  //while (digitalRead(TTL_PIN)==LOW);
+  while (digitalRead(TTL_PIN)==LOW);
   t3.begin([=]{callback3(TTL_PIN, sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
   
   Serial.print("Starting test now - "); Serial.println(millis());
