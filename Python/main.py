@@ -53,6 +53,7 @@ if __name__ == "__main__":
         else:
             ser = Mock()
             ser.readline.side_effect = lambda: input().encode()
+            ser.write.side_effect = lambda x: print(x.decode("utf-8").strip())
     except Exception as e:
         rasp_camera.close_record()
         print(e)

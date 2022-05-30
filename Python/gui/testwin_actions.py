@@ -27,6 +27,28 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.EditTrigger.NoEditTriggers)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch) 
 
+        self.links = {self.changeliquidButton:[self.liquidLineEdit,self.liq_am_disp,"liquid\n"],
+                    self.changelickButton:[self.lickLineEdit,self.lick_thresh_disp, "th\n" ],
+                    self.changewaittimeButton:[self.waittimeLineEdit,self.waittime_disp,"wait\n"],
+                    self.changeRespButton:[self.respLineEdit,self.resp_disp,"resp\n"],
+                    self.changeStimButton:[self.stimProbLineEdit,self.stim_prob_disp,"stim\n"]
+        }
+        for but,vals in self.links.items():
+            #but.clicked.connect(lambda:self.change_param(but))
+            vals[0].returnPressed.connect(but.click)
+
+        self.changeliquidButton.clicked.connect(lambda:self.change_param(self.changeliquidButton))
+        self.changelickButton.clicked.connect(lambda:self.change_param(self.changelickButton))
+        self.changewaittimeButton.clicked.connect(lambda:self.change_param(self.changewaittimeButton))
+        self.changeRespButton.clicked.connect(lambda:self.change_param(self.changeRespButton))
+        self.changeStimButton.clicked.connect(lambda:self.change_param(self.changeStimButton))
+
+        if vars(self.last_test) and self.last_test.vid_recording:
+            self.liq_am_disp.setText(str(self.last_test.test_parameters.liquid_amount[-1]))
+            self.lick_thresh_disp.setText(str(self.last_test.test_parameters.lick_threshold[-1]))
+            self.waittime_disp.setText(str(self.last_test.test_parameters.waittime[-1]))
+            self.resp_disp.setText(str(self.last_test.test_parameters.response_time[-1]))
+            self.stim_prob_disp.setText(str(self.last_test.test_parameters.stim_prob[-1]))
 
     def popData(self):
         if not vars(self.last_test): return
@@ -76,3 +98,34 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
     def add_row(self,entries,row,start_column=0):
         for i,e in enumerate(entries):
             self.tableWidget.setItem(row,start_column+i,QtWidgets.QTableWidgetItem(str(e)))
+
+    def change_param(self,but):
+        if not vars(self.last_test) or not self.last_test.vid_recording:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('No test ongoing')
+            msg.exec()
+            return
+        vals = self.links[but]
+        l = vals[0].text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            vals[1].setText(l)
+            vals[0].clear()
+            self.ser.write( ( vals[2] ).encode() )
+            self.ser.write( ( l + "\n" ).encode() )
+            self.update_test_para(vals[2],int(l))
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def update_test_para(self,msg,l):
+        if msg == "liquid\n":
+            self.last_test.test_parameters.liquid_amount.append(l)
+        elif msg == "th\n":
+            self.last_test.test_parameters.lick_threshold.append(l)
+        elif msg == "wait\n":
+            self.last_test.test_parameters.waittime.append(l)
+        elif msg == "resp\n":
+            self.last_test.test_parameters.response_time.append(l)
+        elif msg == "stim\n":
+            self.last_test.test_parameters.stim_prob.append(l)
