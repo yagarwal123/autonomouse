@@ -2,7 +2,7 @@
 
 unsigned start_stimulus(int stimPin, int stimProb){
   unsigned stimulus;
-  unsigned noteDuration = 100;
+  unsigned noteDuration = 1000;
   unsigned noteFrequency;
   int r = random(100);
     if (r < stimProb){
