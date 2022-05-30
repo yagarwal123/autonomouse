@@ -33,5 +33,8 @@ void door_close(Servo door)
   {                                  // in steps of 1 degree 
     door.write(pos);              // tell servo to go to position in variable 'pos' 
     delay(3);                       // adjust for speed
+    if (door == door_two){
+      delay(6); // decrease door speed on closing
+    }
   }
 } 
