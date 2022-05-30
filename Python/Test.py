@@ -11,7 +11,7 @@ class Test:
         self.trials=[]
         self.weights = [0]
         self.test_parameters = TestParameters()
-        self.vid_recording = True
+        self.vid_recording = False
         self.ongoing = True
         self.trials_over = False
         self.id = f'{self.mouse.get_id()}_{len(self.mouse.test_ids) + 1}'

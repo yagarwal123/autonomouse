@@ -65,7 +65,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 # creating a csv writer object 
                 csvfile.write("Test Parameters:\n")
                 csvfile.write(str(test.test_parameters))
-                csvfile.write('\n\n')
+                csvfile.write(f"\n\nWeight(max):{test.final_weight()}\n\n")
                 csvfile.write('Trial No,Lick Time\n')
                 for idx,trial in enumerate(test.trials):
                     row = f"{idx+1},{trial.value}\n"
@@ -111,6 +111,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             m = all_mice[search.group(1)]
             rasp_camera.start_record(last_test.id)
             t = last_test
+            t.vid_recording = True
             t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time,m.stim_prob)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
