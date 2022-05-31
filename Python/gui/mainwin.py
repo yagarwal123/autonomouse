@@ -105,7 +105,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.openAllButton.setText(_translate("MainWindow", "Open all Windows"))
-        self.cameraButton.setText(_translate("MainWindow", "Cameras"))
+        self.cameraButton.setText(_translate("MainWindow", "Camera"))
         self.testButton.setText(_translate("MainWindow", "Last test"))
         self.detMouseButton.setText(_translate("MainWindow", "Mouse Details"))
         self.doorButton.setText(_translate("MainWindow", "Door"))

@@ -27,7 +27,7 @@
       <item row="1" column="1">
        <widget class="QPushButton" name="cameraButton">
         <property name="text">
-         <string>Cameras</string>
+         <string>Camera</string>
         </property>
        </widget>
       </item>
