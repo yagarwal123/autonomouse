@@ -109,5 +109,5 @@ def fix_array(oldTestArray,oldAmps):
     return fixedT, fixedA
 
 if __name__=='__main__':
-    test_id = '0007A0F7C4_4'
-    analysis_window(test_id)
+    test_id = '00079EB022_1'
+    analysis_window(test_id, frame_rate=1)
