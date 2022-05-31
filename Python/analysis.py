@@ -18,7 +18,7 @@ def analysis_window(test_id,frame_rate):
         for line in ttl_file:
             l = line.strip().split(',')
             if l[0] == 'lick_threshold':
-                threshold = int(l[1])
+                threshold = int(l[1][1:-1])
                 break
         
     lick_file = open(f"{CONFIG.application_path}/{test_id}/Raw lick data - {test_id}.csv",'r')

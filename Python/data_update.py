@@ -52,6 +52,10 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             if ( len(last_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
             #TODO: lookup table for stimulus
+            if experiment_parameters.trial_lim is not None and trial >= (experiment_parameters.trial_lim - 1):
+                # if n trials happened already, and a signal is end, trials end at n+1
+                last_test.trials_over = True
+                ser.write('End\n'.encode())
             stimuli = [s]
             last_test.add_trial(Trial(trial,t,stimuli))
         case 6:

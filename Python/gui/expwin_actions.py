@@ -26,6 +26,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.mouseLimLineEdit.returnPressed.connect(self.changeMouseLimButton.click)
         self.mouseRespLineEdit.returnPressed.connect(self.changeMouseRespButton.click)
         self.stimProbLineEdit.returnPressed.connect(self.changeStimProbButton.click)
+        self.trialLimLineEdit.returnPressed.connect(self.changeTrialLimButton.click)
 
         if self.experiment_parameters.paused:
             self.pauseButton.setText('Unpause Experiment')
@@ -53,6 +54,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.changeMouseRespButton.clicked.connect(self.change_mouse_resp)
         self.changeStimProbButton.clicked.connect(self.change_stim_prob)
         self.refillButton.clicked.connect(self.refill)
+        self.changeTrialLimButton.clicked.connect(self.set_trial_lim)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -141,3 +143,12 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg = QtWidgets.QMessageBox()
             msg.setText('A test is ongoing, please wait till it finishes')
             msg.exec()
+
+    def set_trial_lim(self):
+        l = self.trialLimLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.experiment_parameters.trial_lim = int(l)
+        else:
+            self.experiment_parameters.trial_lim = None
+        self.trial_lim_lab.setText(str(self.experiment_parameters.trial_lim))
+        self.trialLimLineEdit.clear()
