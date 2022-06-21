@@ -6,7 +6,7 @@ from dataclasses import dataclass
 class Test:
     """description of class"""
     def reset(self,mouse):
-        self.mouse = mouse
+        self.__mouse = mouse
         self.starting_time = None
         self.trials=[]
         self.weights = [0]
@@ -14,14 +14,13 @@ class Test:
         self.vid_recording = False
         self.ongoing = True
         self.trials_over = False
-        self.id = f'{self.mouse.get_id()}_{len(self.mouse.test_ids) + 1}'
+        self.id = f'{self.__mouse.get_id()}_{len(self.__mouse.test_ids) + 1}'
     
     def add_trial(self,new_trial):
         self.trials.append(new_trial)
 
-    def add_ttl(self,ttl_time):
-        if (not self.ttl) or (ttl_time.millis-self.ttl[-1].millis>15):
-            self.ttl.append(ttl_time)
+    def get_mouse(self):
+        return self.__mouse
 
     def add_starting_time(self,t):
         if self.starting_time is None:

@@ -54,8 +54,8 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         if not vars(self.last_test): return
         self.mutex.lock()
         test = self.last_test
-        self.m_name.setText(test.mouse.get_name())
-        self.m_id.setText(test.mouse.get_id())
+        self.m_name.setText(test.get_mouse().get_name())
+        self.m_id.setText(test.get_mouse().get_id())
         self.test_start_time.setText(str(test.starting_time))
         self.weight_max.setText(str(max(test.weights)))
         #if self.tableWidget.rowCount() != len(test.trials):

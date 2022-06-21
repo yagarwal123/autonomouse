@@ -26,8 +26,8 @@ class detmousewinActions(QtWidgets.QWidget, Ui_detmouseWin):
 
         self.tableWidget.setRowCount(len(self.all_mice))
         for i,mouse in enumerate(self.all_mice.values()):
-            self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(mouse.id)))
-            self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(mouse.name)))
-            self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(str(mouse.init_weight)))
+            self.tableWidget.setItem(i,0,QtWidgets.QTableWidgetItem(str(mouse.get_id())))
+            self.tableWidget.setItem(i,1,QtWidgets.QTableWidgetItem(str(mouse.get_name())))
+            self.tableWidget.setItem(i,2,QtWidgets.QTableWidgetItem(str(mouse.get_init_weight())))
         #self.tableWidget.scrollToBottom()
         self.mutex.unlock()
