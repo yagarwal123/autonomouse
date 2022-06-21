@@ -9,7 +9,7 @@ class Config:
         self.RASPBERRY = True
         self.PORT = 'COM3'
         self.OPEN_WINDOWS = True
-        if getattr(sys, "frozen", False):
+        if getattr(sys, "frozen", False): # make sure the csv and log files are in the correct location to be read
             self.application_path = os.path.dirname(sys.executable)
         elif __file__:
             self.application_path = os.getcwd()

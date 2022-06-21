@@ -144,7 +144,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg.setText('A test is ongoing, please wait till it finishes')
             msg.exec()
 
-    def set_trial_lim(self):
+    def set_trial_lim(self): # default no trial limit, can change in exp window
         l = self.trialLimLineEdit.text()
         if l.isnumeric():                   #Only positive integers (0-9)
             self.experiment_parameters.trial_lim = int(l)

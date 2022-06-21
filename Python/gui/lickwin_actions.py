@@ -14,16 +14,16 @@ class lickwinActions(QtWidgets.QWidget, Ui_lickWin):
         self.setWindowTitle(self.title) # change title
         self.pltax = None
         
-        self.timer = QtCore.QTimer(self)
+        self.timer = QtCore.QTimer(self) # doesnt stop itself when window isc losed by default
         self.timer.timeout.connect(lambda:self.pltgraph())
-        self.timer.start(100)
+        self.timer.start(100) # runs every 100ms
 
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose) # delete object (including timer) whenever window is closed
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False) # to close this window whenever main window is closed because everything except for mainwindow is secondary window
 
     def pltgraph(self):
         if self.live_licks:
-            self.mutex.lock()
+            self.mutex.lock() # need to be done whever anything is being edited
             if self.pltax:
                 self.pltax.clear()
 

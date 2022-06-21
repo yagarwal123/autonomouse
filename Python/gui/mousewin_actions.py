@@ -21,7 +21,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.pltax = None
         
         self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.updatedisplays)
+        self.timer.timeout.connect(self.updatedisplays) # called every 1s
         self.timer.start(1000)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -113,7 +113,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             msg.setText('Invalid input')
             msg.exec()
 
-    def pltgraph(self):
+    def pltgraph(self): # weight: matplotlib here (can rotate label) and pyqt in licks
         self.mutex.lock()
         if self.pltax:
             self.pltax.clear()
@@ -125,7 +125,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             if t is None: continue
             x.append(t.millis)
             x_lab.append(str(t))
-        y = y + self.mouse.final_weights
+        y = y + self.mouse.final_weights # max weight from a list in test object
         y = [float(i) for i in y]
 
         self.pltax = self.plotWid.canvas.ax
@@ -157,7 +157,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         test_id = self.test_select.currentText().split(' ')[0]
         if test_id:
             try:
-                f = 31 - self.speedSlider.value()
+                f = 31 - self.speedSlider.value() # 0-30
                 p = Process(target=analysis_window,args=(test_id,f))
                 p.start()
             except Exception as e:

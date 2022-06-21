@@ -29,12 +29,14 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
         case 0:
             return
         case 1:
-            weight = float(search.group(1))
+            weight = float(search.group(1)) # extract things in 1st bracket
             #t = myTime(START_TIME,int(search.group(2)))
             last_test.weights.append(weight)
         case 2:
+            if len(doors)>50: # delete door entries when they exceed 50
+                doors.clear() 
             m = all_mice[search.group(1)]
-            d = int(search.group(2))
+            d = int(search.group(2)) # 2nd bracket
             t = myTime(START_TIME,int(search.group(3)))
             last_entry = doors[0] if doors else None
             if last_entry is None or (str(last_entry[0]) != str(t)) or (last_entry[1] != m) or (last_entry[2] != d):
@@ -55,8 +57,8 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             if experiment_parameters.trial_lim is not None and trial >= (experiment_parameters.trial_lim - 1):
                 # if n trials happened already, and a signal is end, trials end at n+1
                 last_test.trials_over = True
-                ser.write('End\n'.encode())
-            stimuli = [s]
+                ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
+            stimuli = [s] # stimulus pattern, can be a dict of 1s and 0s
             last_test.add_trial(Trial(trial,t,stimuli))
         case 6:
             test = last_test
@@ -97,7 +99,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             ser.write("Save complete\n".encode())
             last_test.ongoing = False
             m = last_test.mouse
-            m.add_test(last_test)
+            m.add_test(last_test) # add data to mouse object
 
         case 9:
             m = all_mice[search.group(1)]
@@ -111,7 +113,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 ser.write("Start experiment\n".encode())
                 last_test.reset(m)
         case 10:
-            test_start_signal.emit()
+            test_start_signal.emit() # emit signal to open all windows (in mainwin_actions.py)
             m = all_mice[search.group(1)]
             rasp_camera.start_record(last_test.id)
             t = last_test

@@ -99,7 +99,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         for i,e in enumerate(entries):
             self.tableWidget.setItem(row,start_column+i,QtWidgets.QTableWidgetItem(str(e)))
 
-    def change_param(self,but):
+    def change_param(self,but): # main function for changing param
         if not vars(self.last_test) or not self.last_test.vid_recording:
             msg = QtWidgets.QMessageBox()
             msg.setText('No test ongoing')

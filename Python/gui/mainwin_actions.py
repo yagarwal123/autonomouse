@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, ser, START_TIME, all_mice,doors=[],live_licks=[],last_test=Test()):
-        super().__init__()
+        super().__init__() # calls init of the UI main window
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.title = 'Main Window'
@@ -35,21 +35,21 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.last_test = last_test
         self.experiment_parameters = ExperimentParameters()
 
-        self.mutex = QMutex()
+        self.mutex = QMutex() # mutex object, need to lock whenever you are editing an object
 
         self.setWindowTitle(self.title) # change title
 
         #self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
         self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.last_test,self.experiment_parameters)
-        self.worker.test_start_signal.connect(self.open_all_win)
-        self.worker.start()
+        self.worker.test_start_signal.connect(self.open_all_win) # open window when the signal "emits" in data_update.py
+        self.worker.start() # runs run fucntion in teensyread
         self.myactions() # add actions for different buttons
 
-        self.all_mousewin = []
+        self.all_mousewin = [] # list of pointers to all the mouse windows because we dont want to override everytime we open a new window
 
         for id, m in self.all_mice.items():
-            self.mouse_id_select.addItem(f'{id} - {m.get_name()}')
+            self.mouse_id_select.addItem(f'{id} - {m.get_name()}') # drop down value
 
         if CONFIG.OPEN_WINDOWS:
             self.open_all_win()
@@ -61,17 +61,17 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         close = close.exec()
 
         if close == QMessageBox.StandardButton.Yes:
-            self.worker.terminate()
+            self.worker.terminate() # self.worker is the teensyread thread
             if CONFIG.TEENSY:
-                self.worker.wait()
+                self.worker.wait() # wait for the thread to be terminated 
                 self.ser.close()
             rasp_camera.close_record()
-            a0.accept()
+            a0.accept() # close window
         else:
-            a0.ignore()
+            a0.ignore() # not close window
 
     # define actions here
-    def myactions(self):
+    def myactions(self): # connect button to function - do it whenever you create new button
         self.mouse_button.clicked.connect(lambda: self.open_mouse())
         self.doorButton.clicked.connect(lambda: self.open_door())
         self.lickButton.clicked.connect(lambda: self.open_lick())
@@ -84,14 +84,14 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def open_mouse(self):
         #TODO: Think of a better way to handle this
-        if len(self.all_mousewin) > 100:
+        if len(self.all_mousewin) > 100: # when the list gets more than 100 close all other windows - user has to open them again but whatever
             self.all_mousewin.clear()
         ID = self.mouse_id_select.currentText().split(' - ')[0]
         self.all_mousewin.append(mousewinActions(self.mutex,self.all_mice[ID]))
         self.all_mousewin[-1].show()
 
     def open_door(self,pos=None):
-        try:
+        try: # deletes previous window before opening a new one
             self.doorwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
@@ -141,12 +141,12 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.open_cam()
         self.open_detmouse(QPoint(0,292))
 
-class TeensyRead(QThread):
+class TeensyRead(QThread): # inherit QThread class
 
-    test_start_signal = pyqtSignal()
+    test_start_signal = pyqtSignal() # communicate between threads
 
     def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,last_test,experiment_parameters):
-        super(TeensyRead, self).__init__()
+        super(TeensyRead, self).__init__() # calls qthread class init
         self.ser = ser
         self.all_mice = all_mice
         self.doors = doors
@@ -156,5 +156,5 @@ class TeensyRead(QThread):
         self.mutex = mutex
         self.experiment_parameters = experiment_parameters
 
-    def run(self):
+    def run(self): # all objects are passed to startteensyread
         startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.last_test,self.experiment_parameters,self.test_start_signal)

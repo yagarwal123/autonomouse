@@ -34,7 +34,7 @@ import rasp_camera
 
 
 if __name__ == "__main__":
-    multiprocessing.freeze_support()
+    multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly
 
     CONFIG.parse_arg()
 
@@ -51,20 +51,20 @@ if __name__ == "__main__":
         if CONFIG.TEENSY:
             ser = serial.Serial(CONFIG.PORT, 9600)
         else:
-            ser = Mock()
-            ser.readline.side_effect = lambda: input().encode()
+            ser = Mock() # does nothing when ser object is called
+            ser.readline.side_effect = lambda: input().encode() # add function to MOCK object
             ser.write.side_effect = lambda x: print(x.decode("utf-8").strip())
     except Exception as e:
         rasp_camera.close_record()
         print(e)
         sys.exit()
 
-    all_mice = {}
+    all_mice = {} # dict object, key is ID value is the Mouse object
     with open(f'{CONFIG.application_path}/mouse_info.csv',mode='r') as f:
-        assert(f.readline().strip() == 'ID,Name,Weight')
+        assert(f.readline().strip() == 'ID,Name,Weight') # check if csv file format is correct
         for line in f:
             info = line.strip().split(',')
-            all_mice[info[0]] = Mouse(info[0],info[1],info[2])
+            all_mice[info[0]] = Mouse(info[0],info[1],info[2]) # put mouse info into the dict by key
 
     # #Inititate Mice
     # all_mice = {}
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     #mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)
     mainwin = mainwinActions(ser,START_TIME,all_mice)
     mainwin.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec()) # dont end program until GUI closed
     
     
 

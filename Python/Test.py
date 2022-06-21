@@ -36,7 +36,7 @@ class Test:
 class Trial:
     idx: int
     value: int
-    stimuli: list
+    stimuli: list # can be a list instead of 1 number now
 
 class TestParameters:
 
