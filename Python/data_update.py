@@ -1,139 +1,135 @@
 import logging
 import re
 import os
+from multiprocessing import Process
 from myTime import myTime
-from Test import Test, Trial
+from Test import Trial
 import rasp_camera
+import serial
+from config import CONFIG
 
 logger = logging.getLogger(__name__)
 
-def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,all_tests,experiment_parameters):
-    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g - Time (\d+)$',        #1
+def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,experiment_parameters,test_start_signal):
+    KNOWNSTATEMENTS = ['^Weight Sensor - Weight (\d+\.?\d*)g$',                     #1
                       '^Door Sensor - ID (.+) - Door (\d) - Time (\d+)$',           #2
                       '^(\d+\.?\d*)$',                                              #3
                       '^Starting test now - (\d+)$',                                #4
-                      '^Lick Sensor - Trial (\d+) - Time (-?\d+)$',                 #5
+                      '^Lick - Stimulus (\d+) - Trial (\d+) - Time (-?\d+)$',       #5
                       '^Test complete - Start saving to file$',                     #6
                       '^Sending raw data$',                                         #7
                       '^Waiting for the save to complete$',                         #8
                       '^Check whether to start test - (.+)$',                       #9
                       '^Send parameters: Incoming mouse ID - (.+)$',                #10
                       '^LOGGER:',                                                   #11
-                      '^TTL - (\d+)$',                                              #12
-                      '^Stop recording$'                                            #13                    
+                      '^Stop recording$'                                            #12                    
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
         case 0:
             return
         case 1:
-            weight = float(search.group(1))
-            t = myTime(START_TIME,int(search.group(2)))
-            m = getLastMouse(doors)
-            m.add_weight(weight)
-            m.add_weighing_times(t)
+            weight = float(search.group(1)) # extract things in 1st bracket
+            #t = myTime(START_TIME,int(search.group(2)))
+            last_test.weights.append(weight)
         case 2:
+            if len(doors)>50: # delete door entries when they exceed 50
+                doors.clear() 
             m = all_mice[search.group(1)]
-            d = int(search.group(2))
+            d = int(search.group(2)) # 2nd bracket
             t = myTime(START_TIME,int(search.group(3)))
-            doors.insert(0,[t,m,d])
+            last_entry = doors[0] if doors else None
+            if last_entry is None or (str(last_entry[0]) != str(t)) or (last_entry[1] != m) or (last_entry[2] != d):
+                doors.insert(0,[t,m,d])
         case 3:
             amp = float(search.group(1))
             live_licks.append(amp)
         case 4:
             t = myTime(START_TIME,int(search.group(1)))
-            all_tests[-1].add_starting_time(t)
+            last_test.add_starting_time(t)
         case 5:
-            trial = int(search.group(1))
-            t = int(search.group(2))
-            m = getLastMouse(doors)
-            old_test = m.tests[-1]
-            if ( len(old_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
+            s = int(search.group(1))
+            trial = int(search.group(2))
+            t = int(search.group(3))
+            if ( len(last_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
-            old_test.add_trial(Trial(trial,t))
+            #TODO: lookup table for stimulus
+            if experiment_parameters.trial_lim is not None and trial >= (experiment_parameters.trial_lim - 1):
+                # if n trials happened already, and a signal is end, trials end at n+1
+                last_test.trials_over = True
+                ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
+            stimuli = [s] # stimulus pattern, can be a dict of 1s and 0s
+            last_test.add_trial(Trial(trial,t,stimuli))
         case 6:
-            test = all_tests[-1]
+            test = last_test
             fileFolder = test.id
+            if not os.path.exists(fileFolder):
+                os.makedirs(fileFolder)
             filename = f'Test data - {test.id}.csv'
-            filename = os.path.join(fileFolder, filename)
+            filename = os.path.join(CONFIG.application_path, fileFolder, filename)
             with open(filename, 'w') as csvfile: 
                 # creating a csv writer object 
                 csvfile.write("Test Parameters:\n")
                 csvfile.write(str(test.test_parameters))
-                csvfile.write('\n\n')
+                csvfile.write(f"\n\nWeight(max):{test.final_weight()}\n\n")
                 csvfile.write('Trial No,Lick Time\n')
                 for idx,trial in enumerate(test.trials):
                     row = f"{idx+1},{trial.value}\n"
                     csvfile.write(row)
             live_licks.clear()
 
-            ttl_filename = f'TTL high millis - {test.id}.csv'
-            ttl_filename = os.path.join(fileFolder, ttl_filename)
-            with open(ttl_filename, 'w') as ttlfile:
-                for t in test.ttl:
-                    ttlfile.write(f'{t.millis}\n')
-
             rasp_camera.getVideofile(test.id)
             
         case 7:
-            test = all_tests[-1]
+            test = last_test
             fileFolder = test.id
-            if not os.path.exists(fileFolder):
-                os.makedirs(fileFolder)
             filename = f'Raw lick data - {test.id}.csv'
-            filePath = os.path.join(fileFolder,filename)
+            filePath = os.path.join(CONFIG.application_path,fileFolder,filename)
             mutex.unlock()
-            with open(filePath, 'w') as csvfile: 
-                l = ''
-                while (l.strip() != 'Raw data send complete'):
-                    #logger.error(ser.in_waiting)
-                    l = ser.readline().decode("utf-8")
-                    csvfile.write(l)
-                    if (ser.in_waiting > 6000):
-                        #logger.error('Panic')
-                        ser.write("Pause\n".encode())
-                        while (ser.in_waiting > 100):
-                            #logger.error(ser.in_waiting)
-                            l = ser.readline().decode("utf-8")
-                            csvfile.write(l)
-                        ser.write("Resume\n".encode())
+            ser.close()
+            if CONFIG.TEENSY:
+                p = Process(target=get_raw_data,args=[filePath,CONFIG.PORT])
+                p.start()
+                p.join()
+            ser.open()
+            ser.write("Reconnected\n".encode())
             mutex.lock()
-                    
+
         case 8:
             ser.write("Save complete\n".encode())
-            all_tests[-1].ongoing = False
+            last_test.ongoing = False
+            m = last_test.get_mouse()
+            m.add_test(last_test) # add data to mouse object
+
         case 9:
             m = all_mice[search.group(1)]
-            if experiment_parameters.paused or m.reached_limit():
+            if experiment_parameters.paused:
+                logger.info('Experiment is paused')
+                ser.write("Do not start\n".encode())
+            elif m.reached_limit():
+                logger.info(f'Mouse Limit is reached - {m.id}')
                 ser.write("Do not start\n".encode())
             else:
                 ser.write("Start experiment\n".encode())
-                new_test = Test(m)
-                m.tests.append(new_test)
-                all_tests.append(new_test)
-                rasp_camera.start_record(new_test.id)
+                last_test.reset(m)
         case 10:
+            test_start_signal.emit() # emit signal to open all windows (in mainwin_actions.py)
             m = all_mice[search.group(1)]
-            t = all_tests[-1]
-            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime)
+            rasp_camera.start_record(last_test.id)
+            t = last_test
+            t.vid_recording = True
+            t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time,m.stim_prob)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
             ser.write( ( str(m.waittime) + "\n" ).encode() )
+            ser.write( ( str(m.response_time) + "\n" ).encode() )
+            ser.write( ( str(m.stim_prob) + "\n" ).encode() )
+
         case 11:
             pass
         case 12:
-            if all_tests:
-                test = all_tests[-1]
-                if test.vid_recording:
-                    t = myTime(START_TIME,int(search.group(1)))
-                    test.add_ttl(t)
-                else:
-                    logger.warning("Printing TTL with no test ongoing")
-            else:
-                logger.warning("Printing TTL with no test conducted")
-        case 13:
             rasp_camera.stop_record()
-            test = all_tests[-1]
+            test = last_test
             test.vid_recording = False
             ser.write("Camera closed\n".encode())
                 
@@ -155,3 +151,25 @@ def matchCommand(inSer,KNOWNSTATEMENTS):
     if stat_mean == 0:
         logger.error("Unknown message recieved : " + inSer)
     return stat_mean, search
+
+def get_raw_data(filePath, port):
+    rec_pause = False
+    ser = serial.Serial(port, 9600)
+    with open(filePath, 'w') as csvfile: 
+        l = ''
+        ser.write("Ready\n".encode())
+        while (l.strip() != 'Raw data send complete'):
+            try:
+                l = ser.readline().decode("utf-8")
+            except Exception as e:
+                logger.error(f'{e}: Error while recieving raw data')
+                continue
+            csvfile.write(l)
+            #logger.error(ser.in_waiting)
+            if not rec_pause and (ser.in_waiting > 3000):
+                ser.write("Pause\n".encode())
+                rec_pause = True
+            if rec_pause and (ser.in_waiting < 100):
+                ser.write("Resume\n".encode())
+                rec_pause = False
+    ser.close()

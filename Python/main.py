@@ -2,19 +2,12 @@ import subprocess
 import logging.config
 from time import sleep
 from unittest.mock import Mock
-import config
+from config import CONFIG
 from logging_conf import LOGGING_CONFIG
 logging.config.dictConfig(LOGGING_CONFIG)
 
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 #Optional - matplotlib spams a lot of debugs, so setting its level to info
-
-subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
 
 import logging
 import datetime
@@ -22,9 +15,19 @@ from PyQt6 import QtWidgets
 from gui.mainwin_actions import mainwinActions
 import sys
 import serial
+import multiprocessing
 
 from Mouse import Mouse
 import rasp_camera
+
+# copy inside the bracket to convert .ui file into .py
+# subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/lickwin.ui -o ./Python/gui/lickwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/detmousewin.ui -o ./Python/gui/detmousewin.py".split())
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
@@ -32,35 +35,37 @@ import rasp_camera
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly
 
-    #m = subprocess.run(['C:/Program Files (x86)/Arduino/arduino.exe','--upload','C:\\Users\\lab\\AppData\\Local\\Temp\\arduino_build_680162/demo_code.ino.hex'])
-    #m = subprocess.run(['"C:/PROGRA~2/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"'],shell=True,encoding='UTF-8')
-    #os.system("\"C:/Program Files (x86)/Arduino/arduino.exe\" --upload \"C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino\"")
-    #"C:/Program Files (x86)/Arduino/arduino.exe" --upload "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-    #os.system("C:/PROGRA~2/Arduino/arduino.exe --port COM4 --upload C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino")
-
-    if config.TEENSY:
-        l = subprocess.run([config.arduinoPath, "--upload", config.sketchPath,'--port', config.PORT])
-        assert l.returncode == 0, 'Could not upload sketch to the teensy'
-
-    START_TIME = datetime.datetime.now()
-    
-    if config.TEENSY:
-        ser = serial.Serial(config.PORT, 9600)
-    else:
-        ser = Mock()
-        def user_in():
-            return input().encode()
-        ser.readline.side_effect = user_in
+    CONFIG.parse_arg()
 
     rasp_camera.start_rpi_host()
+    try:
+        if CONFIG.TEENSY:
+            l = subprocess.run([CONFIG.arduinoPath, "--upload", CONFIG.sketchPath,'--port', CONFIG.PORT])
+            assert l.returncode == 0, 'Could not upload sketch to the teensy'
 
-    all_mice = {}
-    with open('mouse_info.csv',mode='r') as f:
-        assert(f.readline().strip() == 'ID,Name,Weight')
+        START_TIME = datetime.datetime.now()
+
+        sleep(5)
+        
+        if CONFIG.TEENSY:
+            ser = serial.Serial(CONFIG.PORT, 9600)
+        else:
+            ser = Mock() # does nothing when ser object is called
+            ser.readline.side_effect = lambda: input().encode() # add function to MOCK object
+            ser.write.side_effect = lambda x: print(x.decode("utf-8").strip())
+    except Exception as e:
+        rasp_camera.close_record()
+        print(e)
+        sys.exit()
+
+    all_mice = {} # dict object, key is ID value is the Mouse object
+    with open(f'{CONFIG.application_path}/mouse_info.csv',mode='r') as f:
+        assert(f.readline().strip() == 'ID,Name,Weight') # check if csv file format is correct
         for line in f:
             info = line.strip().split(',')
-            all_mice[info[0]] = Mouse(info[0],info[1],info[2])
+            all_mice[info[0]] = Mouse(info[0],info[1],info[2]) # put mouse info into the dict by key
 
     # #Inititate Mice
     # all_mice = {}
@@ -86,7 +91,7 @@ if __name__ == "__main__":
     #mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)
     mainwin = mainwinActions(ser,START_TIME,all_mice)
     mainwin.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec()) # dont end program until GUI closed
     
     
 

@@ -1,40 +1,38 @@
-from PyQt6 import QtCore, QtWidgets
-
+from PyQt6 import QtCore, QtWidgets, QtGui
+from multiprocessing import Process
 import matplotlib.pyplot
+import logging
+import numpy as np
 from gui.mousewin import Ui_mouseWin
 from analysis import analysis_window
+
+logger = logging.getLogger(__name__)
 
 class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
     def __init__(self,mutex,mouse):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.mouse = mouse
         self.mutex = mutex
         self.title = self.mouse.get_id() +  ' - ' + self.mouse.get_name()
 
         self.setWindowTitle(self.title) # change title
-        for t in self.mouse.tests:
-            if not t.ongoing:
-                self.test_select.addItem(f'{t.id} - {t.starting_time}')
         self.pltax = None
         
         self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(lambda:self.updatedata())
+        self.timer.timeout.connect(self.updatedisplays) # called every 1s
         self.timer.start(1000)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose,False)
 
-        self.liq_am_disp.setText(str(self.mouse.liquid_amount))
-        self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
-        self.waittime_disp.setText(str(self.mouse.waittime))
-        self.test_lim_disp.setText(str(self.mouse.test_limit))
-        self.test_no_disp.setText(str(self.mouse.tests_today()))
-
         self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
         self.testLimLineEdit.returnPressed.connect(self.changeTestLimButton.click)
+        self.respLineEdit.returnPressed.connect(self.changeRespButton.click)
+        self.stimProbLineEdit.returnPressed.connect(self.changeStimButton.click)
 
         self.myactions()
 
@@ -45,6 +43,8 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.changewaittimeButton.clicked.connect(self.change_waittime)
         self.changeTestLimButton.clicked.connect(self.change_testlim)
         self.showAnalysisButton.clicked.connect(self.analysis_win)
+        self.changeRespButton.clicked.connect(self.change_resp)
+        self.changeStimButton.clicked.connect(self.change_stim_prob)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -91,18 +91,46 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             msg.setText('Invalid input')
             msg.exec()
 
-    def pltgraph(self):
+    def change_resp(self):
+        l = self.respLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.resp_disp.setText(l)
+            self.mouse.response_time = int(l)
+            self.respLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def change_stim_prob(self):
+        l = self.stimProbLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.stim_prob_disp.setText(l)
+            self.mouse.stim_prob = int(l)
+            self.stimProbLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def pltgraph(self): # weight: matplotlib here (can rotate label) and pyqt in licks
         self.mutex.lock()
         if self.pltax:
             self.pltax.clear()
         
-        x = [0] + [i.millis for i in self.mouse.weight_times]
-        x_lab = ['Start'] + [str(i) for i in self.mouse.weight_times]
-        y = [self.mouse.init_weight] + self.mouse.weights
+        x = [0]
+        x_lab = ['Start']
+        y = [self.mouse.init_weight]
+        for t in self.mouse.test_times:
+            if t is None: continue
+            x.append(t.millis)
+            x_lab.append(str(t))
+        y = y + self.mouse.final_weights # max weight from a list in test object
         y = [float(i) for i in y]
 
         self.pltax = self.plotWid.canvas.ax
-        matplotlib.pyplot.setp(self.pltax, xticks=x, xticklabels=x_lab)
+        #assert len(np.unique(x)) == len(x_lab)
+        matplotlib.pyplot.setp(self.pltax, xticks=np.unique(x), xticklabels=x_lab)
         matplotlib.pyplot.setp(self.pltax.xaxis.get_majorticklabels(), rotation=90)
         self.pltax.plot(x,y,'--o')
         self.pltax.set_xlim(left=0)
@@ -116,15 +144,22 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
         self.waittime_disp.setText(str(self.mouse.waittime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
-        self.test_no_disp.setText(str(self.mouse.tests_today()))
-
-
-    
-    def updatedata(self):
-        self.pltgraph()
-        self.updatedisplays()
+        self.test_no_disp.setText(str(self.mouse.get_tests_today()))
+        self.resp_disp.setText(str(self.mouse.response_time))
+        self.stim_prob_disp.setText(str(self.mouse.stim_prob))
+        if self.test_select.count() != len(self.mouse.test_ids):
+            self.test_select.clear()
+            for id,t in zip(self.mouse.test_ids,self.mouse.test_times):
+                self.test_select.addItem(f'{id} - {t}')
+            self.pltgraph()
 
     def analysis_win(self):
         test_id = self.test_select.currentText().split(' ')[0]
         if test_id:
-            analysis_window(test_id)
+            try:
+                f = 31 - self.speedSlider.value() # 0-30
+                p = Process(target=analysis_window,args=(test_id,f))
+                p.start()
+            except Exception as e:
+                logger.error(f'Error in opening analysis window - Test ID {test_id}')
+            #analysis_window(test_id)

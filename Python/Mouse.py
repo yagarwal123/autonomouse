@@ -1,48 +1,48 @@
-import datetime
+from datetime import date
 
 class Mouse:
     """description of class"""
     def __init__(self,id,name,init_weight):
-        self.id = id
-        self.name = name
-        self.init_weight = init_weight
-        self.weights = []
-        self.weight_times = []
-        self.doortimes = []
-        self.tests = []
+        self.__id = id # underscore in front self._id - make this uneditable from outside this class
+        self.__name = name
+        self.__init_weight = init_weight
+        self.final_weights = []
+        self.test_times = []
+        self.test_ids = []
+        self.tests_today = 0
+        self.last_test_date = None
         self.liquid_amount = 50
         self.lick_threshold = 50
         self.waittime = 5000
         self.test_limit = 10
+        self.response_time = 2500
+        self.stim_prob = 70
 
     def get_name(self):
-        return self.name
+        return self.__name # to access this need to use get_name() everytime in any other funciton if use _name in init()
     
     def get_id(self):
-        return self.id
+        return self.__id
 
-    def add_weight(self,w):
-        self.weights.append(w)
+    def get_init_weight(self):
+        return self.__init_weight
 
-    def add_weighing_times(self,t):
-        self.weight_times.append(t)
-
-    def add_doortimes(self,t):
-        self.doortimes.append(t)
-
-    def tests_today(self):
-        d = datetime.date.today()
-        no_of_tests = 0
-        for t in reversed(self.tests):
-            if t.starting_time is None:
-                continue
-            if t.starting_time.time.date() == d:
-                no_of_tests += 1
-            else:
-                break
-        return no_of_tests
+    def add_test(self,test): # add data from test object to mouse object
+        self.test_ids.append(test.id)
+        self.test_times.append(test.starting_time)
+        self.final_weights.append(test.final_weight())
+        if self.last_test_date == test.starting_time.time.date():
+            self.tests_today += 1
+        else:
+            self.tests_today = 1
+            self.last_test_date = test.starting_time.time.date()
 
     def reached_limit(self):
-        return self.tests_today() >= self.test_limit
+        return self.tests_today >= self.test_limit
+
+    def get_tests_today(self):
+        if date.today() != self.last_test_date:
+            self.tests_today = 0
+        return self.tests_today
         
 

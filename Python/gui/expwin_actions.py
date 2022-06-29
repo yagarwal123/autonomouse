@@ -1,18 +1,20 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from gui.expwin import Ui_expWin
 from ExperimentParameters import ExperimentParameters
 
 class expwinActions(QtWidgets.QWidget, Ui_expWin):
-    def __init__(self,mutex,experiment_parameters,all_mice,ser,all_tests):
+    def __init__(self,mutex,experiment_parameters,all_mice,ser,last_test,pos=None):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.experiment_parameters = experiment_parameters
         self.all_mice = all_mice
         self.mutex = mutex
         self.ser = ser
-        self.all_tests = all_tests
+        self.last_test = last_test
         self.title = "Experiment Parameters"
 
+        if pos is not None: self.move(pos)
         self.setWindowTitle(self.title) # change title
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -22,6 +24,9 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
         self.mouseLimLineEdit.returnPressed.connect(self.changeMouseLimButton.click)
+        self.mouseRespLineEdit.returnPressed.connect(self.changeMouseRespButton.click)
+        self.stimProbLineEdit.returnPressed.connect(self.changeStimProbButton.click)
+        self.trialLimLineEdit.returnPressed.connect(self.changeTrialLimButton.click)
 
         if self.experiment_parameters.paused:
             self.pauseButton.setText('Unpause Experiment')
@@ -46,7 +51,10 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.changelickButton.clicked.connect(self.change_lick)
         self.changewaittimeButton.clicked.connect(self.change_waittime)
         self.changeMouseLimButton.clicked.connect(self.change_mouse_lim)
+        self.changeMouseRespButton.clicked.connect(self.change_mouse_resp)
+        self.changeStimProbButton.clicked.connect(self.change_stim_prob)
         self.refillButton.clicked.connect(self.refill)
+        self.changeTrialLimButton.clicked.connect(self.set_trial_lim)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -89,6 +97,26 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg.setText('Invalid input')
             msg.exec()
 
+    def change_mouse_resp(self):
+        l = self.mouseRespLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            ExperimentParameters.update_all_mice_resp(self.all_mice,int(l))
+            self.mouseRespLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def change_stim_prob(self):
+        l = self.stimProbLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            ExperimentParameters.update_all_stim_prob(self.all_mice,int(l))
+            self.stimProbLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
     def pause_exp(self):
         self.experiment_parameters.paused = not self.experiment_parameters.paused
         if self.experiment_parameters.paused:       #Experiment is paused
@@ -100,7 +128,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
 
     def refill(self):
         self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
-        if not self.all_tests or not self.all_tests[-1].ongoing:
+        if not vars(self.last_test) or not self.last_test.ongoing:
             if self.experiment_parameters.valve_open:      
                 if not self.experiment_parameters.paused:
                     self.pause_exp()
@@ -115,3 +143,12 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg = QtWidgets.QMessageBox()
             msg.setText('A test is ongoing, please wait till it finishes')
             msg.exec()
+
+    def set_trial_lim(self): # default no trial limit, can change in exp window
+        l = self.trialLimLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.experiment_parameters.trial_lim = int(l)
+        else:
+            self.experiment_parameters.trial_lim = None
+        self.trial_lim_lab.setText(str(self.experiment_parameters.trial_lim))
+        self.trialLimLineEdit.clear()
