@@ -20,6 +20,7 @@ import multiprocessing
 from Mouse import Mouse
 import rasp_camera
 
+# copy inside the bracket to convert .ui file into .py
 # subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/mousewin.ui -o ./Python/gui/mousewin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/doorwin.ui -o ./Python/gui/doorwin.py".split())
