@@ -1,5 +1,7 @@
-ID,Name,Weight
+ID,Name,Weight,liquid_amount,lick_threshold,waittime,test_limit,response_time,stim_prob,tests_today
 A11111,Stuart,67
 A22222,Little,45
 0007A0F7C4,Real,27.4
 00079EB022,Tag,27.4
+
+TODO: add in all corresponding columns to the mouse and read in from python
