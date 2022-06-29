@@ -98,7 +98,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
         case 8:
             ser.write("Save complete\n".encode())
             last_test.ongoing = False
-            m = last_test.mouse
+            m = last_test.get_mouse()
             m.add_test(last_test) # add data to mouse object
 
         case 9:
