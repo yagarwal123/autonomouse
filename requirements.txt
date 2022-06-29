@@ -1,9 +1,9 @@
 PyQt6
-matplotlib
-pyserial
+matplotlib Version: 3.5.1
+pyserial Version: 3.5
 paramiko
-setuptools
-zmq
-opencv-python
-pyqtgraph
-scp
+setuptools Version: 58.1.0
+zmq Version: 0.0.0
+opencv-python Version: 4.5.5.64
+pyqtgraph Version: 0.12.4
+scp Version: 0.14.4
