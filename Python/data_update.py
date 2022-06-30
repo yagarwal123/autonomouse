@@ -49,6 +49,8 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
         case 4:
             t = myTime(START_TIME,int(search.group(1)))
             last_test.add_starting_time(t)
+            rasp_camera.start_record(last_test.id)
+            last_test.vid_recording = True
         case 5:
             s = int(search.group(1))
             trial = int(search.group(2))
@@ -124,9 +126,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
         case 10:
             test_start_signal.emit() # emit signal to open all windows (in mainwin_actions.py)
             m = all_mice[search.group(1)]
-            rasp_camera.start_record(last_test.id)
             t = last_test
-            t.vid_recording = True
             t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time,m.stim_prob)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
