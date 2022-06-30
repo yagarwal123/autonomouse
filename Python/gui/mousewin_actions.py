@@ -120,7 +120,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         
         x = [0]
         x_lab = ['Start']
-        y = [self.mouse.init_weight]
+        y = [self.mouse.get_init_weight()]
         for t in self.mouse.test_times:
             if t is None: continue
             x.append(t.millis)
@@ -149,12 +149,12 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.stim_prob_disp.setText(str(self.mouse.stim_prob))
         if self.test_select.count() != len(self.mouse.test_ids):
             self.test_select.clear()
-            for id,t in zip(self.mouse.test_ids,self.mouse.test_times):
-                self.test_select.addItem(f'{id} - {t}')
+            for id in self.mouse.test_ids:
+                self.test_select.addItem(id)
             self.pltgraph()
 
     def analysis_win(self):
-        test_id = self.test_select.currentText().split(' ')[0]
+        test_id = self.test_select.currentText()
         if test_id:
             try:
                 f = 31 - self.speedSlider.value() # 0-30
