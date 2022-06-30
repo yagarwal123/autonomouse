@@ -90,7 +90,7 @@ void letMouseOut(String ID_2){
   door_open(door_two);
   while (door2Check() != ID_2){} // either this or just open whenever something is in serial 2
   door_open(door_one);
-  door_close(door_two);
+  door_close(door_two, 1); // True for slower door
 }
   
 void setup()
@@ -101,7 +101,7 @@ void setup()
   door_one.attach(2);
   door_open(door_one);
   door_two.attach(23);
-  door_close(door_two);
+  door_close(door_two,0);
   // door 1 open and door 2 close
   
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
@@ -181,7 +181,7 @@ void loop()
       break;
     }
   }
-  door_close(door_one);
+  door_close(door_one, 0);
   
   // or take weight here
   weight = scale.get_units();
@@ -227,7 +227,7 @@ void loop()
     }
   }
   Serial.println("LOGGER: Closing door 2, start test");
-  door_close(door_two);
+  door_close(door_two, 0);
   //t4.start();
 
   // create file
