@@ -16,6 +16,8 @@ from gui.mainwin_actions import mainwinActions
 import sys
 import serial
 import multiprocessing
+import pickle
+import os
 
 from Mouse import Mouse
 import rasp_camera
@@ -61,11 +63,19 @@ if __name__ == "__main__":
         sys.exit()
 
     all_mice = {} # dict object, key is ID value is the Mouse object
+    # load all mouse objects into dict
+    
     with open(f'{CONFIG.application_path}/mouse_info.csv',mode='r') as f:
         assert(f.readline().strip() == 'ID,Name,Weight') # check if csv file format is correct
         for line in f:
-            info = line.strip().split(',')
-            all_mice[info[0]] = Mouse(info[0],info[1],info[2]) # put mouse info into the dict by key
+            info = line.strip().split(',') # split lines in mouse_info
+            filename = os.path.join(CONFIG.application_path, 'MouseObjects', info[0], '.obj')
+            if os.path.exists(filename): # if the mouse object already exist
+                filehandler = open(filename, 'r') 
+                all_mice[info[0]] = pickle.load(filehandler) # load into all_mice dictionary
+            else:
+                all_mice[info[0]] = Mouse(info[0],info[1],info[2]) # put new mouse info into the dict by key
+
 
     # #Inititate Mice
     # all_mice = {}

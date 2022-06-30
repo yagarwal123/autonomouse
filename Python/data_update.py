@@ -7,6 +7,7 @@ from Test import Trial
 import rasp_camera
 import serial
 from config import CONFIG
+import pickle
 
 logger = logging.getLogger(__name__)
 
@@ -33,13 +34,9 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             #t = myTime(START_TIME,int(search.group(2)))
             last_test.weights.append(weight)
         case 2:
-            if len(doors)>50: # delete 25 door entries (and save to file) when they exceed total exceeds 50
-                old_entries = doors[-25:]
-                old_entries.reverse()
-                with open('doors_entries.csv', 'a') as door_file:
-                    for d in old_entries:
-                        door_file.write(F'{d[0]},{d[1].get_id()},{d[2]}\n')
-                del doors[-25:]
+            if len(doors)>50: # save the last 50 door entries
+                append_door_entries(doors) # option to save door entries in csv files: comment to disable
+                doors.clear() 
             m = all_mice[search.group(1)]
             d = int(search.group(2)) # 2nd bracket
             t = myTime(START_TIME,int(search.group(3)))
@@ -67,7 +64,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             last_test.add_trial(Trial(trial,t,stimuli))
         case 6:
             test = last_test
-            fileFolder = test.id
+            fileFolder = f'{START_TIME.strftime("%Y%m%d-%H%M%S")} - {test.id}'
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
             filename = f'Test data - {test.id}.csv'
@@ -83,11 +80,11 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                     csvfile.write(row)
             live_licks.clear()
 
-            rasp_camera.getVideofile(test.id)
+            rasp_camera.getVideofile(test.id,f'{START_TIME.strftime("%Y%m%d-%H%M%S")} - {test.id}')
             
         case 7:
             test = last_test
-            fileFolder = test.id
+            fileFolder = f'{START_TIME.strftime("%Y%m%d-%H%M%S")} - {test.id}'
             filename = f'Raw lick data - {test.id}.csv'
             filePath = os.path.join(CONFIG.application_path,fileFolder,filename)
             mutex.unlock()
@@ -105,6 +102,13 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             last_test.ongoing = False
             m = last_test.get_mouse()
             m.add_test(last_test) # add data to mouse object
+            # save mouse object to file with mouse id name
+            fileFolder = 'MouseObjects'
+            if not os.path.exists(fileFolder):
+                os.makedirs(fileFolder)
+            filename = os.path.join(CONFIG.application_path, fileFolder, m.get_id())
+            filehandler = open(filename, 'wb') 
+            pickle.dump(m, filehandler)      
 
         case 9:
             m = all_mice[search.group(1)]
@@ -172,3 +176,13 @@ def get_raw_data(filePath, port):
                 ser.write("Resume\n".encode())
                 rec_pause = False
     ser.close()
+
+def append_door_entries(doors):
+    # save door entries?
+    fileFolder = 'doorEntries'
+    if not os.path.exists(fileFolder):
+        os.makedirs(fileFolder)
+    filename = f'Door data.csv' # save in file named by the time of saving
+    filename = os.path.join(CONFIG.application_path, fileFolder, filename)
+    with open(filename, 'w') as csvfile: 
+        csvfile.write(doors) # write all entry history in file
