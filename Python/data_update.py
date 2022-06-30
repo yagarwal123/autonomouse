@@ -7,6 +7,7 @@ from Test import Trial
 import rasp_camera
 import serial
 from config import CONFIG
+import pickle
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,8 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             #t = myTime(START_TIME,int(search.group(2)))
             last_test.weights.append(weight)
         case 2:
-            if len(doors)>50: # delete door entries when they exceed 50
+            if len(doors)>100: # delete door entries when they exceed 100
+                save_door_entries(START_TIME,doors) # option to save door entries in csv files: comment to disable
                 doors.clear() 
             m = all_mice[search.group(1)]
             d = int(search.group(2)) # 2nd bracket
@@ -100,6 +102,13 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             last_test.ongoing = False
             m = last_test.get_mouse()
             m.add_test(last_test) # add data to mouse object
+            # save mouse object to file with mouse id name
+            fileFolder = 'MouseObjects'
+            if not os.path.exists(fileFolder):
+                os.makedirs(fileFolder)
+            filename = os.path.join(CONFIG.application_path, fileFolder, m.get_id())
+            filehandler = open(filename, 'w') 
+            pickle.dump(m, filehandler)      
 
         case 9:
             m = all_mice[search.group(1)]
@@ -173,3 +182,13 @@ def get_raw_data(filePath, port):
                 ser.write("Resume\n".encode())
                 rec_pause = False
     ser.close()
+
+def save_door_entries(START_TIME, doors):
+    # save door entries?
+    fileFolder = 'doorEntries'
+    if not os.path.exists(fileFolder):
+        os.makedirs(fileFolder)
+    filename = f'Door data - {START_TIME}.csv' # save in file named by the time of saving
+    filename = os.path.join(CONFIG.application_path, fileFolder, filename)
+    with open(filename, 'w') as csvfile: 
+        csvfile.write(doors) # write all entry history in file
