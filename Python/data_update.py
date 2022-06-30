@@ -64,7 +64,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             last_test.add_trial(Trial(trial,t,stimuli))
         case 6:
             test = last_test
-            fileFolder = f' {test.id}'
+            fileFolder = test.id
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
             filename = f'Test data - {test.id}.csv'
@@ -84,7 +84,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             
         case 7:
             test = last_test
-            fileFolder = f'{test.id}'
+            fileFolder = test.id
             filename = f'Raw lick data - {test.id}.csv'
             filePath = os.path.join(CONFIG.application_path,fileFolder,filename)
             mutex.unlock()
