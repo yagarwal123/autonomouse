@@ -19,6 +19,9 @@
 # ignore ALL files with the extension mp4
 *.mp4
 
+# ignore ALL files with the extension obj
+*.obj
+
 # don't ignore mouse_info.csv
 !mouse_info.csv
 
