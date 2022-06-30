@@ -36,7 +36,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
         case 2:
             if len(doors)>50: # save the last 50 door entries
                 append_door_entries(doors) # option to save door entries in csv files: comment to disable
-                doors.clear() 
+                del doors[-25:]
             m = all_mice[search.group(1)]
             d = int(search.group(2)) # 2nd bracket
             t = myTime(START_TIME,int(search.group(3)))
@@ -184,5 +184,8 @@ def append_door_entries(doors):
         os.makedirs(fileFolder)
     filename = f'Door data.csv' # save in file named by the time of saving
     filename = os.path.join(CONFIG.application_path, fileFolder, filename)
-    with open(filename, 'w') as csvfile: 
-        csvfile.write(doors) # write all entry history in file
+    with open(filename, 'a') as csvfile: 
+        old_entries = doors[-25:]
+        old_entries.reverse()
+        for d in old_entries:
+            csvfile.write(f'{d[0]},{d[1].get_id()},{d[2]}\n') # write all entry history in file

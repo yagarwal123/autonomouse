@@ -14,7 +14,7 @@ class Test:
         self.vid_recording = False
         self.ongoing = True
         self.trials_over = False
-        self.id = f'{self.__mouse.get_id()}_{len(self.__mouse.test_ids) + 1}'
+        self.id = None
     
     def add_trial(self,new_trial):
         self.trials.append(new_trial)
@@ -25,6 +25,7 @@ class Test:
     def add_starting_time(self,t):
         if self.starting_time is None:
             self.starting_time = t
+            self.id = f'{self.__mouse.get_id()}_{self.starting_time}'
         else:
             logger.error('Unexpected starting time message. Not updated')
     
