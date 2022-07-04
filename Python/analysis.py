@@ -14,8 +14,8 @@ def analysis_window(test_id,frame_rate):
     #     TTLarray = np.loadtxt(ttl_file)
 
 
-    with open(f"{CONFIG.application_path}/{test_id}/Test data - {test_id}.csv",'r') as ttl_file:
-        for line in ttl_file:
+    with open(f"{CONFIG.application_path}/{test_id}/Test data - {test_id}.csv",'r') as test_file:
+        for line in test_file:
             l = line.strip().split(',')
             if l[0] == 'lick_threshold':
                 threshold = int(l[1][1:-1])

@@ -1,4 +1,4 @@
- #include <Servo.h>
+#include <Servo.h>
 #include <TimeLib.h>
 #include "run_test.h"
 #include "dop.h"
@@ -8,6 +8,7 @@
 #include "SdFat.h"
 #include "time_functions.h"
 #include "deliver_reward.h"
+#include "check_gui.h"
 //#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
@@ -135,12 +136,13 @@ void setup()
 
   //t4.begin([=]{callback4(TTL_PIN);}, 1ms, false);
   
-  while (! Serial);
+  while (! Serial);       //Wait for python read to begin
   Serial.println("LOGGER: Starting Experiment");
 }
 
 void loop()
 {
+  check_gui(door_one, door_two);
   // refill syringe function
   if(Serial.available()){
     String serIn = Serial.readStringUntil('\n');
@@ -186,6 +188,7 @@ void loop()
   // or take weight here
   weight = scale.get_units();
   while (weight < 10){   //wait for mouse to get on
+    check_gui(door_one, door_two);
     if(Serial.available()){
       String serIn = Serial.readStringUntil('\n');
       if (serIn == "Manual Start"){
@@ -253,6 +256,7 @@ void loop()
   file.print(F("amplitude, "));
   file.println(F("TTL"));
   
+  check_gui(door_one, door_two);
   Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
   while (!Serial.available());
   int THRESHOLD = Serial.readStringUntil('\n').toInt();
