@@ -109,9 +109,10 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             fileFolder = 'MouseObjects'
             if not os.path.exists(fileFolder):
                 os.makedirs(fileFolder)
-            filename = os.path.join(CONFIG.application_path, fileFolder, m.get_id())
+            filename = os.path.join(CONFIG.application_path, fileFolder, f'{m.get_id()}.obj')
             filehandler = open(filename, 'wb') 
-            pickle.dump(m, filehandler)      
+            pickle.dump(m, filehandler)
+            filehandler.close()      
 
         case 9:
             m = all_mice[search.group(1)]

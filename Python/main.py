@@ -69,10 +69,11 @@ if __name__ == "__main__":
         assert(f.readline().strip() == 'ID,Name,Weight') # check if csv file format is correct
         for line in f:
             info = line.strip().split(',') # split lines in mouse_info
-            filename = os.path.join(CONFIG.application_path, 'MouseObjects', info[0], '.obj')
+            filename = os.path.join(CONFIG.application_path, 'MouseObjects', f'{info[0]}.obj')
             if os.path.exists(filename): # if the mouse object already exist
-                filehandler = open(filename, 'r') 
+                filehandler = open(filename, 'rb') 
                 all_mice[info[0]] = pickle.load(filehandler) # load into all_mice dictionary
+                filehandler.close()
             else:
                 all_mice[info[0]] = Mouse(info[0],info[1],info[2]) # put new mouse info into the dict by key
 
