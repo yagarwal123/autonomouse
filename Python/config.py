@@ -3,11 +3,11 @@ import argparse
 
 class Config:
     def __init__(self):
-        self.arduinoPath = "/Applications/Teensyduino.app/Contents/MacOS/Arduino"
-        self.sketchPath = "/Users/yash/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-        self.TEENSY = False
-        self.RASPBERRY = False
-        self.PORT = "/dev/tty.usbmodem105683101"
+        self.arduinoPath = "C:/PROGRA~2/Arduino/arduino_debug.exe"
+        self.sketchPath = "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
+        self.TEENSY = True
+        self.RASPBERRY = True
+        self.PORT = 'COM3'
         self.OPEN_WINDOWS = True
         if getattr(sys, "frozen", False): # make sure the csv and log files are in the correct location to be read
             self.application_path = os.path.dirname(sys.executable)
