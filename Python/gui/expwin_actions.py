@@ -127,6 +127,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             self.pauseLabel.setText('Experiment is ongoing')
 
     def refill(self):
+        self.mutex.lock()
         self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
         if not vars(self.last_test) or not self.last_test.ongoing:
             if self.experiment_parameters.valve_open:      
@@ -143,6 +144,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg = QtWidgets.QMessageBox()
             msg.setText('A test is ongoing, please wait till it finishes')
             msg.exec()
+        self.mutex.unlock()
 
     def set_trial_lim(self): # default no trial limit, can change in exp window
         l = self.trialLimLineEdit.text()
