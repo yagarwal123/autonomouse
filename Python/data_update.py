@@ -164,7 +164,7 @@ def get_raw_data(filePath, port):
         ser.write("Ready\n".encode())
         while (l.strip()[-22:] != 'Raw data send complete'):
             try:
-                l = ser.read(ser.in_waiting).decode("utf-8")
+                l = ser.readline().decode("utf-8") #l = ser.read(ser.in_waiting).decode("utf-8")
             except Exception as e:
                 logger.error(f'{e}: Error while recieving raw data')
                 continue

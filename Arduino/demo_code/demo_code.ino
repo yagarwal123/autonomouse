@@ -148,7 +148,13 @@ void loop()
     String serIn = Serial.readStringUntil('\n');
     if (serIn == "Refill"){
       digitalWrite(rewardPin, HIGH);
-      waitUntilReceive("Stop");
+      //waitUntilReceive("Stop");
+      while (true){
+        String serIn = Serial.readStringUntil('\n');
+        if (serIn == "Stop"){
+          break;
+        }
+  }
       digitalWrite(rewardPin, LOW);
     }
   }
