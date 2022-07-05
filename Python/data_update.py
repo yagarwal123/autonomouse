@@ -23,8 +23,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                       '^Check whether to start test - (.+)$',                       #9
                       '^Send parameters: Incoming mouse ID - (.+)$',                #10
                       '^LOGGER:',                                                   #11
-                      '^Stop recording$',                                           #12
-                      '^Check GUI$'                                                 #13
+                      '^Stop recording$'                                            #12
                       ] 
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
@@ -143,8 +142,6 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             test = last_test
             test.vid_recording = False
             ser.write("Camera closed\n".encode())
-        case 13:
-            ser.write("Working\n".encode())
                 
 
 def matchCommand(inSer,KNOWNSTATEMENTS):

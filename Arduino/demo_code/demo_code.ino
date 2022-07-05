@@ -8,7 +8,7 @@
 #include "SdFat.h"
 #include "time_functions.h"
 #include "deliver_reward.h"
-#include "check_gui.h"
+#include "wait_for_serial.h"
 //#include "TeensyTimerTool.h"
 #define LOADCELL_DOUT_PIN  20
 #define LOADCELL_SCK_PIN  19
@@ -78,7 +78,7 @@ String door2Check(){
 
 void waitUntilReceive(String msg){ // waits for message from python
   while (true){
-    while(!Serial.available());
+    waitForSerial(door_one, door_two);
     String serIn = Serial.readStringUntil('\n');
     if (serIn == msg){
       break;
@@ -142,7 +142,7 @@ void setup()
 
 void loop()
 {
-  check_gui(door_one, door_two);
+  //check_gui(door_one, door_two);
   // refill syringe function
   if(Serial.available()){
     String serIn = Serial.readStringUntil('\n');
@@ -172,7 +172,7 @@ void loop()
 
   Serial.print("Check whether to start test - "); Serial.println(ID_2);
   while (true){
-    while(!Serial.available());
+    waitForSerial(door_one, door_two);
     String serIn = Serial.readStringUntil('\n');
     if (serIn == "Do not start"){
       clear_serial_buffer(Serial1);
@@ -188,7 +188,7 @@ void loop()
   // or take weight here
   weight = scale.get_units();
   while (weight < 10){   //wait for mouse to get on
-    check_gui(door_one, door_two);
+    //check_gui(door_one, door_two);
     if(Serial.available()){
       String serIn = Serial.readStringUntil('\n');
       if (serIn == "Manual Start"){
@@ -256,17 +256,17 @@ void loop()
   file.print(F("amplitude, "));
   file.println(F("TTL"));
   
-  check_gui(door_one, door_two);
+  //check_gui(door_one, door_two);
   Serial.print("Send parameters: Incoming mouse ID - "); Serial.println(ID_2);
-  while (!Serial.available());
+  waitForSerial(door_one, door_two);
   int THRESHOLD = Serial.readStringUntil('\n').toInt();
-  while (!Serial.available());
+  waitForSerial(door_one, door_two);
   int liquidAmount = Serial.readStringUntil('\n').toInt();
-  while (!Serial.available());
+  waitForSerial(door_one, door_two);
   int WAITTIME = Serial.readStringUntil('\n').toInt();
-  while (!Serial.available());
+  waitForSerial(door_one, door_two);
   int responseTime = Serial.readStringUntil('\n').toInt();
-  while (!Serial.available());
+  waitForSerial(door_one, door_two);
   int stimProb = Serial.readStringUntil('\n').toInt();
   Serial.print("LOGGER: Received - Liquid Amount - ");Serial.println(liquidAmount);
   Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
