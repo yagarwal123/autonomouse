@@ -48,7 +48,7 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, FsFile* pr, int WAITTIME, HX711 *scale){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -78,7 +78,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
     lickTime = -1; // time takes to lick: if not licked return -1
     lickCheck = 0; // time taken to lick from stimulus onset
     
-    stimulus = start_stimulus(stimPin, stimProb, stimDuration);
+    stimulus = start_stimulus(stimPin, nStim, stimProb, stimDuration);
     
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
@@ -100,7 +100,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         }
       if (millis() - startTime > stimDuration){ // stimDuration has to be shorter than response time
         // stop stimulus (olfaction only)
-        stop_stimulus(stimPin);
+        stop_stimulus(stimPin, nStim);
         }
       }
       downTime = millis() + WAITTIME; // start of DOWNTIME

@@ -45,7 +45,7 @@ float weight;
 int rewardPin = 32;
 int lickPin = A14;
 int TTL_PIN = 33;
-int stimPin[] = {8,12,13}; // to be extended to more pins after writing python code
+int stimPin[] = {8,12,13}; // to be extended to more pins after writing python code, first element is sound
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -282,8 +282,12 @@ void loop()
   waitForSerial(door_one, door_two);
   int stimProb[] = {0,1,1}; // use default olfactory stim for now, need to be the same size as stimPin
   stimProb[0] = Serial.readStringUntil('\n').toInt();
-  waitForSerial(door_one, door_two);
   unsigned long stimDuration = 2000; // use default for now - get from python later
+  int nStim = sizeof(stimProb); // number of pins used for stimulus
+  if(nStim != sizeof(stimPin)){
+    Serial.println("STIM ARRAY NOT SAME SIZE AS STIMPIN - please check and restart");
+    while (true); //Do nothing forever
+  }
 
   Serial.print("LOGGER: Received - Liquid Amount - ");Serial.println(liquidAmount);
   Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
@@ -292,7 +296,7 @@ void loop()
   Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb[0]); // change line to print whole array
   // maybe also a line for stim duration
   
-  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, &file, WAITTIME, &scale); // write to file during test
+  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, &scale); // write to file during test
   file.close(); // close the file
   
   waitUntilReceive("Camera closed");
