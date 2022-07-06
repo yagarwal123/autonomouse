@@ -48,7 +48,7 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin, int liquidAmount, int RES, int stimProb, FsFile* pr, int WAITTIME, HX711 *scale){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, FsFile* pr, int WAITTIME, HX711 *scale){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -78,7 +78,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
     lickTime = -1; // time takes to lick: if not licked return -1
     lickCheck = 0; // time taken to lick from stimulus onset
     
-    stimulus = start_stimulus(stimPin, stimProb);
+    stimulus = start_stimulus(stimPin, stimProb, stimDuration);
     
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
@@ -92,14 +92,18 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         if (lickCheck > 0){
           t2.start(); // start reading at longer intervals if mouse has licked
           lickTime = lickCheck - startTime;
-          if (stimulus==1){
+          if (stimulus==1){ // TODO: match olfactory stim to response
             deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
           }
           //noLickCounter=0; // reset noLickCounter
           }
         }
+      if (millis() - startTime > stimDuration){ // stimDuration has to be shorter than response time
+        // stop stimulus (olfaction only)
+        stop_stimulus(stimPin);
+        }
       }
-      downTime = millis() + WAITTIME; // count 5s from now
+      downTime = millis() + WAITTIME; // start of DOWNTIME
 
     t1.stop();// stop timers whether or not there was licking
     if (lickTime < 0){ // start reading at longer intervals if mouse hasnt licked
@@ -140,7 +144,11 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         }
         if(serIn == "stim"){
           while (!Serial.available());
-          stimProb = Serial.readStringUntil('\n').toInt();
+          stimProb[0] = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "dur"){
+          while (!Serial.available());
+          stimDuration = Serial.readStringUntil('\n').toInt();
         }
       }
     }

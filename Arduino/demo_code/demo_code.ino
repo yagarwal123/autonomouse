@@ -45,7 +45,7 @@ float weight;
 int rewardPin = 32;
 int lickPin = A14;
 int TTL_PIN = 33;
-int stimPin = 8;
+int stimPin[] = {8,12,13}; // to be extended to more pins after writing python code
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -118,6 +118,13 @@ void setup()
     // pin for TTL pulse camera
   pinMode(TTL_PIN, INPUT);
   //attachInterrupt(digitalPinToInterrupt(TTL_PIN), callback4, RISING);
+
+  // setup olfaction pins
+  for(int i=0;i<(int)(sizeof(*stimPin)/sizeof(stimPin[0]));i++){
+    pinMode(stimPin[i], OUTPUT);
+    Serial.print("setting up pins: ");
+    Serial.println(stimPin[i]);
+  }
 
   // time
   setSyncProvider(getTeensy3Time);
@@ -273,14 +280,19 @@ void loop()
   waitForSerial(door_one, door_two);
   int responseTime = Serial.readStringUntil('\n').toInt();
   waitForSerial(door_one, door_two);
-  int stimProb = Serial.readStringUntil('\n').toInt();
+  int stimProb[] = {0,1,1}; // use default olfactory stim for now, need to be the same size as stimPin
+  stimProb[0] = Serial.readStringUntil('\n').toInt();
+  waitForSerial(door_one, door_two);
+  unsigned long stimDuration = 2000; // use default for now - get from python later
+
   Serial.print("LOGGER: Received - Liquid Amount - ");Serial.println(liquidAmount);
   Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
   Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
   Serial.print("LOGGER: Received - Response Time - ");Serial.println(responseTime);
-  Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb);
+  Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb[0]); // change line to print whole array
+  // maybe also a line for stim duration
   
-  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, &file, WAITTIME, &scale); // write to file during test
+  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, &file, WAITTIME, &scale); // write to file during test
   file.close(); // close the file
   
   waitUntilReceive("Camera closed");
