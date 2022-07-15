@@ -39,8 +39,6 @@ import rasp_camera
 if __name__ == "__main__":
     multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly
 
-    CONFIG.parse_arg()
-
     rasp_camera.start_rpi_host()
     try:
         if CONFIG.TEENSY:
