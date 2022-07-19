@@ -3,7 +3,7 @@
 
 import numpy as np
 
-def odour_gen(nChan=8, type='random', mode='test', trialNo=300):
+def odour_gen(target, targetProb, nPrbArray, nChan=8, type='random', mode='test', trialNo=300):
     #nChan: number of channels
     #trialNo = number of stim arrays, default 300
     
@@ -12,6 +12,8 @@ def odour_gen(nChan=8, type='random', mode='test', trialNo=300):
 
     #mode = 'train'
     #mode = 'test'
+    
+    # need user to input: target(s), target(s)Prob, nPrbArray = probability array for the number of odours to present
 
     stimPattern = np.empty(nChan, dtype=int)
 
@@ -23,8 +25,6 @@ def odour_gen(nChan=8, type='random', mode='test', trialNo=300):
         
         if mode == 'train':
             # one target and many others
-            target = 0 # user defined
-            targetProb = 0.1 # user input
             prbArray = np.multiply(np.ones(nChan), (1-targetProb)/(nChan-1)) # uniform distribution for non target odours
             prbArray[target] = targetProb
             for i in range(trialNo):
@@ -35,15 +35,10 @@ def odour_gen(nChan=8, type='random', mode='test', trialNo=300):
             #print(stim)
                 
         if mode == 'test':
-            # no of odours
-            target = [0,5] # user define, target channelsS
-            targetProb = [0.3, 0.3] # total prob = sum of 2, for any target odour, user define    
             # first determine the number of odours from probability
-            prbArray = [0.1, 0.1, 0.2, 0.1, 0.2, 0.1, 0.1, 0.1] # need to be same size as nChan - max nChan odours, user input
-            # index = no of odours
             for i in range(trialNo):
                 stim = np.zeros(nChan, dtype = int) # temporary storage array
-                nOdour = np.random.choice(nChan, 1, p=prbArray) # number of odours, p need to be 1
+                nOdour = np.random.choice(nChan, 1, p=nPrbArray) # number of odours, p need to be 1
                 nOdour += 1
                 #print(nOdour)
 
@@ -59,5 +54,11 @@ def odour_gen(nChan=8, type='random', mode='test', trialNo=300):
     return np.delete(stimPattern, 0, axis=0) # remove first line from np.empty
 
 if __name__=='__main__':
-    stimPattern = odour_gen(trialNo=5)
+    # for training mode:
+    # target = 0 
+    # targetProb = 0.1
+    target = [0,5] # user define, target channelsS
+    targetProb = [0.3, 0.3] # total prob = sum of 2, for any target odour, user define   
+    nPrbArray = [0.1, 0.1, 0.2, 0.1, 0.2, 0.1, 0.1, 0.1] # need to be same size as nChan - max nChan odours, user input
+    stimPattern = odour_gen(target, targetProb, nPrbArray, nChan=8, type='random', mode='test', trialNo=5)
     print(stimPattern)
