@@ -56,7 +56,7 @@ def odour_gen(nChan=8, type='random', mode='test', trialNo=300):
                 #print(stim)
 
     # maybe option to save randomly generated pattern to file
-    return np.delete(stimPattern, 0, axis=0)
+    return np.delete(stimPattern, 0, axis=0) # remove first line from np.empty
 
 if __name__=='__main__':
     stimPattern = odour_gen(trialNo=5)
