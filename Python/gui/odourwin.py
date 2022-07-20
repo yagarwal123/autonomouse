@@ -12,7 +12,20 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_odourWin(object):
     def setupUi(self, odourWin):
         odourWin.setObjectName("odourWin")
-        odourWin.setGeometry(QtCore.QRect(0, 0, 400, 300))
+        odourWin.resize(975, 391)
+        self.patternEdit = QtWidgets.QTextEdit(odourWin)
+        self.patternEdit.setGeometry(QtCore.QRect(10, 50, 951, 311))
+        self.patternEdit.setObjectName("patternEdit")
+        self.selectFileButton = QtWidgets.QPushButton(odourWin)
+        self.selectFileButton.setGeometry(QtCore.QRect(770, 10, 191, 28))
+        self.selectFileButton.setObjectName("selectFileButton")
+        self.label = QtWidgets.QLabel(odourWin)
+        self.label.setGeometry(QtCore.QRect(10, 20, 111, 16))
+        self.label.setObjectName("label")
+        self.fileDisp = QtWidgets.QLabel(odourWin)
+        self.fileDisp.setGeometry(QtCore.QRect(130, 20, 621, 16))
+        self.fileDisp.setText("")
+        self.fileDisp.setObjectName("fileDisp")
 
         self.retranslateUi(odourWin)
         QtCore.QMetaObject.connectSlotsByName(odourWin)
@@ -20,6 +33,8 @@ class Ui_odourWin(object):
     def retranslateUi(self, odourWin):
         _translate = QtCore.QCoreApplication.translate
         odourWin.setWindowTitle(_translate("odourWin", "Form"))
+        self.selectFileButton.setText(_translate("odourWin", "Select File"))
+        self.label.setText(_translate("odourWin", "File selected:"))
 
 
 if __name__ == "__main__":
