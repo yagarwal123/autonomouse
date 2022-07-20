@@ -30,11 +30,11 @@ import rasp_camera
 # subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/detmousewin.ui -o ./Python/gui/detmousewin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/odourwin.ui -o ./Python/gui/odourwin.py".split())
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
 #               '0007A0F7C4': ['Real',27.4]}
-
 
 if __name__ == "__main__":
     multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly

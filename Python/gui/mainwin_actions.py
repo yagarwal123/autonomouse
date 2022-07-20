@@ -13,6 +13,7 @@ from gui.lickwin_actions import lickwinActions
 from gui.testwin_actions import testwinActions
 from gui.expwin_actions import expwinActions
 from gui.detmousewin_actions import detmousewinActions
+from gui.odourwinActions import odourwinActions
 from start_teensy_read import startTeensyRead
 import rasp_camera
 from config import CONFIG
@@ -80,6 +81,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cameraButton.clicked.connect(lambda: self.open_cam())
         self.openAllButton.clicked.connect(lambda: self.open_all_win())
         self.detMouseButton.clicked.connect(lambda: self.open_detmouse())
+        self.odour_button.clicked.connect(lambda: self.open_odour())
 
 
     def open_mouse(self):
@@ -132,7 +134,15 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def open_cam(self):
         os.system("start microsoft.windows.camera:")
-
+    
+    def open_odour(self, pos=None):
+        try:
+            self.odourwin.close()
+        except (RuntimeError, AttributeError) as e:
+            pass
+        self.odourwin = odourwinActions(self.mutex,pos)
+        self.odourwin.show()
+        
     def open_all_win(self):
         self.open_exp(QPoint(0,0))
         self.open_lick(QPoint(380,0))
@@ -140,6 +150,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.open_test(QPoint(1182,0))
         self.open_cam()
         self.open_detmouse(QPoint(0,292))
+        self.open_odour(QPoint(0,450))
 
 class TeensyRead(QThread): # inherit QThread class
 
