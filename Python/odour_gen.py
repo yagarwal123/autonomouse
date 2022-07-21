@@ -13,7 +13,6 @@ def odour_gen(target, targetProb, nPrbArray, nChan=8, trialNo=300):
     # need user to input: target(s), target(s)Prob, nPrbArray = probability array for the number of odours to present
 
     stimPattern = np.empty(nChan, dtype=int)
-
                 
     # first determine the number of odours from probability
     for i in range(trialNo):
