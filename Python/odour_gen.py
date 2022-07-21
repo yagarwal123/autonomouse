@@ -3,7 +3,7 @@
 
 import numpy as np
 
-def odour_gen(target, targetProb, nPrbArray, nChan=8, type='random', trialNo=300):
+def odour_gen(target, targetProb, nPrbArray, nChan=8, trialNo=300):
     #nChan: number of channels
     #trialNo = number of stim arrays, default 300
     
@@ -14,26 +14,21 @@ def odour_gen(target, targetProb, nPrbArray, nChan=8, type='random', trialNo=300
 
     stimPattern = np.empty(nChan, dtype=int)
 
-    if type == 'predefined':
-        # read from file and assign to stimPattern
-        pass 
-
-    if type == 'random':
                 
-        # first determine the number of odours from probability
-        for i in range(trialNo):
-            stim = np.zeros(nChan, dtype = int) # temporary storage array
-            nOdour = np.random.choice(nChan, 1, p=nPrbArray) # number of odours, p need to be 1
-            nOdour += 1
-            #print(nOdour)
+    # first determine the number of odours from probability
+    for i in range(trialNo):
+        stim = np.zeros(nChan, dtype = int) # temporary storage array
+        nOdour = np.random.choice(nChan, 1, p=nPrbArray) # number of odours, p need to be 1
+        nOdour += 1
+        #print(nOdour)
 
-            # generate stim array
-            prbArray = np.multiply(np.ones(nChan), (1-sum(targetProb))/(nChan-len(target)))
-            prbArray[target] = targetProb
-            o = np.random.choice(nChan, nOdour, replace=False, p=prbArray) # which channels to turn on
-            stim[o] = 1  # make the stim array       
-            stimPattern = np.vstack([stimPattern, stim])     
-            #print(stim)
+        # generate stim array
+        prbArray = np.multiply(np.ones(nChan), (1-sum(targetProb))/(nChan-len(target)))
+        prbArray[target] = targetProb
+        o = np.random.choice(nChan, nOdour, replace=False, p=prbArray) # which channels to turn on
+        stim[o] = 1  # make the stim array       
+        stimPattern = np.vstack([stimPattern, stim])     
+        #print(stim)
 
     # maybe option to save randomly generated pattern to file
     return np.delete(stimPattern, 0, axis=0) # remove first line from np.empty

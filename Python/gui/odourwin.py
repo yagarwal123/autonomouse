@@ -13,19 +13,24 @@ class Ui_odourWin(object):
     def setupUi(self, odourWin):
         odourWin.setObjectName("odourWin")
         odourWin.resize(975, 391)
-        self.patternEdit = QtWidgets.QTextEdit(odourWin)
-        self.patternEdit.setGeometry(QtCore.QRect(10, 50, 951, 311))
-        self.patternEdit.setObjectName("patternEdit")
-        self.selectFileButton = QtWidgets.QPushButton(odourWin)
-        self.selectFileButton.setGeometry(QtCore.QRect(770, 10, 191, 28))
-        self.selectFileButton.setObjectName("selectFileButton")
+        self.gridLayout_3 = QtWidgets.QGridLayout(odourWin)
+        self.gridLayout_3.setObjectName("gridLayout_3")
         self.label = QtWidgets.QLabel(odourWin)
-        self.label.setGeometry(QtCore.QRect(10, 20, 111, 16))
         self.label.setObjectName("label")
+        self.gridLayout_3.addWidget(self.label, 0, 0, 1, 1)
         self.fileDisp = QtWidgets.QLabel(odourWin)
-        self.fileDisp.setGeometry(QtCore.QRect(130, 20, 621, 16))
         self.fileDisp.setText("")
         self.fileDisp.setObjectName("fileDisp")
+        self.gridLayout_3.addWidget(self.fileDisp, 0, 1, 1, 1)
+        self.selectFileButton = QtWidgets.QPushButton(odourWin)
+        self.selectFileButton.setObjectName("selectFileButton")
+        self.gridLayout_3.addWidget(self.selectFileButton, 0, 2, 1, 1)
+        self.gridLayout_2 = QtWidgets.QGridLayout()
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.patternEdit = QtWidgets.QTextEdit(odourWin)
+        self.patternEdit.setObjectName("patternEdit")
+        self.gridLayout_2.addWidget(self.patternEdit, 0, 0, 1, 1)
+        self.gridLayout_3.addLayout(self.gridLayout_2, 1, 0, 1, 3)
 
         self.retranslateUi(odourWin)
         QtCore.QMetaObject.connectSlotsByName(odourWin)
@@ -33,8 +38,8 @@ class Ui_odourWin(object):
     def retranslateUi(self, odourWin):
         _translate = QtCore.QCoreApplication.translate
         odourWin.setWindowTitle(_translate("odourWin", "Form"))
-        self.selectFileButton.setText(_translate("odourWin", "Select File"))
         self.label.setText(_translate("odourWin", "File selected:"))
+        self.selectFileButton.setText(_translate("odourWin", "Select File"))
 
 
 if __name__ == "__main__":
