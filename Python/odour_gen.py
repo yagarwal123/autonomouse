@@ -41,5 +41,5 @@ if __name__=='__main__':
     targetProb = [0.3] # total prob = sum of 2, for any target odour, user define   
     nPrbArray = [0.1, 0.1, 0.2, 0.1, 0.2, 0.1, 0.1, 0.1] # need to be same size as nChan - max nChan odours, user input
     nPrbArray = [0, 1, 0, 0, 0, 0, 0, 0]
-    stimPattern = odour_gen(target, targetProb, nPrbArray, nChan=8, type='random', trialNo=5)
+    stimPattern = odour_gen(target, targetProb, nPrbArray, nChan=8, trialNo=5)
     print(stimPattern)
