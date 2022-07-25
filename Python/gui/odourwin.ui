@@ -41,13 +41,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="7">
-    <widget class="QLabel" name="fileDisp">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="8">
     <widget class="QPushButton" name="selectFileButton">
      <property name="text">
@@ -234,6 +227,13 @@
     <widget class="QPushButton" name="generateButton">
      <property name="text">
       <string>Generate Pattern</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="7">
+    <widget class="QLabel" name="fileDisp">
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </item>
