@@ -27,13 +27,6 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string># of odours</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1" alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="label_14">
      <property name="text">
@@ -41,52 +34,17 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="8">
-    <widget class="QPushButton" name="selectFileButton">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Select File</string>
+      <string># of odours</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_17">
      <property name="text">
-      <string>File selected:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="6" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="label_13">
-     <property name="text">
-      <string>6</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="label_16">
-     <property name="text">
-      <string>3</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="8" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>8</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="label_15">
-     <property name="text">
-      <string>2</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="7" alignment="Qt::AlignHCenter">
-    <widget class="QLabel" name="label_7">
-     <property name="text">
-      <string>7</string>
+      <string>Probability (0-1)</string>
      </property>
     </widget>
    </item>
@@ -107,60 +65,28 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_17">
-     <property name="text">
-      <string>Probability (0-1)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="7">
-    <widget class="QLineEdit" name="p7"/>
-   </item>
-   <item row="2" column="5">
-    <widget class="QLineEdit" name="p5"/>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLineEdit" name="p2"/>
-   </item>
-   <item row="2" column="3">
-    <widget class="QLineEdit" name="p3"/>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLineEdit" name="p1"/>
-   </item>
-   <item row="2" column="4">
-    <widget class="QLineEdit" name="p4"/>
-   </item>
-   <item row="3" column="3" alignment="Qt::AlignHCenter">
-    <widget class="QCheckBox" name="checkBox_3">
-     <property name="text">
-      <string>2</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2" alignment="Qt::AlignHCenter">
-    <widget class="QCheckBox" name="checkBox_2">
-     <property name="text">
-      <string>1</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="6">
-    <widget class="QLineEdit" name="TP6"/>
-   </item>
-   <item row="4" column="5">
-    <widget class="QLineEdit" name="TP5"/>
-   </item>
    <item row="6" column="0" colspan="9">
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0">
-      <widget class="QTextEdit" name="patternEdit"/>
+      <widget class="QTableView" name="patternEdit"/>
      </item>
     </layout>
    </item>
    <item row="4" column="2">
     <widget class="QLineEdit" name="TP2"/>
+   </item>
+   <item row="4" column="5">
+    <widget class="QLineEdit" name="TP5"/>
+   </item>
+   <item row="4" column="6">
+    <widget class="QLineEdit" name="TP6"/>
+   </item>
+   <item row="3" column="4" alignment="Qt::AlignHCenter">
+    <widget class="QCheckBox" name="checkBox_4">
+     <property name="text">
+      <string>3</string>
+     </property>
+    </widget>
    </item>
    <item row="4" column="7">
     <widget class="QLineEdit" name="TP7"/>
@@ -168,10 +94,38 @@
    <item row="4" column="8">
     <widget class="QLineEdit" name="TP8"/>
    </item>
-   <item row="3" column="4" alignment="Qt::AlignHCenter">
-    <widget class="QCheckBox" name="checkBox_4">
+   <item row="5" column="7" colspan="2">
+    <widget class="QPushButton" name="generateButton">
+     <property name="text">
+      <string>Generate Pattern</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="label_15">
+     <property name="text">
+      <string>2</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="7" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>7</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="label_16">
      <property name="text">
       <string>3</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="8" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>8</string>
      </property>
     </widget>
    </item>
@@ -181,6 +135,9 @@
       <string>7</string>
      </property>
     </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QLineEdit" name="TP3"/>
    </item>
    <item row="4" column="4">
     <widget class="QLineEdit" name="TP4"/>
@@ -199,20 +156,17 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="3">
-    <widget class="QLineEdit" name="TP3"/>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_27">
+     <property name="text">
+      <string>Target channel</string>
+     </property>
+    </widget>
    </item>
    <item row="3" column="5" alignment="Qt::AlignHCenter">
     <widget class="QCheckBox" name="checkBox_5">
      <property name="text">
       <string>4</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_27">
-     <property name="text">
-      <string>Target channel</string>
      </property>
     </widget>
    </item>
@@ -223,19 +177,75 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="7" colspan="2">
-    <widget class="QPushButton" name="generateButton">
-     <property name="text">
-      <string>Generate Pattern</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1" colspan="7">
     <widget class="QLabel" name="fileDisp">
      <property name="text">
       <string/>
      </property>
     </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="p2"/>
+   </item>
+   <item row="2" column="5">
+    <widget class="QLineEdit" name="p5"/>
+   </item>
+   <item row="2" column="7">
+    <widget class="QLineEdit" name="p7"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLineEdit" name="p3"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="p1"/>
+   </item>
+   <item row="2" column="4">
+    <widget class="QLineEdit" name="p4"/>
+   </item>
+   <item row="3" column="2" alignment="Qt::AlignHCenter">
+    <widget class="QCheckBox" name="checkBox_2">
+     <property name="text">
+      <string>1</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3" alignment="Qt::AlignHCenter">
+    <widget class="QCheckBox" name="checkBox_3">
+     <property name="text">
+      <string>2</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>File selected:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="6" alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="label_13">
+     <property name="text">
+      <string>6</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="8">
+    <widget class="QPushButton" name="selectFileButton">
+     <property name="text">
+      <string>Select File</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Number of trials</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="trialEdit"/>
    </item>
   </layout>
  </widget>

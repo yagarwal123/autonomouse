@@ -7,9 +7,6 @@ def odour_gen(target, targetProb, nPrbArray, nChan=8, trialNo=300):
     #nChan: number of channels
     #trialNo = number of stim arrays, default 300
     
-    #type = 'random'
-    #type = 'predefined'
-    
     # need user to input: target(s), target(s)Prob, nPrbArray = probability array for the number of odours to present
 
     stimPattern = np.empty(nChan, dtype=int)
@@ -22,9 +19,12 @@ def odour_gen(target, targetProb, nPrbArray, nChan=8, trialNo=300):
         #print(nOdour)
 
         # generate stim array
+        if sum(targetProb) >= 1 and len(target)<nOdour: # when we definitely want 1 or more target to be released every trial
+            # TODO: random.choice does not handle sum(p)>1
+            pass
         prbArray = np.multiply(np.ones(nChan), (1-sum(targetProb))/(nChan-len(target)))
         prbArray[target] = targetProb
-        o = np.random.choice(nChan, nOdour, replace=False, p=prbArray) # which channels to turn on
+        o = np.random.choice(nChan, nOdour, replace=False, p=prbArray) # which channels to turn on, p=probability of each element being selected
         stim[o] = 1  # make the stim array       
         stimPattern = np.vstack([stimPattern, stim])     
         #print(stim)
@@ -37,8 +37,8 @@ if __name__=='__main__':
     # target = 0 
     # targetProb = 0.1
     target = [0] # user define, target channels, can have multiple targets
-    targetProb = [0.3] # total prob = sum of 2, for any target odour, user define   
+    targetProb = [0.99] # total prob = sum of 2, for any target odour, user define   
     nPrbArray = [0.1, 0.1, 0.2, 0.1, 0.2, 0.1, 0.1, 0.1] # need to be same size as nChan - max nChan odours, user input
-    nPrbArray = [0, 1, 0, 0, 0, 0, 0, 0]
+    nPrbArray = [0.9, 0.1, 0, 0, 0, 0, 0, 0]
     stimPattern = odour_gen(target, targetProb, nPrbArray, nChan=8, trialNo=5)
     print(stimPattern)
