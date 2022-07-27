@@ -1,5 +1,6 @@
 import subprocess
 import logging.config
+import traceback
 from time import sleep
 from unittest.mock import Mock
 from config import CONFIG
@@ -38,7 +39,7 @@ subprocess.run(r"pyuic6 -x ./Python/gui/odourwin.ui -o ./Python/gui/odourwin.py"
 
 if __name__ == "__main__":
     multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly
-
+    logger = logging.getLogger(__name__)
     rasp_camera.start_rpi_host()
     try:
         if CONFIG.TEENSY:
@@ -95,12 +96,14 @@ if __name__ == "__main__":
     
 
     #
-
-    app = QtWidgets.QApplication(sys.argv)
-    #mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)
-    mainwin = mainwinActions(ser,START_TIME,all_mice)
-    mainwin.show()
-    sys.exit(app.exec()) # dont end program until GUI closed
+    try:
+        app = QtWidgets.QApplication(sys.argv)
+        #mainwin = mainwinActions(ser,START_TIME,all_mice, doors,live_licks,all_tests)
+        mainwin = mainwinActions(ser,START_TIME,all_mice)
+        mainwin.show()
+        sys.exit(app.exec()) # dont end program until GUI closed
+    except Exception:
+        logger.critical(f"Experiment has stopped\n{traceback.format_exc()}")
     
     
 
