@@ -72,52 +72,63 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         
         # make the target array
         target = []
-        targetProb = []
-        if self.checkBox.isChecked() and self.TP1.text() != '': 
+        prbArray = []
+        if self.checkBox.isChecked(): # and self.TP1.text() != '': 
             target.append(0)
-            targetProb.append(self.TP1.text())
-        if self.checkBox_2.isChecked() and self.TP2.text() != '': 
+        prbArray.append(self.TP1.text())
+        
+        if self.checkBox_2.isChecked(): # and self.TP2.text() != '': 
             target.append(1)
-            targetProb.append(self.TP2.text())
-        if self.checkBox_3.isChecked() and self.TP3.text() != '': 
+        prbArray.append(self.TP2.text())
+        
+        if self.checkBox_3.isChecked():# and self.TP3.text() != '': 
             target.append(2)
-            targetProb.append(self.TP3.text())
-        if self.checkBox_4.isChecked() and self.TP4.text() != '': 
+        prbArray.append(self.TP3.text())
+        
+        if self.checkBox_4.isChecked():# and self.TP4.text() != '': 
             target.append(3)
-            targetProb.append(self.TP4.text())
-        if self.checkBox_5.isChecked() and self.TP5.text() != '': 
+        prbArray.append(self.TP4.text())
+        
+        if self.checkBox_5.isChecked():# and self.TP5.text() != '': 
             target.append(4)
-            targetProb.append(self.TP5.text())
-        if self.checkBox_6.isChecked() and self.TP6.text() != '': 
+        prbArray.append(self.TP5.text())
+        
+        if self.checkBox_6.isChecked():# and self.TP6.text() != '': 
             target.append(5)
-            targetProb.append(self.TP6.text())
-        if self.checkBox_7.isChecked() and self.TP7.text() != '': 
+        prbArray.append(self.TP6.text())
+        
+        if self.checkBox_7.isChecked():# and self.TP7.text() != '': 
             target.append(6)
-            targetProb.append(self.TP7.text())
-        if self.checkBox_8.isChecked() and self.TP7.text() != '': 
+        prbArray.append(self.TP7.text())
+        
+        if self.checkBox_8.isChecked():# and self.TP7.text() != '': 
             target.append(7)
-            targetProb.append(self.TP8.text())
+        prbArray.append(self.TP8.text())
     
         target = np.asarray(target, dtype=int) 
         #target = list(map(int, target))
         #targetProb = list(map(float, targetProb))
-        targetProb = np.asarray(targetProb, dtype=float) 
-        
-        if sum(nPrbArray)!=1 or (nPrbArray < 0).any():        # has to add up to 1          
+        try:
+            prbArray = np.asarray(prbArray, dtype=float)
+        except:
             msg = QtWidgets.QMessageBox()
-            msg.setText('Invalid odour probability input') 
+            msg.setText('Assign probability to all available odours') 
             msg.exec()
-            
-        elif (targetProb < 0).any():       # doesn't have to add up to 1           
+        
+        if sum(nPrbArray)!=1 or (nPrbArray < 0).any() or sum(prbArray) !=1 or (prbArray < 0).any():      # has to add up to 1          
             msg = QtWidgets.QMessageBox()
-            msg.setText('Invalid target input') 
+            msg.setText('Probabilities must be non-negative and sum to 1') 
+            msg.exec()
+        elif np.count_nonzero(prbArray) < (np.max(np.where(nPrbArray))+1): # There need to be more odour choices than # of odours possible
+            msg = QtWidgets.QMessageBox()
+            msg.setText('More odours than available choices') 
             msg.exec()
         else:
             # call odour_gen function
             l = self.trialEdit.text()
             if l !='' and l.isnumeric():
                 self.trials = int(l)
-            self.pattern = odour_gen(target, targetProb, nPrbArray, nChan=8, trialNo=self.trials)
+            self.pattern = odour_gen(target, prbArray, nPrbArray, nChan=8, trialNo=self.trials)
             # self.patternEdit.setText(self.pattern)
             self.model = TableModel(self.pattern)
             self.patternEdit.setModel(self.model)

@@ -172,7 +172,7 @@ class Ui_odourWin(object):
         self.checkBox_6.setText(_translate("odourWin", "5"))
         self.label_27.setText(_translate("odourWin", "Target channel"))
         self.checkBox_5.setText(_translate("odourWin", "4"))
-        self.label_18.setText(_translate("odourWin", "T Probability (0-1)"))
+        self.label_18.setText(_translate("odourWin", "Odour Probability"))
         self.checkBox_2.setText(_translate("odourWin", "1"))
         self.checkBox_3.setText(_translate("odourWin", "2"))
         self.label.setText(_translate("odourWin", "File selected:"))
