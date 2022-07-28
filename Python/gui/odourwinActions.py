@@ -5,6 +5,7 @@ from gui.odourwin import Ui_odourWin
 from pathlib import Path
 from odour_gen import odour_gen
 import numpy as np
+from config import CONFIG
 
 class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
     def __init__(self,mutex,pos=None):
@@ -15,6 +16,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         self.title = "Odour Pattern Generator (Select input file or generate pattern)"
         self.pattern = [] # stim pattern
         self.trials = 5
+        self.dir = CONFIG.application_path
         
         if pos is not None: self.move(pos)
         self.setWindowTitle(self.title) # change title
@@ -27,11 +29,18 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
     def myactions(self):  
         self.selectFileButton.clicked.connect(self.showDialog)
         self.generateButton.clicked.connect(self.generateOdour)
+        self.saveButton.clicked.connect(self.savePattern)
     
+    def savePattern(self):
+        S__File = QtWidgets.QFileDialog.getSaveFileName(None,'SaveTextFile',self.dir, "Text Files (*.txt)")
+        # This will prevent you from an error if pressed cancel on file dialog.
+        if S__File[0]: 
+            np.savetxt(S__File[0], self.pattern, delimiter='\t', fmt='%i') # save as integer
+        
     def showDialog(self):
 
-        home_dir = str(Path.home())
-        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', home_dir)
+        #home_dir = str(Path.home())
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', self.dir)
 
         if fname[0]:
             #f = open(fname[0], 'r')
