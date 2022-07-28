@@ -3,14 +3,9 @@ import logging.config
 import traceback
 from time import sleep
 from unittest.mock import Mock
-from config import CONFIG
-from logging_conf import LOGGING_CONFIG
-logging.config.dictConfig(LOGGING_CONFIG)
-
-logging.getLogger('matplotlib').setLevel(logging.WARNING)
-#Optional - matplotlib spams a lot of debugs, so setting its level to info
-
 import logging
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
 import datetime
 from PyQt6 import QtWidgets
 from gui.mainwin_actions import mainwinActions
@@ -31,7 +26,7 @@ import rasp_camera
 # subprocess.run(r"pyuic6 -x ./Python/gui/testwin.ui -o ./Python/gui/testwin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/expwin.ui -o ./Python/gui/expwin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/detmousewin.ui -o ./Python/gui/detmousewin.py".split())
-subprocess.run(r"pyuic6 -x ./Python/gui/odourwin.ui -o ./Python/gui/odourwin.py".split())
+# subprocess.run(r"pyuic6 -x ./Python/gui/odourwin.ui -o ./Python/gui/odourwin.py".split())
 
 # MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
@@ -39,6 +34,13 @@ subprocess.run(r"pyuic6 -x ./Python/gui/odourwin.ui -o ./Python/gui/odourwin.py"
 
 if __name__ == "__main__":
     multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly
+
+    from config import CONFIG
+    CONFIG.parse_arg()
+    from logging_conf import LOGGING_CONFIG
+    logging.config.dictConfig(LOGGING_CONFIG)
+    #Optional - matplotlib spams a lot of debugs, so setting its level to info
+
     logger = logging.getLogger(__name__)
     rasp_camera.start_rpi_host()
     try:
