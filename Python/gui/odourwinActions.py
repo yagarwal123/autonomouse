@@ -15,7 +15,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         self.mutex = mutex
         self.title = "Odour Pattern Generator (Select input file or generate pattern)"
         self.pattern = [] # stim pattern
-        self.trials = 5
+        self.trials = 1
         self.dir = CONFIG.application_path
         
         if pos is not None: self.move(pos)
