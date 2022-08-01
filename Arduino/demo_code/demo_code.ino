@@ -45,8 +45,8 @@ float weight;
 int rewardPin = 32;
 int lickPin = A14;
 int TTL_PIN = 33;
-int stimPin[] = {8,12,13}; // to be extended to more pins after writing python code, first element is sound
-int pumpPin = 41;
+int stimPin[] = {8,9,13}; // to be extended to more pins after writing python code, first element is sound
+int pumpPin = 12;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
