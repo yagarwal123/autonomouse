@@ -46,6 +46,7 @@ int rewardPin = 32;
 int lickPin = A14;
 int TTL_PIN = 33;
 int stimPin[] = {8,12,13}; // to be extended to more pins after writing python code, first element is sound
+int pumpPin = 41;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -125,6 +126,10 @@ void setup()
     Serial.print("setting up pins: ");
     Serial.println(stimPin[i]);
   }
+
+  // pump pin
+  pinMode(pumpPin, OUTPUT);
+  digitalWrite(pumpPin, LOW);
 
   // time
   setSyncProvider(getTeensy3Time);
@@ -296,7 +301,7 @@ void loop()
   Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb[0]); // change line to print whole array
   // maybe also a line for stim duration
   
-  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, &scale); // write to file during test
+  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, &scale, pumpPin); // write to file during test
   file.close(); // close the file
   
   waitUntilReceive("Camera closed");

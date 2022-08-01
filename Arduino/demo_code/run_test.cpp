@@ -48,7 +48,7 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, HX711 *scale){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, HX711 *scale, int pumpPin){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -116,6 +116,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
     Serial.println(lickTime);
     
     t1.start(); // start timer again
+    digitalWrite(pumpPin, HIGH); // start pumping out air
 
     while(millis() < downTime){ // downtime of sensor
       if(Serial.available()){
@@ -156,6 +157,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
     t1.stop();
     t2.stop();
     //t3.stop();
+    digitalWrite(pumpPin, LOW); // stop pumping out air
   }
   //t1.stop();
   t3.stop();
