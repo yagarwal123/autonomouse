@@ -22,7 +22,6 @@ def startTeensyRead(ser,mutex,START_TIME,all_mice,doors,live_licks,last_test,exp
             logger.error(e)
             continue
         serInlogger.debug(serIn)
-        print(serIn)
         # b'Door Sensor - ID A11111 - Door 1 - Time 34567\r\n
         # b'Weight Sensor - Weight 75g - Time 123456\r\n
         # b'Lick Sensor - Trial 1 - Time 6792\r\n
