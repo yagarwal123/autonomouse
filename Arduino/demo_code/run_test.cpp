@@ -147,6 +147,9 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
           while (!Serial.available());
           stimProb[0] = Serial.readStringUntil('\n').toInt();
         }
+        if(serIn == "oStim"){
+          // TODO
+        }
         if(serIn == "dur"){
           while (!Serial.available());
           stimDuration = Serial.readStringUntil('\n').toInt();

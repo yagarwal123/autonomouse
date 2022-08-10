@@ -7,6 +7,7 @@ from odour_gen import odour_gen
 import numpy as np
 from config import CONFIG
 
+
 class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
     def __init__(self,mutex,pos=None):
         super().__init__()
@@ -14,7 +15,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.mutex = mutex
         self.title = "Odour Pattern Generator (Select input file or generate pattern)"
-        self.pattern = [] # stim pattern
+        self.pattern = [0,0,0,0,0,0,0,0] # stim pattern
         self.trials = 1
         self.dir = CONFIG.application_path
         

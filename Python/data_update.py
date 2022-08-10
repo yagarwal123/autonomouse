@@ -8,6 +8,8 @@ import rasp_camera
 import serial
 from config import CONFIG
 import pickle
+from odour_gen import odour_gen
+from gui.odourwinActions import odourwinActions
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +65,12 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 last_test.trials_over = True
                 ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
             stimuli = [s] # stimulus pattern, can be a dict of 1s and 0s
+            #equivalent to clicking odour gen button
+            o = odourwinActions()
+            o.generateOdour()
+            stimPattern = o.pattern
+            ser.write('oStim\n'.encode())
+            ser.write(stimPattern.encode()) # send it to teensy
             last_test.add_trial(Trial(trial,t,stimuli))
         case 6:
             test = last_test
