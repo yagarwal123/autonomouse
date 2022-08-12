@@ -25,7 +25,8 @@ def odour_gen(prbArray, nPrbArray, nChan=8, trialNo=1):
         stim[o] = 1  # make the stim array       
         stimPattern = np.vstack([stimPattern, stim])     
         #print(stim)
-    
+
+    # maybe option to save randomly generated pattern to file
     return np.delete(stimPattern, 0, axis=0) # remove first line from np.empty
 
 if __name__=='__main__':
