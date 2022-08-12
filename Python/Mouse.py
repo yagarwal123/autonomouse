@@ -3,9 +3,9 @@ from datetime import date
 class Mouse:
     """description of class"""
     def __init__(self,id,name,init_weight):
-        self.id = id
-        self.name = name
-        self.init_weight = init_weight
+        self.__id = id # underscore in front self._id - make this uneditable from outside this class
+        self.__name = name
+        self.__init_weight = init_weight
         self.final_weights = []
         self.test_times = []
         self.test_ids = []
@@ -16,14 +16,18 @@ class Mouse:
         self.waittime = 5000
         self.test_limit = 10
         self.response_time = 2500
+        self.stim_prob = 70
 
     def get_name(self):
-        return self.name
+        return self.__name # to access this need to use get_name() everytime in any other funciton if use _name in init()
     
     def get_id(self):
-        return self.id
+        return self.__id
 
-    def add_test(self,test):
+    def get_init_weight(self):
+        return self.__init_weight
+
+    def add_test(self,test): # add data from test object to mouse object
         self.test_ids.append(test.id)
         self.test_times.append(test.starting_time)
         self.final_weights.append(test.final_weight())

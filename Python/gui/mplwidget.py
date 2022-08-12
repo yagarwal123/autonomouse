@@ -5,6 +5,8 @@ from matplotlib.backends.backend_qtagg import FigureCanvas as Canvas
 import matplotlib
 
 matplotlib.use('QTAgg')
+# needed to use matplotlib in pyqt
+
 
 # Matplotlib canvas class to create figure
 class MplCanvas(Canvas):

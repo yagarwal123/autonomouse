@@ -18,20 +18,23 @@ void door_open(Servo door) // might need to decrease speed
 { 
   //door.write(90);
   //delay(1000); // why have delay here?
-  for(int pos = 180; pos >= 90; pos -= 1) // goes from 180 degrees to 90 degrees 
+  for(int pos = 45; pos <= 115; pos += 1) // goes from 180 degrees to 90 degrees 
   {                                  // in steps of 1 degree 
     door.write(pos);              // tell servo to go to position in variable 'pos' 
     delay(3);                       // adjust for speed
   }
 } 
  
-void door_close(Servo door) 
+void door_close(Servo door, bool slower) 
 { 
   //door.write(180);
   //delay(1000);
-  for(int pos = 90; pos <= 180; pos += 1) // goes from 180 degrees to 90 degrees 
+  for(int pos = 115; pos >= 45; pos -= 1) // goes from 180 degrees to 90 degrees 
   {                                  // in steps of 1 degree 
     door.write(pos);              // tell servo to go to position in variable 'pos' 
     delay(3);                       // adjust for speed
+    if (slower){
+      delay(6); // decrease door speed on closing
+    }
   }
 } 

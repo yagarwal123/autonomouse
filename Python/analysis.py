@@ -14,11 +14,11 @@ def analysis_window(test_id,frame_rate):
     #     TTLarray = np.loadtxt(ttl_file)
 
 
-    with open(f"{CONFIG.application_path}/{test_id}/Test data - {test_id}.csv",'r') as ttl_file:
-        for line in ttl_file:
+    with open(f"{CONFIG.application_path}/{test_id}/Test data - {test_id}.csv",'r') as test_file:
+        for line in test_file:
             l = line.strip().split(',')
             if l[0] == 'lick_threshold':
-                threshold = int(l[1])
+                threshold = int(l[1][1:-1])
                 break
         
     lick_file = open(f"{CONFIG.application_path}/{test_id}/Raw lick data - {test_id}.csv",'r')
@@ -109,5 +109,5 @@ def fix_array(oldTestArray,oldAmps):
     return fixedT, fixedA
 
 if __name__=='__main__':
-    test_id = '0007A0F7C4_4'
-    analysis_window(test_id)
+    test_id = '00079EB022_1'
+    analysis_window(test_id, frame_rate=1)

@@ -1,9 +1,12 @@
-PyQt6
-matplotlib
-pyserial
+python Python 3.10.2
+PyQt6 Version: 6.2.3
+matplotlib Version: 3.5.1
+pyserial Version: 3.5
 paramiko
-setuptools
-zmq
-opencv-python
-pyqtgraph
-scp
+setuptools Version: 58.1.0
+zmq Version: 0.0.0
+opencv-python Version: 4.5.5.64
+pyqtgraph Version: 0.12.4
+scp Version: 0.14.4
+
+Example: pip install matplotlib==3.5.1

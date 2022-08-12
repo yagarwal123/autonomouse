@@ -25,6 +25,8 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
         self.mouseLimLineEdit.returnPressed.connect(self.changeMouseLimButton.click)
         self.mouseRespLineEdit.returnPressed.connect(self.changeMouseRespButton.click)
+        self.stimProbLineEdit.returnPressed.connect(self.changeStimProbButton.click)
+        self.trialLimLineEdit.returnPressed.connect(self.changeTrialLimButton.click)
 
         if self.experiment_parameters.paused:
             self.pauseButton.setText('Unpause Experiment')
@@ -50,7 +52,9 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.changewaittimeButton.clicked.connect(self.change_waittime)
         self.changeMouseLimButton.clicked.connect(self.change_mouse_lim)
         self.changeMouseRespButton.clicked.connect(self.change_mouse_resp)
+        self.changeStimProbButton.clicked.connect(self.change_stim_prob)
         self.refillButton.clicked.connect(self.refill)
+        self.changeTrialLimButton.clicked.connect(self.set_trial_lim)
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -103,6 +107,16 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg.setText('Invalid input')
             msg.exec()
 
+    def change_stim_prob(self):
+        l = self.stimProbLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            ExperimentParameters.update_all_stim_prob(self.all_mice,int(l))
+            self.stimProbLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
     def pause_exp(self):
         self.experiment_parameters.paused = not self.experiment_parameters.paused
         if self.experiment_parameters.paused:       #Experiment is paused
@@ -113,6 +127,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             self.pauseLabel.setText('Experiment is ongoing')
 
     def refill(self):
+        self.mutex.lock()
         self.experiment_parameters.valve_open = not self.experiment_parameters.valve_open
         if not vars(self.last_test) or not self.last_test.ongoing:
             if self.experiment_parameters.valve_open:      
@@ -129,3 +144,13 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg = QtWidgets.QMessageBox()
             msg.setText('A test is ongoing, please wait till it finishes')
             msg.exec()
+        self.mutex.unlock()
+
+    def set_trial_lim(self): # default no trial limit, can change in exp window
+        l = self.trialLimLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.experiment_parameters.trial_lim = int(l)
+        else:
+            self.experiment_parameters.trial_lim = None
+        self.trial_lim_lab.setText(str(self.experiment_parameters.trial_lim))
+        self.trialLimLineEdit.clear()
