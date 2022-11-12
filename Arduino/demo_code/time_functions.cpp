@@ -1,3 +1,7 @@
+  /*****************************************************************************
+  Standard time and date function for book keeping
+  *****************************************************************************/
+
 #include <TimeLib.h>
 #include "time_functions.h"
 #include "SdFat.h"

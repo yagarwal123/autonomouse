@@ -1,3 +1,8 @@
+  /*****************************************************************************
+  Function to detect when python is crashing
+  Assume python will not send anything through serial if it has crashed
+  *****************************************************************************/
+
 #include "Arduino.h"
 #include <Servo.h>
 #include "dop.h"

@@ -1,3 +1,11 @@
+  /*****************************************************************************
+  Second main piece of function for experiment result collection.
+  Has timers and automatically triggers data saving to the teensy SD card.
+  Delivers stimulation, calls lick detection and delivers reward.
+  Ran once for each time a mouse is in the testing chamber.
+  Loops through trials.
+  *****************************************************************************/
+
 #include "SdFat.h"
 #include "run_test.h"
 #include "deliver_reward.h"

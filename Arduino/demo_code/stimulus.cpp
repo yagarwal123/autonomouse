@@ -1,3 +1,8 @@
+  /*****************************************************************************
+  Delivers stimulus: sound, odours and visual
+  To be modified according to different experiments.
+  *****************************************************************************/
+
 #include "Arduino.h"
 
 unsigned start_stimulus(int stimPin[], int nStim, int stimProb[], unsigned long stimDuration){

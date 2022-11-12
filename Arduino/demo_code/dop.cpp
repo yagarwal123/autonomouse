@@ -1,4 +1,7 @@
 /* Sweep
+Door control
+
+adopted from:
  by BARRAGAN <http://barraganstudio.com> 
  This example code is in the public domain.
 
@@ -6,6 +9,7 @@
  by Scott Fitzgerald
  http://arduino.cc/en/Tutorial/Sweep
 */ 
+
 
 #include <Arduino.h>
 #include <Servo.h> 

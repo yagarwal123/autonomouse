@@ -1,3 +1,7 @@
+  /*****************************************************************************
+  Main C code, calls al the functions and runs the loop of commands whcih overarchs all the automated operations in the setup
+  *****************************************************************************/
+
 #include <Servo.h>
 #include <TimeLib.h>
 #include "run_test.h"

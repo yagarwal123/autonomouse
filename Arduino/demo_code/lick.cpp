@@ -1,3 +1,6 @@
+  /*****************************************************************************
+  Detection code for lick sensor, calibrated to the lick of a lab mouse
+  *****************************************************************************/
 
 #include <Arduino.h>
 #include "lick.h"
