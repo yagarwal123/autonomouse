@@ -119,12 +119,12 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         #target = list(map(int, target))
         #targetProb = list(map(float, targetProb))
         try:
-            prbArray = np.asarray(prbArray, dtype=float)
+            #prbArray = np.asarray(prbArray, dtype=float)
+            prbArray = np.array(prbArray, dtype=np.float32)
         except:
             msg = QtWidgets.QMessageBox()
             msg.setText('Assign probability to all available odours') 
             msg.exec()
-        
         if sum(nPrbArray)!=1 or (nPrbArray < 0).any() or sum(prbArray) !=1 or (prbArray < 0).any():      # has to add up to 1          
             msg = QtWidgets.QMessageBox()
             msg.setText('Probabilities must be non-negative and sum to 1') 

@@ -3,7 +3,7 @@
 
 import numpy as np
 
-def odour_gen(prbArray, nPrbArray, nChan=8, trialNo=1):
+def odour_gen(target, prbArray, nPrbArray, nChan, trialNo=1):
     #nChan: number of channels
     #trialNo = number of stim arrays, default 300
     
@@ -35,5 +35,5 @@ if __name__=='__main__':
     target = [0] # user define, target channels, can have multiple targets
     prbArray = [0.1, 0.1, 0.2, 0.1, 0.2, 0.1, 0.1, 0.1] # need to be same size as nChan - max nChan odours, user input
     nPrbArray = [0.9, 0.1, 0, 0, 0, 0, 0, 0]
-    stimPattern = odour_gen(prbArray, nPrbArray, nChan=8, trialNo=5)
+    stimPattern = odour_gen(target, prbArray, nPrbArray, nChan=8, trialNo=5)
     print(stimPattern)
