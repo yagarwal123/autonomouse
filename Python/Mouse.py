@@ -16,7 +16,11 @@ class Mouse:
         self.waittime = 5000
         self.test_limit = 10
         self.response_time = 2500
-        self.stim_prob = 70
+        self.stim_prob = 0
+        self.n_odours = 0
+        self.od_stim_prob = []
+        self.od_target = []
+        
 
     def get_name(self):
         return self.__name # to access this need to use get_name() everytime in any other funciton if use _name in init()

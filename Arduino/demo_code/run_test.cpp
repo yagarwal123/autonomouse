@@ -92,7 +92,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         if (lickCheck > 0){
           t2.start(); // start reading at longer intervals if mouse has licked
           lickTime = lickCheck - startTime;
-          if (stimulus==1){ // TODO: match olfactory stim to response
+          if (stimulus==1){ // if matches target stimulus
             deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
           }
           //noLickCounter=0; // reset noLickCounter
