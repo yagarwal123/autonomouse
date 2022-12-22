@@ -139,9 +139,9 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time,m.stim_prob)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
-            ser.write( ( str(m.waittime) + "\n" ).encode() )
+            ser.write( ( str(m.waitt ime) + "\n" ).encode() )
             ser.write( ( str(m.response_time) + "\n" ).encode() )
-            ser.write( ( str(m.stim_prob) + "\n" ).encode() )
+            ser.write( ( str(m.stim_prob) + "\n" ).encode() ) # TODO: need changing to accommodate both sound and odour
 
         case 11:
             pass
