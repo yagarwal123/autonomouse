@@ -66,9 +66,10 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             soundStim = [s] # stimulus pattern, can be a dict of 1s and 0s
             o = odourwinActions()
             # assume pattern already generated and displayed in the window
-            # pull a line of odour stim from odourwinActions pattern
-            
-            stimPattern = o.pattern
+            od_size = len(o.pattern)
+            index = trial % od_size # pull a line of odour stim from odourwinActions pattern
+            if index < 0.1: index = od_size # if od_size is a multiple of trial no.
+            stimPattern = o.pattern[index]
             #ser.write('oStim\n'.encode())
             #ser.write(stimPattern.encode()) # send it to teensy
             print(stimPattern) # TESTING PUROSE
