@@ -15,7 +15,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.mutex = mutex
         self.title = "Odour Pattern Generator (Select input file or generate pattern)"
-        self.pattern = [0,0,0,0,0,0,0,0] # stim pattern
+        self.pattern = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # stim pattern
         self.trials = 1
         self.dir = CONFIG.application_path
         
@@ -125,7 +125,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
             msg = QtWidgets.QMessageBox()
             msg.setText('Assign probability to all available odours') 
             msg.exec()
-        if sum(nPrbArray)!=1 or (nPrbArray < 0).any() or sum(prbArray) !=1 or (prbArray < 0).any():      # has to add up to 1          
+        if sum(nPrbArray)!=1 or (nPrbArray < 0).any() or round(sum(prbArray),2) !=1 or (prbArray < 0).any():      # has to add up to 1 in 2dp          
             msg = QtWidgets.QMessageBox()
             msg.setText('Probabilities must be non-negative and sum to 1') 
             msg.exec()

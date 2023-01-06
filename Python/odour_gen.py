@@ -9,20 +9,23 @@ def odour_gen(target, prbArray, nPrbArray, nChan, trialNo=1):
     
     # need user to input: target(s), target(s)Prob, nPrbArray = probability array for the number of odours to present
 
-    stimPattern = np.empty(nChan, dtype=int)
+    stimPattern = np.empty(nChan*2-1, dtype=int)
                 
     # first determine the number of odours from probability
     for i in range(trialNo):
-        stim = np.zeros(nChan, dtype = int) # temporary storage array
+        stim = np.zeros(nChan*2-1, dtype = int) # temporary storage array
         nOdour = np.random.choice(nChan, 1, p=nPrbArray) # number of odours, p need to be 1
         nOdour += 1
-        #print(nOdour)
+        # print(nOdour[0])
 
         # generate stim array
         # prbArray = np.multiply(np.ones(nChan), (1-sum(targetProb))/(nChan-len(target)))
         # prbArray[target] = targetProb
         o = np.random.choice(nChan, nOdour, replace=False, p=prbArray) # which channels to turn on, p=probability of each element being selected
         stim[o] = 1  # make the stim array       
+         # make the blank array
+        for j in range(nChan-nOdour[0]): # 1 less blank than odour and correct for 0 index in python
+            stim[nChan+j] = 1
         stimPattern = np.vstack([stimPattern, stim])     
         #print(stim)
     

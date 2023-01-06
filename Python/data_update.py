@@ -59,19 +59,20 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             t = int(search.group(3))
             if ( len(last_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
-            #TODO: lookup table for stimulus
             if experiment_parameters.trial_lim is not None and trial >= (experiment_parameters.trial_lim - 1):
                 # if n trials happened already, and a signal is end, trials end at n+1
                 last_test.trials_over = True
                 ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
-            stimuli = [s] # stimulus pattern, can be a dict of 1s and 0s
-            #equivalent to clicking odour gen button
+            soundStim = [s] # stimulus pattern, can be a dict of 1s and 0s
             o = odourwinActions()
-            o.generateOdour()
+            # assume pattern already generated and displayed in the window
+            # pull a line of odour stim from odourwinActions pattern
+            
             stimPattern = o.pattern
-            ser.write('oStim\n'.encode())
-            ser.write(stimPattern.encode()) # send it to teensy
-            last_test.add_trial(Trial(trial,t,stimuli))
+            #ser.write('oStim\n'.encode())
+            #ser.write(stimPattern.encode()) # send it to teensy
+            print(stimPattern) # TESTING PUROSE
+            last_test.add_trial(Trial(trial,t,soundStim)) # add odour stim here after testing: [soundStim,stimPattern]
         case 6:
             test = last_test
             fileFolder = test.id
@@ -139,7 +140,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time,m.stim_prob)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )
-            ser.write( ( str(m.waitt ime) + "\n" ).encode() )
+            ser.write( ( str(m.waittime) + "\n" ).encode() )
             ser.write( ( str(m.response_time) + "\n" ).encode() )
             ser.write( ( str(m.stim_prob) + "\n" ).encode() ) # TODO: need changing to accommodate both sound and odour
 
