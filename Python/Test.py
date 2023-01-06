@@ -33,7 +33,7 @@ class Test:
         return max(self.weights)
 
 @dataclass
-class Trial:
+class Trial: # trial class containing index, response and stim
     idx: int
     value: int
     stimuli: list # can be a list instead of 1 number now
