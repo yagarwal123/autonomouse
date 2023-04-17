@@ -286,7 +286,7 @@ void loop()
   int responseTime = Serial.readStringUntil('\n').toInt();
   waitForSerial(door_one, door_two);
   int stimProb[] = {0,1,1}; // use default olfactory stim for now, need to be the same size as stimPin
-  stimProb[0] = Serial.readStringUntil('\n').toInt(); // change to read the whole array
+  stimProb[0] = Serial.readStringUntil('\n').toInt(); // TODO: change to read the whole array
   unsigned long stimDuration = 2000; // use default for now - get from python later
   int nStim = sizeof(stimProb); // number of pins used for stimulus
   if(nStim != sizeof(stimPin)){
@@ -298,7 +298,7 @@ void loop()
   Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
   Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
   Serial.print("LOGGER: Received - Response Time - ");Serial.println(responseTime);
-  Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb); // change line to print whole array
+  Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb[0]); // TODO: change line to print whole array
   // maybe also a line for stim duration
   
   run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, &scale, pumpPin); // write to file during test
