@@ -76,9 +76,9 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 csvfile.write("Test Parameters:\n")
                 csvfile.write(str(test.test_parameters))
                 csvfile.write(f"\n\nWeight(max):{test.final_weight()}\n\n")
-                csvfile.write('Trial No,Lick Time\n')
+                csvfile.write('Trial No,Lick Time,Stimulus\n')
                 for idx,trial in enumerate(test.trials):
-                    row = f"{idx+1},{trial.value}\n"
+                    row = f"{idx+1},{trial.value},{trial.stimuli}\n"
                     csvfile.write(row)
             live_licks.clear()
 
