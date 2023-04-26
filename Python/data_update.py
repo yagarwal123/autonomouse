@@ -8,8 +8,9 @@ import rasp_camera
 import serial
 from config import CONFIG
 import pickle
-from odour_gen import odour_gen
+#from odour_gen import odour_gen
 from gui.odourwinActions import odourwinActions
+from PyQt6.QtCore import QMutex
 
 logger = logging.getLogger(__name__)
 
@@ -64,12 +65,13 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 last_test.trials_over = True
                 ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
             soundStim = [s] # stimulus pattern, can be a dict of 1s and 0s
-            o = odourwinActions()
+            o = odourwinActions(QMutex)
             # assume pattern already generated and displayed in the window
             od_size = len(o.pattern)
             index = trial % od_size # pull a line of odour stim from odourwinActions pattern
-            if index < 0.1: index = od_size # if od_size is a multiple of trial no.
-            stimPattern = o.pattern[index]
+            if index < 0.1: index = od_size # if od_size is a multiple of trial no., i.e. last line of odour pattern
+            stimPattern = o.pattern[index-1,:]
+            stimPattern.astype(int) 
             #ser.write('oStim\n'.encode())
             #ser.write(stimPattern.encode()) # send it to teensy
             print(stimPattern) # TESTING PUROSE
@@ -91,8 +93,11 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                     row = f"{idx+1},{trial.value},{trial.stimuli}\n"
                     csvfile.write(row)
             live_licks.clear()
+            try:
+                rasp_camera.getVideofile(test.id)
+            except Exception as e:
+                logger.error(f'{e}: Error while recieving video from pi') # in case no video gets recorded
 
-            rasp_camera.getVideofile(test.id)
             
         case 7:
             test = last_test

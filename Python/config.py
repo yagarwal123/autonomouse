@@ -13,8 +13,8 @@ class Config:
     def parse_arg(self): 
         arduinoPath = "C:/PROGRA~2/Arduino/arduino_debug.exe"
         sketchPath = "C:/Users/lab/Desktop/autonomouse/Arduino/demo_code/demo_code.ino"
-        teensy = False
-        raspberry = False
+        teensy = True
+        raspberry = True
         port = 'COM3'
         open_windows = True
         self.TO_EMAIL = ['autonomouse.error@gmail.com']
