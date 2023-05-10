@@ -15,6 +15,7 @@ class Test:
         self.ongoing = True
         self.trials_over = False
         self.id = None
+        self.trial_lim = None
     
     def add_trial(self,new_trial):
         self.trials.append(new_trial)
@@ -31,6 +32,9 @@ class Test:
     
     def final_weight(self):
         return max(self.weights)
+    
+    def set_trial_lim(self,lim):
+        self.trial_lim = lim
 
 @dataclass
 class Trial:

@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_expWin(object):
     def setupUi(self, expWin):
         expWin.setObjectName("expWin")
-        expWin.resize(397, 367)
+        expWin.resize(431, 367)
         self.gridLayout = QtWidgets.QGridLayout(expWin)
         self.gridLayout.setObjectName("gridLayout")
         self.mouseRespLineEdit = QtWidgets.QLineEdit(expWin)
@@ -58,6 +58,7 @@ class Ui_expWin(object):
         self.label_4.setObjectName("label_4")
         self.gridLayout.addWidget(self.label_4, 4, 0, 1, 2)
         self.trial_lim_lab = QtWidgets.QLabel(expWin)
+        self.trial_lim_lab.setText("")
         self.trial_lim_lab.setObjectName("trial_lim_lab")
         self.gridLayout.addWidget(self.trial_lim_lab, 8, 1, 1, 1)
         self.changeMouseLimButton = QtWidgets.QPushButton(expWin)
@@ -126,7 +127,6 @@ class Ui_expWin(object):
         self.label_3.setText(_translate("expWin", "Change Wait Time (ms):"))
         self.changewaittimeButton.setText(_translate("expWin", "Change"))
         self.label_4.setText(_translate("expWin", "Mouse limit per day"))
-        self.trial_lim_lab.setText(_translate("expWin", "None"))
         self.changeMouseLimButton.setText(_translate("expWin", "Change"))
         self.label_5.setText(_translate("expWin", "Change Response Time (ms):"))
         self.label_blah.setText(_translate("expWin", "Change parameters for all mice"))

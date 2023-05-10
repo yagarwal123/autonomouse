@@ -3,7 +3,7 @@ class ExperimentParameters:
     def __init__(self):
         self.paused = False
         self.valve_open = False
-        self.trial_lim = None
+        #self.trial_lim = None
 
     @staticmethod
     def update_all_mice_liquid(all_mice,amount):
@@ -24,6 +24,11 @@ class ExperimentParameters:
     def update_all_mice_limit(all_mice,limit):
         for m in all_mice.values():
             m.test_limit = limit
+
+    @staticmethod
+    def update_all_trial_lim(all_mice,limit):
+        for m in all_mice.values():
+            m.trial_lim = limit
 
     @staticmethod
     def update_all_mice_resp(all_mice,resp):

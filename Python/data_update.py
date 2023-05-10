@@ -8,6 +8,7 @@ import rasp_camera
 import serial
 from config import CONFIG
 import pickle
+from PyQt6 import QtWidgets
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             if ( len(last_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
                 logger.error("Retrieving the wrong test")
             #TODO: lookup table for stimulus
-            if experiment_parameters.trial_lim is not None and trial >= (experiment_parameters.trial_lim - 1):
+            if last_test.trial_lim is not None and trial >= (last_test.trial_lim):
                 # if n trials happened already, and a signal is end, trials end at n+1
                 last_test.trials_over = True
                 ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
@@ -82,7 +83,13 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                     csvfile.write(row)
             live_licks.clear()
 
-            rasp_camera.getVideofile(test.id)
+            try:
+                rasp_camera.getVideofile(test.id)
+            except Exception as e:
+                logger.error(f'{e}: Error while recieving video from pi') # in case no video gets recorded
+                msg = QtWidgets.QMessageBox()
+                msg.setText('No video file found')
+                msg.exec()
             
         case 7:
             test = last_test
@@ -128,6 +135,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             test_start_signal.emit() # emit signal to open all windows (in mainwin_actions.py)
             m = all_mice[search.group(1)]
             t = last_test
+            t.set_trial_lim(m.trial_lim)
             t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.response_time,m.stim_prob)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )

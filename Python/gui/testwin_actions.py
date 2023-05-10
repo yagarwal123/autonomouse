@@ -58,6 +58,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.m_id.setText(test.get_mouse().get_id())
         self.test_start_time.setText(str(test.starting_time))
         self.weight_max.setText(str(max(test.weights)))
+        self.trial_lim.setText(str(test.trial_lim))
         #if self.tableWidget.rowCount() != len(test.trials):
         self.tableWidget.setRowCount(len(test.trials))
         

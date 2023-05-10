@@ -117,6 +117,24 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg.setText('Invalid input')
             msg.exec()
 
+    def set_trial_lim(self): # default no trial limit, can change in exp window
+        l = self.trialLimLineEdit.text()
+        if l.isnumeric():                   
+            #self.experiment_parameters.trial_lim = int(l)
+            if l=='0': # input limit of 0 means no limit
+                l = None
+                ExperimentParameters.update_all_trial_lim(self.all_mice,l)
+            else:
+                ExperimentParameters.update_all_trial_lim(self.all_mice,int(l))
+            self.trial_lim_lab.setText(l)# self.trial_lim_lab.setText(str(self.experiment_parameters.trial_lim))
+            self.trialLimLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+            #self.experiment_parameters.trial_lim = None
+        
+
     def pause_exp(self):
         self.experiment_parameters.paused = not self.experiment_parameters.paused
         if self.experiment_parameters.paused:       #Experiment is paused
@@ -146,11 +164,3 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg.exec()
         self.mutex.unlock()
 
-    def set_trial_lim(self): # default no trial limit, can change in exp window
-        l = self.trialLimLineEdit.text()
-        if l.isnumeric():                   #Only positive integers (0-9)
-            self.experiment_parameters.trial_lim = int(l)
-        else:
-            self.experiment_parameters.trial_lim = None
-        self.trial_lim_lab.setText(str(self.experiment_parameters.trial_lim))
-        self.trialLimLineEdit.clear()
