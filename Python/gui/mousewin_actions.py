@@ -30,6 +30,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
+        self.punishtimeLineEdit.returnPressed.connect(self.changepunishtimeButton.click)
         self.testLimLineEdit.returnPressed.connect(self.changeTestLimButton.click)
         self.trialLimLineEdit.returnPressed.connect(self.changeTrialLimButton.click)
         self.respLineEdit.returnPressed.connect(self.changeRespButton.click)
@@ -42,6 +43,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.changeliquidButton.clicked.connect(self.change_liquid)
         self.changelickButton.clicked.connect(self.change_lick)
         self.changewaittimeButton.clicked.connect(self.change_waittime)
+        self.changepunishtimeButton.clicked.connect(self.change_punishtime)
         self.changeTestLimButton.clicked.connect(self.change_testlim)
         self.changeTrialLimButton.clicked.connect(self.change_triallim)
         self.showAnalysisButton.clicked.connect(self.analysis_win)
@@ -77,6 +79,17 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
             self.waittime_disp.setText(l)
             self.mouse.waittime = int(l)
             self.waittimeLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def change_punishtime(self):
+        l = self.punishtimeLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            self.punishtime_disp.setText(l)
+            self.mouse.punishtime = int(l)
+            self.punishtimeLineEdit.clear()
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
@@ -160,6 +173,7 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.liq_am_disp.setText(str(self.mouse.liquid_amount))
         self.lick_thresh_disp.setText(str(self.mouse.lick_threshold))
         self.waittime_disp.setText(str(self.mouse.waittime))
+        self.punishtime_disp.setText(str(self.mouse.punishtime))
         self.test_lim_disp.setText(str(self.mouse.test_limit))
         self.trial_lim_disp.setText(str(self.mouse.trial_lim))
         self.test_no_disp.setText(str(self.mouse.get_tests_today()))

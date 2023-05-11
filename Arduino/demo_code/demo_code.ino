@@ -287,6 +287,8 @@ void loop()
   waitForSerial(door_one, door_two);
   int WAITTIME = Serial.readStringUntil('\n').toInt();
   waitForSerial(door_one, door_two);
+  int punishtime = Serial.readStringUntil('\n').toInt();
+  waitForSerial(door_one, door_two);
   int responseTime = Serial.readStringUntil('\n').toInt();
   waitForSerial(door_one, door_two);
   int stimProb[] = {0,1,1}; // use default olfactory stim for now, need to be the same size as stimPin
@@ -301,11 +303,12 @@ void loop()
   Serial.print("LOGGER: Received - Liquid Amount - ");Serial.println(liquidAmount);
   Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
   Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
+  Serial.print("LOGGER: Received - Punishment Time - ");Serial.println(punishtime);
   Serial.print("LOGGER: Received - Response Time - ");Serial.println(responseTime);
   Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb[0]); // change line to print whole array
   // maybe also a line for stim duration
   
-  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, &scale, pumpPin); // write to file during test
+  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin); // write to file during test
   file.close(); // close the file
   
   waitUntilReceive("Camera closed");

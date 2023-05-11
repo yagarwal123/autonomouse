@@ -30,6 +30,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.links = {self.changeliquidButton:[self.liquidLineEdit,self.liq_am_disp,"liquid\n"],
                     self.changelickButton:[self.lickLineEdit,self.lick_thresh_disp, "th\n" ],
                     self.changewaittimeButton:[self.waittimeLineEdit,self.waittime_disp,"wait\n"],
+                    self.changepunishtimeButton:[self.punishtimeLineEdit,self.punishtime_disp,"punish\n"],
                     self.changeRespButton:[self.respLineEdit,self.resp_disp,"resp\n"],
                     self.changeStimButton:[self.stimProbLineEdit,self.stim_prob_disp,"stim\n"]
         }
@@ -40,6 +41,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.changeliquidButton.clicked.connect(lambda:self.change_param(self.changeliquidButton))
         self.changelickButton.clicked.connect(lambda:self.change_param(self.changelickButton))
         self.changewaittimeButton.clicked.connect(lambda:self.change_param(self.changewaittimeButton))
+        self.changepunishtimeButton.clicked.connect(lambda:self.change_param(self.changepunishtimeButton))
         self.changeRespButton.clicked.connect(lambda:self.change_param(self.changeRespButton))
         self.changeStimButton.clicked.connect(lambda:self.change_param(self.changeStimButton))
 
@@ -47,6 +49,7 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
             self.liq_am_disp.setText(str(self.last_test.test_parameters.liquid_amount[-1]))
             self.lick_thresh_disp.setText(str(self.last_test.test_parameters.lick_threshold[-1]))
             self.waittime_disp.setText(str(self.last_test.test_parameters.waittime[-1]))
+            self.punishtime_disp.setText(str(self.last_test.test_parameters.punishtime[-1]))
             self.resp_disp.setText(str(self.last_test.test_parameters.response_time[-1]))
             self.stim_prob_disp.setText(str(self.last_test.test_parameters.stim_prob[-1]))
 
@@ -126,6 +129,8 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
             self.last_test.test_parameters.lick_threshold.append(l)
         elif msg == "wait\n":
             self.last_test.test_parameters.waittime.append(l)
+        elif msg == "punish\n":
+            self.last_test.test_parameters.punishtime.append(l)
         elif msg == "resp\n":
             self.last_test.test_parameters.response_time.append(l)
         elif msg == "stim\n":

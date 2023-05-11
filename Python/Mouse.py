@@ -14,6 +14,7 @@ class Mouse:
         self.liquid_amount = 50
         self.lick_threshold = 50
         self.waittime = 5000
+        self.punishtime = 0
         self.test_limit = 10
         self.trial_lim = None
         self.response_time = 2500

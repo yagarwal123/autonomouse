@@ -23,6 +23,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
+        self.punishtimeLineEdit.returnPressed.connect(self.changepunishtimeButton.click)
         self.mouseLimLineEdit.returnPressed.connect(self.changeMouseLimButton.click)
         self.mouseRespLineEdit.returnPressed.connect(self.changeMouseRespButton.click)
         self.stimProbLineEdit.returnPressed.connect(self.changeStimProbButton.click)
@@ -50,6 +51,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.changeliquidButton.clicked.connect(self.change_liquid)
         self.changelickButton.clicked.connect(self.change_lick)
         self.changewaittimeButton.clicked.connect(self.change_waittime)
+        self.changepunishtimeButton.clicked.connect(self.change_punishtime)
         self.changeMouseLimButton.clicked.connect(self.change_mouse_lim)
         self.changeMouseRespButton.clicked.connect(self.change_mouse_resp)
         self.changeStimProbButton.clicked.connect(self.change_stim_prob)
@@ -82,6 +84,16 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         if l.isnumeric():                   #Only positive integers (0-9)
             ExperimentParameters.update_all_mice_waittime(self.all_mice,int(l))
             self.waittimeLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def change_punishtime(self):
+        l = self.punishtimeLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            ExperimentParameters.update_all_mice_punishtime(self.all_mice,int(l))
+            self.punishtimeLineEdit.clear()
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
