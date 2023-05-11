@@ -57,6 +57,11 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.changeStimProbButton.clicked.connect(self.change_stim_prob)
         self.refillButton.clicked.connect(self.refill)
         self.changeTrialLimButton.clicked.connect(self.set_trial_lim)
+        self.saveAllButton.clicked.connect(self.saveAll)
+
+    def saveAll(self): # function to save all parameters to their respective mouse objects
+        ExperimentParameters.saveAll(self.all_mice)
+
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()

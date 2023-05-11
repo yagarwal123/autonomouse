@@ -5,6 +5,9 @@ import logging
 import numpy as np
 from gui.mousewin import Ui_mouseWin
 from analysis import analysis_window
+import os
+import pickle
+from config import CONFIG
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +52,16 @@ class mousewinActions(QtWidgets.QWidget, Ui_mouseWin):
         self.showAnalysisButton.clicked.connect(self.analysis_win)
         self.changeRespButton.clicked.connect(self.change_resp)
         self.changeStimButton.clicked.connect(self.change_stim_prob)
+        self.saveButton.clicked.connect(self.save_parameters)
+
+    def save_parameters(self):
+        fileFolder = 'MouseObjects'
+        if not os.path.exists(fileFolder):
+            os.makedirs(fileFolder)
+        filename = os.path.join(CONFIG.application_path, fileFolder, f'{self.mouse.get_id()}.obj')
+        filehandler = open(filename, 'wb') 
+        pickle.dump(self.mouse, filehandler)
+        filehandler.close()   
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
