@@ -15,6 +15,7 @@ class Test:
         self.ongoing = True
         self.trials_over = False
         self.id = None
+        self.odours = []
     
     def add_trial(self,new_trial):
         self.trials.append(new_trial)

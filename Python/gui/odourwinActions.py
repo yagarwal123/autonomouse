@@ -9,7 +9,7 @@ from config import CONFIG
 
 
 class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
-    def __init__(self,mutex,pos=None):
+    def __init__(self,mutex,last_test,pos=None):
         super().__init__()
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
@@ -38,7 +38,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         if S__File[0]: 
             np.savetxt(S__File[0], self.pattern, delimiter='\t', fmt='%i') # save as integer
         
-    def showDialog(self):
+    def showDialog(self,last_test):
 
         #home_dir = str(Path.home())
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', self.dir)
@@ -52,6 +52,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
             self.pattern = np.loadtxt(fname[0], dtype=int, delimiter="\t")
             print(self.pattern.size) # buggy, cannot update self.pattern with the dialog box
             self.pattern.astype(int)
+            last_test.odours = self.pattern
             self.model = TableModel(self.pattern)
             self.patternEdit.setModel(self.model)
         else:
@@ -60,7 +61,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
             msg.exec()
             
 
-    def generateOdour(self):
+    def generateOdour(self, last_test):
         # probability array for the number of odours
         nPrbArray = [0,0,0,0,0,0,0,0]
         if self.p1.text() != '':
@@ -141,6 +142,9 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
             if l !='' and l.isnumeric():
                 self.trials = int(l)
             self.pattern = odour_gen(target, prbArray, nPrbArray, nChan=8, trialNo=self.trials)
+            self.pattern.astype(int)
+            last_test.odours = self.pattern
+            self.model = TableModel(self.pattern)
             # self.patternEdit.setText(self.pattern)
             self.model = TableModel(self.pattern)
             self.patternEdit.setModel(self.model)
