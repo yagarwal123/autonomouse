@@ -112,7 +112,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         }
       if (millis() - startTime > stimDuration){ // stimDuration has to be shorter than response time
         // stop stimulus (olfaction only)
-        stop_stimulus(stimPin, nStim);
+        //stop_stimulus(stimPin, nStim); //**** PROBLEM WITH DOORS HERE 
         }
       }
       
@@ -133,7 +133,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
     Serial.println(lickTime);
     
     t1.start(); // start timer again
-    digitalWrite(pumpPin, HIGH); // start pumping out air
+    //digitalWrite(pumpPin, HIGH); // start pumping out air
 
     while(millis() < downTime){ // downtime of sensor
       if(Serial.available()){
@@ -178,7 +178,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
     t1.stop();
     t2.stop();
     //t3.stop();
-    digitalWrite(pumpPin, LOW); // stop pumping out air
+    //digitalWrite(pumpPin, LOW); // stop pumping out air
   }
   //t1.stop();
   t3.stop();
