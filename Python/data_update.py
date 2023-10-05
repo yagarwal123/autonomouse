@@ -8,6 +8,7 @@ import rasp_camera
 import serial
 from config import CONFIG
 import pickle
+from PyQt6 import QtWidgets
 #from odour_gen import odour_gen
 from gui.odourwinActions import odourwinActions
 from PyQt6.QtCore import QMutex

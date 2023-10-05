@@ -15,6 +15,7 @@ class Test:
         self.ongoing = True
         self.trials_over = False
         self.id = None
+        self.trial_lim = None
     
     def add_trial(self,new_trial):
         self.trials.append(new_trial)
@@ -32,6 +33,9 @@ class Test:
     def final_weight(self):
         return max(self.weights)
 
+    def set_trial_lim(self,lim):
+        self.trial_lim = lim
+
 @dataclass
 class Trial: # trial class containing index, response and stim
     idx: int
@@ -40,10 +44,11 @@ class Trial: # trial class containing index, response and stim
 
 class TestParameters:
 
-    def set_parameters(self,lick_threshold,liquid_amount,waittime,response_time,stim_prob):
+    def set_parameters(self,lick_threshold,liquid_amount,waittime,punishtime,response_time,stim_prob):
         self.lick_threshold = [lick_threshold]
         self.liquid_amount = [liquid_amount]
         self.waittime = [waittime]
+        self.punishtime = [punishtime]
         self.response_time = [response_time]
         self.stim_prob = [stim_prob]
 

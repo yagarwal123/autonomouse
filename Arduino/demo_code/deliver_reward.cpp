@@ -1,3 +1,8 @@
+  /*****************************************************************************
+  Reward functions, outputs TTL to drive reward hardware
+  *****************************************************************************/
+
+
 #include "deliver_reward.h"
 
 //int wait_to_open = 700;// min unit is 7

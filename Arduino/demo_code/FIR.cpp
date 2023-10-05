@@ -2,6 +2,8 @@
 /*
 MAF algorithm adopted from
 https://nestedsoftware.com/2018/03/20/calculating-a-moving-average-on-streaming-data-5a7k.22879.html
+
+originally used for loadcell signal processing, but not needed anymore
 */
 
 //define the variable in the stack memory, including declaration. The value of this
