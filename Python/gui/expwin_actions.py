@@ -23,6 +23,7 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.liquidLineEdit.returnPressed.connect(self.changeliquidButton.click)
         self.lickLineEdit.returnPressed.connect(self.changelickButton.click)
         self.waittimeLineEdit.returnPressed.connect(self.changewaittimeButton.click)
+        self.punishtimeLineEdit.returnPressed.connect(self.changepunishtimeButton.click)
         self.mouseLimLineEdit.returnPressed.connect(self.changeMouseLimButton.click)
         self.mouseRespLineEdit.returnPressed.connect(self.changeMouseRespButton.click)
         self.stimProbLineEdit.returnPressed.connect(self.changeStimProbButton.click)
@@ -50,11 +51,17 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         self.changeliquidButton.clicked.connect(self.change_liquid)
         self.changelickButton.clicked.connect(self.change_lick)
         self.changewaittimeButton.clicked.connect(self.change_waittime)
+        self.changepunishtimeButton.clicked.connect(self.change_punishtime)
         self.changeMouseLimButton.clicked.connect(self.change_mouse_lim)
         self.changeMouseRespButton.clicked.connect(self.change_mouse_resp)
         self.changeStimProbButton.clicked.connect(self.change_stim_prob)
         self.refillButton.clicked.connect(self.refill)
         self.changeTrialLimButton.clicked.connect(self.set_trial_lim)
+        self.saveAllButton.clicked.connect(self.saveAll)
+
+    def saveAll(self): # function to save all parameters to their respective mouse objects
+        ExperimentParameters.saveAll(self.all_mice)
+
 
     def change_liquid(self):
         l = self.liquidLineEdit.text()
@@ -82,6 +89,16 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
         if l.isnumeric():                   #Only positive integers (0-9)
             ExperimentParameters.update_all_mice_waittime(self.all_mice,int(l))
             self.waittimeLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+
+    def change_punishtime(self):
+        l = self.punishtimeLineEdit.text()
+        if l.isnumeric():                   #Only positive integers (0-9)
+            ExperimentParameters.update_all_mice_punishtime(self.all_mice,int(l))
+            self.punishtimeLineEdit.clear()
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid input')
@@ -117,6 +134,24 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg.setText('Invalid input')
             msg.exec()
 
+    def set_trial_lim(self): # default no trial limit, can change in exp window
+        l = self.trialLimLineEdit.text()
+        if l.isnumeric():                   
+            #self.experiment_parameters.trial_lim = int(l)
+            if l=='0': # input limit of 0 means no limit
+                l = None
+                ExperimentParameters.update_all_trial_lim(self.all_mice,l)
+            else:
+                ExperimentParameters.update_all_trial_lim(self.all_mice,int(l))
+            self.trial_lim_lab.setText(l)# self.trial_lim_lab.setText(str(self.experiment_parameters.trial_lim))
+            self.trialLimLineEdit.clear()
+        else:
+            msg = QtWidgets.QMessageBox()
+            msg.setText('Invalid input')
+            msg.exec()
+            #self.experiment_parameters.trial_lim = None
+        
+
     def pause_exp(self):
         self.experiment_parameters.paused = not self.experiment_parameters.paused
         if self.experiment_parameters.paused:       #Experiment is paused
@@ -145,12 +180,3 @@ class expwinActions(QtWidgets.QWidget, Ui_expWin):
             msg.setText('A test is ongoing, please wait till it finishes')
             msg.exec()
         self.mutex.unlock()
-
-    def set_trial_lim(self): # default no trial limit, can change in exp window
-        l = self.trialLimLineEdit.text()
-        if l.isnumeric():                   #Only positive integers (0-9)
-            self.experiment_parameters.trial_lim = int(l)
-        else:
-            self.experiment_parameters.trial_lim = None
-        self.trial_lim_lab.setText(str(self.experiment_parameters.trial_lim))
-        self.trialLimLineEdit.clear()

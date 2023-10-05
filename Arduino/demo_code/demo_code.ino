@@ -1,3 +1,7 @@
+  /*****************************************************************************
+  Main C code, calls al the functions and runs the loop of commands whcih overarchs all the automated operations in the setup
+  *****************************************************************************/
+
 #include <Servo.h>
 #include <TimeLib.h>
 #include "run_test.h"
@@ -89,22 +93,24 @@ void waitUntilReceive(String msg){ // waits for message from python
 
 void letMouseOut(String ID_2){
   clear_serial_buffer(Serial2);
-  door_open(door_two);
+  //door_open(door_two);
+  door_open(door_two,2); // 20230719
   while (door2Check() != ID_2){} // either this or just open whenever something is in serial 2
-  door_open(door_one);
+  //door_open(door_one);
+  door_open(door_one,1); // 20230719
   door_close(door_two, 1); // True for slower door
 }
   
 void setup()
 {
-  Serial.begin(9600);
-  Serial1.begin(9600);
-  Serial2.begin(9600);
+  Serial.begin(9600); // serial port to communicate with teensy 4.1
+  Serial1.begin(9600); // serial port to read from sensor closest to home cage
+  Serial2.begin(9600); // serial port to read from sensor closest to trainbox
   door_one.attach(2);
-  door_open(door_one);
+
   door_two.attach(23);
-  door_close(door_two,0);
-  // door 1 open and door 2 close
+
+
   
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
@@ -150,6 +156,17 @@ void setup()
   
   while (! Serial);       //Wait for python read to begin
   Serial.println("LOGGER: Starting Experiment");
+
+  //---------------------------------------
+  //door_open(door_one);
+  //Serial.print("open door 1: pre: ");  
+  //Serial.print(door_one.read());   
+  door_open(door_one,1); // 20230719
+  //Serial.print(" post: ");  
+  //Serial.println(door_one.read());  
+  door_close(door_two,0);
+  // door 1 open and door 2 close
+  //---------------------------------------
 }
 
 void loop()
@@ -283,6 +300,8 @@ void loop()
   waitForSerial(door_one, door_two);
   int WAITTIME = Serial.readStringUntil('\n').toInt();
   waitForSerial(door_one, door_two);
+  int punishtime = Serial.readStringUntil('\n').toInt();
+  waitForSerial(door_one, door_two);
   int responseTime = Serial.readStringUntil('\n').toInt();
   waitForSerial(door_one, door_two);
   int stimProb[] = {0,1,1}; // use default olfactory stim for now, need to be the same size as stimPin
@@ -297,11 +316,12 @@ void loop()
   Serial.print("LOGGER: Received - Liquid Amount - ");Serial.println(liquidAmount);
   Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);
   Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
+  Serial.print("LOGGER: Received - Punishment Time - ");Serial.println(punishtime);
   Serial.print("LOGGER: Received - Response Time - ");Serial.println(responseTime);
   Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb[0]); // TODO: change line to print whole array
   // maybe also a line for stim duration
   
-  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, &scale, pumpPin); // write to file during test
+  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin); // write to file during test
   file.close(); // close the file
   
   waitUntilReceive("Camera closed");
