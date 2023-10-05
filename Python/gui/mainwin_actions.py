@@ -140,7 +140,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
             self.odourwin.close()
         except (RuntimeError, AttributeError) as e:
             pass
-        self.odourwin = odourwinActions(self.mutex,pos)
+        self.odourwin = odourwinActions(self.mutex,self.last_test,pos)
         self.odourwin.show()
         
     def open_all_win(self):
