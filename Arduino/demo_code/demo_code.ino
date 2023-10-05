@@ -239,7 +239,7 @@ void loop()
     delay(500); //So the readings are spaced out. TODO: To discuss
   }
 
-  door_open(door_two);
+  door_open(door_two,2); //20230719
   lastMouse = ID_2;
 
   // lure mouse
