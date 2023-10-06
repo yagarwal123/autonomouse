@@ -15,7 +15,6 @@ class Test:
         self.ongoing = True
         self.trials_over = False
         self.id = None
-        self.odours = []
         self.trial_lim = None
     
     def add_trial(self,new_trial):
@@ -45,13 +44,15 @@ class Trial: # trial class containing index, response and stim
 
 class TestParameters:
 
-    def set_parameters(self,lick_threshold,liquid_amount,waittime,punishtime,response_time,stim_prob):
+    def set_parameters(self,lick_threshold,liquid_amount,waittime,punishtime,response_time,stim_prob,odours):
         self.lick_threshold = [lick_threshold]
         self.liquid_amount = [liquid_amount]
         self.waittime = [waittime]
         self.punishtime = [punishtime]
         self.response_time = [response_time]
         self.stim_prob = [stim_prob]
+        self.odours = [odours]
+        #self.targets = [targets]
 
     def __str__(self):
         attrs = vars(self)

@@ -1,4 +1,5 @@
 from datetime import date
+import numpy as np
 
 class Mouse:
     """description of class"""
@@ -19,7 +20,7 @@ class Mouse:
         self.response_time = 2500
         self.stim_prob = 70
         self.n_odours = 0
-        self.od_stim_prob = []
+        self.od_stim = np.zeros((1,15)) # stim pattern default
         self.od_target = []
         
 

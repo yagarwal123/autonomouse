@@ -15,7 +15,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.mutex = mutex
         self.title = "Odour Pattern Generator (Select input file or generate pattern)"
-        self.pattern = np.zeros((1,15)) # stim pattern
+        self.pattern = [] #np.zeros((1,15)) # stim pattern
         self.trials = 1
         self.dir = CONFIG.application_path
         
@@ -38,7 +38,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         if S__File[0]: 
             np.savetxt(S__File[0], self.pattern, delimiter='\t', fmt='%i') # save as integer
         
-    def showDialog(self,last_test):
+    def showDialog(self):
 
         #home_dir = str(Path.home())
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', self.dir)
@@ -50,9 +50,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
                 #self.pattern = f.read()
                 #self.patternEdit.setText(self.pattern)
             self.pattern = np.loadtxt(fname[0], dtype=int, delimiter="\t")
-            print(self.pattern.size) # buggy, cannot update self.pattern with the dialog box
             self.pattern.astype(int)
-            last_test.odours = self.pattern
             self.model = TableModel(self.pattern)
             self.patternEdit.setModel(self.model)
         else:

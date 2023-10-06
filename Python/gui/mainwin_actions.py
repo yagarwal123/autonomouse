@@ -42,7 +42,9 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, False)
 
-        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.last_test,self.experiment_parameters)
+        self.odourwin = odourwinActions(self.mutex,self.last_test,None) #initialise the object to use in data_update
+
+        self.worker = TeensyRead(self.ser,self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.last_test,self.experiment_parameters,self.odourwin)
         self.worker.test_start_signal.connect(self.open_all_win) # open window when the signal "emits" in data_update.py
         self.worker.start() # runs run fucntion in teensyread
         self.myactions() # add actions for different buttons
@@ -156,7 +158,7 @@ class TeensyRead(QThread): # inherit QThread class
 
     test_start_signal = pyqtSignal() # communicate between threads
 
-    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,last_test,experiment_parameters):
+    def __init__(self, ser, mutex, START_TIME, all_mice,doors,live_licks,last_test,experiment_parameters,odourwin):
         super(TeensyRead, self).__init__() # calls qthread class init
         self.ser = ser
         self.all_mice = all_mice
@@ -166,6 +168,7 @@ class TeensyRead(QThread): # inherit QThread class
         self.START_TIME = START_TIME
         self.mutex = mutex
         self.experiment_parameters = experiment_parameters
+        self.odourwin = odourwin
 
     def run(self): # all objects are passed to startteensyread
-        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.last_test,self.experiment_parameters,self.test_start_signal)
+        startTeensyRead(self.ser, self.mutex,self.START_TIME,self.all_mice,self.doors,self.live_licks,self.last_test,self.experiment_parameters,self.test_start_signal,self.odourwin)
