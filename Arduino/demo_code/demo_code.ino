@@ -310,6 +310,8 @@ void loop()
   int nStim = sizeof(stimProb); // number of pins used for stimulus
   if(nStim != sizeof(stimPin)){
     Serial.println("STIM ARRAY NOT SAME SIZE AS STIMPIN - please check and restart");
+    letMouseOut(ID_2); // trigger emergency exit
+    file.close(); // close the file
     while (true); //Do nothing forever
   }
 

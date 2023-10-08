@@ -61,7 +61,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
   unsigned long* timePt = &startTime; // pointer to start time of test
-  int i=0;
+  int i=0; // trial counter
   bool testOngoing = 1; // stops test on command
   bool punish = false; // whether to push mouse by having larger ITI
   //int noLickCounter = 0; // counts the number of no licks - stops after no licks found in 5 consequtive trials
