@@ -65,7 +65,27 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 last_test.trials_over = True
                 ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
             soundStim = [s] # stimulus pattern, can be a dict of 1s and 0s
-            last_test.add_trial(Trial(trial,t,soundStim)) # add odour stim here after testing: [soundStim,stimPattern]
+            # assume pattern already generated and displayed in the window
+            od_size = len(odours)
+            if trial is 0:
+                stimPattern = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # first is always none, logistic purpose
+                index = 0
+            else:
+                index = trial % od_size # pull a line of odour stim from odourwinActions pattern
+                if index is 0: index = od_size # if od_size is a multiple of trial no., i.e. last line of odour pattern
+                stimPattern = odours[index-1,:] 
+            last_test.add_trial(Trial(trial,t,soundStim + stimPattern)) # TODO: add odour stim here after testing: [soundStim,stimPattern]
+            
+            stimPattern = odours[trial % od_size,:] # send odour stim for the next trial
+            stimPattern.astype(int) 
+            ser.write('oStim\n'.encode())
+            ser.write(stimPattern.encode()) # send it to teensy
+            print(stimPattern) # TESTING PUROSE
+
+            # serial write if this is correct pattern
+            ser.write('target\n'.encode())
+            ser.write(check_if_target(odours,odourwin.target).encode()) # send it to teensy
+            
         case 6:
             test = last_test
             fileFolder = test.id
@@ -143,16 +163,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             ser.write( ( str(m.waittime) + "\n" ).encode() )
             ser.write( ( str(m.punishtime) + "\n" ).encode() )
             ser.write( ( str(m.response_time) + "\n" ).encode() )
-            ser.write( ( str(m.stim_prob) + "\n" ).encode() ) # TODO: need changing to accommodate both sound and odour
-            # assume pattern already generated and displayed in the window
-            od_size = len(odours)
-            index = trial % od_size # pull a line of odour stim from odourwinActions pattern
-            if index < 0.1: index = od_size # if od_size is a multiple of trial no., i.e. last line of odour pattern
-            stimPattern = odours[index-1,:]
-            stimPattern.astype(int) 
-            #ser.write('oStim\n'.encode())
-            #ser.write(stimPattern.encode()) # send it to teensy
-            print(stimPattern) # TESTING PUROSE
+            ser.write( ( str(m.stim_prob) + "\n" ).encode() ) 
 
         case 11:
             pass
@@ -209,3 +220,10 @@ def append_door_entries(doors):
         old_entries.reverse()
         for d in old_entries:
             csvfile.write(f'{d[0]},{d[1].get_id()},{d[2]}\n') # write all entry history in file
+
+def check_if_target(pattern, target): # if target odour exist in stim pattern
+    # Find multiple indices with for loop
+    hit = False
+    for index, f in enumerate(pattern):
+        if f in target: hit = True
+    return hit

@@ -5,20 +5,20 @@
 
 #include "Arduino.h"
 
-unsigned start_stimulus(int stimPin[], int nStim, int stimProb[], unsigned long stimDuration){
-  unsigned stimulus;
+unsigned start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, unsigned long stimDuration){
+  unsigned stimulus[16]; 
   unsigned noteFrequency;
   int r = random(100);
-  int soundProb = stimProb[0];
+  int soundProb = stimProb;
   if (r < soundProb){
     //noteFrequency = 8000;
     digitalWrite(stimPin[0], HIGH); // test odour line
-    stimulus = 1;
+    stimulus[0] = 1;
   }
   else{
     //noteFrequency = 1000;
     digitalWrite(stimPin[0], LOW);// test odour line
-    stimulus = 0;
+    stimulus[0] = 0;
   }
   //tone(stimPin[0], noteFrequency, stimDuration);
   delay(stimDuration); // test odour line
@@ -26,18 +26,19 @@ unsigned start_stimulus(int stimPin[], int nStim, int stimProb[], unsigned long 
 
   // olfactory stimulus:
 
-  for(int i=1; i<nStim;i++){ // first element is sound
-    digitalWrite(stimPin[i], stimProb[i]);
+  for(int i=0; i<nStim;i++){ // first element is sound
+    digitalWrite(stimPin[i+1], oStim[i]);
+    stimulus[i+1] = pStim[i];
     }
 
-  return stimulus;
+  return stimulus; // return an array of stimulus
 }
 
 
 // only for olfactometer
 void stop_stimulus(int stimPin[], int nStim){
-    for(int i=1; i<nStim;i++){ // first element is sound
-    digitalWrite(stimPin[i], 0);
+    for(int i=0; i<nStim;i++){ // first element is sound
+    digitalWrite(stimPin[i], LOW);
     }
 
 }

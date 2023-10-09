@@ -56,7 +56,7 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb, unsigned long stimDuration, int oStim[], int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -64,10 +64,11 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
   int i=0; // trial counter
   bool testOngoing = 1; // stops test on command
   bool punish = false; // whether to push mouse by having larger ITI
+  bool target = false; // if odour pattern contains target(s)
   //int noLickCounter = 0; // counts the number of no licks - stops after no licks found in 5 consequtive trials
   // actual number need to be confirmed
 
-  unsigned stimulus;
+  int stimulus[16];
   
   // lambda function, pass in outerscope
   // define timers
@@ -87,7 +88,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
     lickTime = -1; // time takes to lick: if not licked return -1
     lickCheck = 0; // time taken to lick from stimulus onset
     
-    stimulus = start_stimulus(stimPin, nStim, stimProb, stimDuration);
+    stimulus = start_stimulus(stimPin, oStim, nStim, stimProb, stimDuration);
     
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
@@ -102,7 +103,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         if (lickCheck > 0){
           t2.start(); // start reading at longer intervals if mouse has licked
           lickTime = lickCheck - startTime;
-          if (stimulus==1){ // if matches target stimulus
+          if (stimulus[0]==1 || target == true){ // if matches target stimulus
             deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
           }else{
             punish = true;
@@ -127,7 +128,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
       t2.start();
       //noLickCounter++;
     }
-    Serial.print("Lick - Stimulus "); Serial.print(stimulus); Serial.print(" - Trial ");
+    Serial.print("Lick - Stimulus "); Serial.print(stimulus[0]); Serial.print(" - Trial ");
     Serial.print(i);
     Serial.print(" - Time ");
     Serial.println(lickTime);
@@ -166,10 +167,15 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         }
         if(serIn == "stim"){
           while (!Serial.available());
-          stimProb[0] = Serial.readStringUntil('\n').toInt();
+          stimProb = Serial.readStringUntil('\n').toInt();
         }
         if(serIn == "oStim"){
-          // TODO
+          while (!Serial.available());
+          oStim = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "target"){
+          while (!Serial.available());
+          target = Serial.readStringUntil('\n').toInt();
         }
         if(serIn == "dur"){
           while (!Serial.available());

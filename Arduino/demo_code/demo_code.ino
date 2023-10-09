@@ -49,7 +49,7 @@ float weight;
 int rewardPin = 32;
 int lickPin = A14;
 int TTL_PIN = 33;
-int stimPin[] = {8,9,13}; // to be extended to more pins after writing python code, first element is sound
+int stimPin[] = {8,4,5,6,9,10,11,13,28,29,30,31,34,35,36,37}; // to be extended to more pins after writing python code, first element is sound
 int pumpPin = 12;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
@@ -304,10 +304,12 @@ void loop()
   waitForSerial(door_one, door_two);
   int responseTime = Serial.readStringUntil('\n').toInt();
   waitForSerial(door_one, door_two);
-  int stimProb[] = {0,1,1}; // use default olfactory stim for now, need to be the same size as stimPin
-  stimProb[0] = Serial.readStringUntil('\n').toInt(); // TODO: change to read the whole array
+  int stimProb = Serial.readStringUntil('\n').toInt(); 
   unsigned long stimDuration = 2000; // use default for now - get from python later
-  int nStim = sizeof(stimProb); // number of pins used for stimulus
+  int oStim[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // hard code fine number of dours
+  //waitForSerial(door_one, door_two);
+  //int taget_arr[] = Serial.readStringUntil('\n').toInt(); 
+  int nStim = sizeof(oStim) + 1; // number of pins used for sound and odour stimulus
   if(nStim != sizeof(stimPin)){
     Serial.println("STIM ARRAY NOT SAME SIZE AS STIMPIN - please check and restart");
     letMouseOut(ID_2); // trigger emergency exit
@@ -320,10 +322,10 @@ void loop()
   Serial.print("LOGGER: Received - Inter trial interval - ");Serial.println(WAITTIME);
   Serial.print("LOGGER: Received - Punishment Time - ");Serial.println(punishtime);
   Serial.print("LOGGER: Received - Response Time - ");Serial.println(responseTime);
-  Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb[0]); // TODO: change line to print whole array
+  Serial.print("LOGGER: Received - Stimulus Probability - ");Serial.println(stimProb); // TODO: change line to print whole array
   // maybe also a line for stim duration
   
-  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin); // write to file during test
+  run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, oStim, nStim, &file, WAITTIME, punishtime, &scale, pumpPin); // write to file during test
   file.close(); // close the file
   
   waitUntilReceive("Camera closed");
