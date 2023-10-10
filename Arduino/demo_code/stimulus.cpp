@@ -5,8 +5,8 @@
 
 #include "Arduino.h"
 
-unsigned start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, unsigned long stimDuration){
-  unsigned stimulus[16]; 
+int* start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, unsigned long stimDuration){
+  int stimulus[nStim]; 
   unsigned noteFrequency;
   int r = random(100);
   int soundProb = stimProb;
@@ -28,7 +28,7 @@ unsigned start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, uns
 
   for(int i=0; i<nStim;i++){ // first element is sound
     digitalWrite(stimPin[i+1], oStim[i]);
-    stimulus[i+1] = pStim[i];
+    stimulus[i+1] = oStim[i];
     }
 
   return stimulus; // return an array of stimulus
