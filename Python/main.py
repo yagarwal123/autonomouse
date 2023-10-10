@@ -32,6 +32,8 @@ import rasp_camera
 #               'A22222': ['Little',45],
 #               '0007A0F7C4': ['Real',27.4]}
 
+# adding support for training stages 20231010
+
 if __name__ == "__main__":
     multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly
 
