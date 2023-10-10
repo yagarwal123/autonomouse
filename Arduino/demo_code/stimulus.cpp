@@ -31,7 +31,7 @@ int* start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, unsigne
     stimulus[i+1] = oStim[i];
     }
 
-  return stimulus; // return an array of stimulus
+  return stimulus; // return address of an array of stimulus
 }
 
 

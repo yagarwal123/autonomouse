@@ -56,9 +56,9 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
-int* convertStrtoArr(char str[]){
+int* convertStrtoArr(char* str){
     // get length of string str
-    int str_length = length(str);
+    int str_length = sizeof(str)/ sizeof(str[0]);
  
     // create an array with size as string
     // length and initialize with 0
@@ -67,7 +67,7 @@ int* convertStrtoArr(char str[]){
     int j = 0, i;
  
     // Traverse the string
-    for (i = 0; i<str.length(); i++) {
+    for (i = 0; i<sizeof(str)/ sizeof(str[0]); i++) {
  
         // if str[i] is ', ' then split
         if (str[i] == ',')
@@ -214,7 +214,8 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         }
         if(serIn == "oStim"){
           while (!Serial.available());
-          oStim = convertStrtoArr(Serial.readStringUntil('\n'));
+          //oStim = convertStrtoArr(Serial.readStringUntil('\n'));
+          *oStim = Serial.readStringUntil('\n').toInt();
         }
         if(serIn == "target"){
           while (!Serial.available());

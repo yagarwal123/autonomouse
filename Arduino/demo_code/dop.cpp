@@ -37,7 +37,7 @@ void door_open(Servo door, int servonumber) // might need to decrease speed
   }
   //int angle_close = 30;
   //int angle_open = 115;
-
+/*
   Serial.print("angle_close:");  
   Serial.print(angle_close);  
   Serial.print("angle_open:");  
@@ -47,13 +47,14 @@ void door_open(Servo door, int servonumber) // might need to decrease speed
   Serial.print(servonumber);       
   Serial.print("open: pre: ");  
   Serial.print(door.read());       
+  */
   for(int pos = angle_close; pos <= angle_open; pos += 1) // goes from 180 degrees to 90 degrees 
   {                                  // in steps of 1 degree 
     door.write(pos);              // tell servo to go to position in variable 'pos' 
     delay(3);                       // adjust for speed
   }
-  Serial.print(" post: ");  
-  Serial.println(door.read());  
+  //Serial.print(" post: ");  
+  //Serial.println(door.read());  
   
 } 
  
