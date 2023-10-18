@@ -184,3 +184,136 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
   t3.stop();
   Serial.println("Stop recording");
 }
+
+
+
+void run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
+  
+  Serial.println("run_test_habituate");
+  int sensorValue = 0;
+  int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
+  unsigned long startTime = 0;
+  unsigned long* timePt = &startTime; // pointer to start time of test
+  int i=0;
+  bool testOngoing = 1; // stops test on command
+  bool punish = false; // whether to push mouse by having larger ITI
+  //int noLickCounter = 0; // counts the number of no licks - stops after no licks found in 5 consequtive trials
+  // actual number need to be confirmed
+
+  unsigned stimulus;
+  
+  // lambda function, pass in outerscope
+  // define timers
+  t1.begin([=]{callback1(sensorPt);}, 100ms, false); //every 100ms print to serial
+  t2.begin([=]{callback2(lickPin, sensorPt);}, 1ms, false); // reads lickPin every 50ms
+  Serial.print("Starting test now - "); Serial.println(millis());
+  while (digitalRead(TTL_PIN)==LOW);
+  t3.begin([=]{callback3(TTL_PIN, sensorPt, timePt, pr);}, 1ms); // saves amplitude every 1ms
+  
+  pr->println(millis()); // write start time in file DELETE ONE
+  //for(int i=1; i<11; i++){
+  //t1.start();
+  while(testOngoing){
+    i++; // increment trial number
+    //Serial.print("Trial ");
+    //Serial.println(i);
+    lickTime = -1; // time takes to lick: if not licked return -1
+    lickCheck = 0; // time taken to lick from stimulus onset
+    
+    stimulus = start_stimulus(stimPin, nStim, stimProb, stimDuration);
+    
+    startTime = millis(); // record start time
+    responseTime = startTime + RES; // acceptable responese time to stimulus
+    //pr->println(millis()); // write start time in file DELETE ONE
+    t1.start(); // start 
+    //t3.start(); // start saving to file
+    //Serial.println(startTime);
+    punish = false;
+    while(millis() < responseTime){// response period
+      if (lickTime == -1){ // if mouse hasn't responded
+        lickCheck = read_lick(lickPin, THRESHOLD, &sensorValue); // read_lick returns time licked
+        if (lickCheck > 0){
+          t2.start(); // start reading at longer intervals if mouse has licked
+          lickTime = lickCheck - startTime;
+          if (stimulus==1){ // TODO: match olfactory stim to response
+            deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
+          }else{
+            punish = true;
+          }
+          //noLickCounter=0; // reset noLickCounter
+          }
+        }
+      if (millis() - startTime > stimDuration){ // stimDuration has to be shorter than response time
+        // stop stimulus (olfaction only)
+        //stop_stimulus(stimPin, nStim); //**** PROBLEM WITH DOORS HERE 
+        }
+      }
+      
+      if (punish==true){
+        downTime = millis() + WAITTIME + punishtime;// wait for longer if false positive response
+      }else{
+        downTime = millis() + WAITTIME;
+        } // start of DOWNTIME
+
+    t1.stop();// stop timers whether or not there was licking
+    if (lickTime < 0){ // start reading at longer intervals if mouse hasnt licked
+      t2.start();
+      //noLickCounter++;
+    }
+    Serial.print("Lick - Stimulus "); Serial.print(stimulus); Serial.print(" - Trial ");
+    Serial.print(i);
+    Serial.print(" - Time ");
+    Serial.println(lickTime);
+    
+    t1.start(); // start timer again
+    //digitalWrite(pumpPin, HIGH); // start pumping out air
+
+    while(millis() < downTime){ // downtime of sensor
+      if(Serial.available()){
+        String serIn = Serial.readStringUntil('\n');
+        if (serIn == "Reward"){
+          deliver_reward(rewardPin, liquidAmount); // also customise liquid drop here
+        }
+        if(serIn == "End"){
+          testOngoing = 0;
+        }
+        if(serIn == "liquid"){
+          while (!Serial.available());
+          liquidAmount = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "th"){
+          while (!Serial.available());
+          THRESHOLD = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "wait"){
+          while (!Serial.available());
+          WAITTIME = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "punish"){
+          while (!Serial.available());
+          punishtime = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "resp"){
+          while (!Serial.available());
+          RES = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "stim"){
+          while (!Serial.available());
+          stimProb[0] = Serial.readStringUntil('\n').toInt();
+        }
+        if(serIn == "dur"){
+          while (!Serial.available());
+          stimDuration = Serial.readStringUntil('\n').toInt();
+        }
+      }
+    }
+    // stop timers
+    t1.stop();
+    t2.stop();
+    //t3.stop();
+    //digitalWrite(pumpPin, LOW); // stop pumping out air
+  }
+  //t1.stop();
+  t3.stop();
+  Serial.println("Stop recording");
+}
