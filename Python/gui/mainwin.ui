@@ -166,8 +166,15 @@
     </property>
     <addaction name="actionhij"/>
    </widget>
+   <widget class="QMenu" name="menuScenario">
+    <property name="title">
+     <string>Scenario</string>
+    </property>
+    <addaction name="actionSelect_Scenario"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuScenario"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actioniii">
@@ -183,6 +190,11 @@
   <action name="actionko">
    <property name="text">
     <string>ko</string>
+   </property>
+  </action>
+  <action name="actionSelect_Scenario">
+   <property name="text">
+    <string>Select Scenario</string>
    </property>
   </action>
  </widget>

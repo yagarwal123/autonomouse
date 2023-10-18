@@ -58,6 +58,7 @@ int lickPin = A14;
 int TTL_PIN = 33;
 int stimPin[] = {8, 9, 13}; // to be extended to more pins after writing python code, first element is sound
 int pumpPin = 12;
+int LED_PIN = 13; // JP for testing
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60 * 1e3;     //One minute before the same mouse is let in
 unsigned long lastExitTime = 0;
@@ -126,6 +127,10 @@ void setup()
 
   //Needs to be an unconnected pin
   randomSeed(analogRead(17));
+
+  // pin for testing
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
 
   //Setting up the pins for the reward system
   pinMode(rewardPin, OUTPUT);
@@ -225,18 +230,20 @@ void loop()
         break;
       }
     }
-    
-    int THRESHOLD = 0;
-    int liquidAmount = 1000; // check if makes sense
+
+    //int THRESHOLD = 0;
+    int THRESHOLD = 100;    
+    int liquidAmount = 50; 
     int WAITTIME = 0;
     int punishtime = 0;
-    int responseTime = 0;
+    //int responseTime = 0;
+    int responseTime = 3000;
     int stimProb[] = {0, 1, 1}; // use default olfactory stim for now, need to be the same size as stimPin
     unsigned long stimDuration = 2000; // use default for now - get from python later
     int nStim = sizeof(stimProb); // number of pins used for stimulus
 
     //run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin); // write to file during test
-    run_test_habituate(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin); // write to file during test
+    run_test_habituate(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin, SCENARIO, LED_PIN); // write to file during test
 
   }
 
