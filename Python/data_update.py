@@ -31,6 +31,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
     stat_mean, search = matchCommand(inSer,KNOWNSTATEMENTS)
     match stat_mean:
         case 0:
+            print(inSer)
             return
         case 1:
             weight = float(search.group(1)) # extract things in 1st bracket

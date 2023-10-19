@@ -5,9 +5,9 @@
 
 #include "Arduino.h"
 
-unsigned start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, unsigned long stimDuration){
-  unsigned stimulus[16]; 
-  unsigned noteFrequency;
+int * start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, unsigned long stimDuration){
+  int stimulus[16]; 
+  int noteFrequency;
   int r = random(100);
   int soundProb = stimProb;
   if (r < soundProb){
@@ -26,9 +26,9 @@ unsigned start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, uns
 
   // olfactory stimulus:
 
-  for(int i=0; i<nStim;i++){ // first element is sound
+  for(int i=0; i<nStim-1;i++){ // first element is sound
     digitalWrite(stimPin[i+1], oStim[i]);
-    stimulus[i+1] = pStim[i];
+    stimulus[i+1] = oStim[i];
     }
 
   return stimulus; // return an array of stimulus
