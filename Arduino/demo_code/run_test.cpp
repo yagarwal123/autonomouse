@@ -56,6 +56,49 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   lastButtonStateRising = buttonStateRising;
   }
 
+int* convertStrtoArr(char* str){
+    // get length of string str
+    int str_length = sizeof(str)/ sizeof(str[0]);
+ 
+    // create an array with size as string
+    // length and initialize with 0
+    int arr[str_length] = { 0 };
+ 
+    int j = 0, i;
+ 
+    // Traverse the string
+    for (i = 0; i<sizeof(str)/ sizeof(str[0]); i++) {
+ 
+        // if str[i] is ', ' then split
+        if (str[i] == ',')
+            continue;
+         if (str[i] == ' '){
+            // Increment j to point to next
+            // array location
+            j++;
+        }
+        else {
+ 
+            // subtract str[i] by 48 to convert it to int
+            // Generate number by multiplying 10 and adding
+            // (int)(str[i])
+            arr[j] = arr[j] * 10 + (str[i] - 48);
+        }
+    }
+    return arr;
+ /*
+    cout<<"arr[] ";
+    for (i = 0; i <= j; i++) {
+        cout << arr[i] << " ";
+        sum += arr[i]; // sum of array
+    }
+    cout<<endl;
+    // print sum of array
+    cout<<sum<<endl;
+    */
+}
+
+
 void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb, unsigned long stimDuration, int oStim[], int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
@@ -68,7 +111,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
   //int noLickCounter = 0; // counts the number of no licks - stops after no licks found in 5 consequtive trials
   // actual number need to be confirmed
 
-  int *stimulus;
+  int stimulus[16];
   
   // lambda function, pass in outerscope
   // define timers
@@ -88,7 +131,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
     lickTime = -1; // time takes to lick: if not licked return -1
     lickCheck = 0; // time taken to lick from stimulus onset
     
-    stimulus = start_stimulus(stimPin, oStim, nStim, stimProb, stimDuration);
+    stimulus = start_stimulus(stimPin, oStim, nStim, stimProb, stimDuration); //address of stimulus
     
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
@@ -171,7 +214,8 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         }
         if(serIn == "oStim"){
           while (!Serial.available());
-          oStim = Serial.readStringUntil('\n').toInt();
+          //oStim = convertStrtoArr(Serial.readStringUntil('\n'));
+          *oStim = Serial.readStringUntil('\n').toInt();
         }
         if(serIn == "target"){
           while (!Serial.available());
@@ -193,3 +237,4 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
   t3.stop();
   Serial.println("Stop recording");
 }
+

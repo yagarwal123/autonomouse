@@ -50,6 +50,7 @@ int rewardPin = 32;
 int lickPin = A14;
 int TTL_PIN = 33;
 int stimPin[] = {8,4,5,6,9,10,11,13,28,29,30,31,34,35,36,37}; // to be extended to more pins after writing python code, first element is sound
+int nStim = 16; // number of pins used for sound and odour stimulus
 int pumpPin = 12;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
@@ -309,13 +310,14 @@ void loop()
   int oStim[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // hard code fine number of dours
   //waitForSerial(door_one, door_two);
   //int taget_arr[] = Serial.readStringUntil('\n').toInt(); 
-  int nStim = sizeof(oStim) + 1; // number of pins used for sound and odour stimulus
+  /*
   if(nStim != sizeof(stimPin)){
     Serial.println("STIM ARRAY NOT SAME SIZE AS STIMPIN - please check and restart");
     letMouseOut(ID_2); // trigger emergency exit
     file.close(); // close the file
     while (true); //Do nothing forever
   }
+  */
 
   Serial.print("LOGGER: Received - Liquid Amount - ");Serial.println(liquidAmount);
   Serial.print("LOGGER: Received - Lick Threhold - ");Serial.println(THRESHOLD);

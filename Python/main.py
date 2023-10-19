@@ -3,20 +3,28 @@ import logging.config
 import traceback
 from time import sleep
 from unittest.mock import Mock
-import logging
-logging.getLogger('matplotlib').setLevel(logging.WARNING)
-
 import datetime
 from PyQt6 import QtWidgets
-from gui.mainwin_actions import mainwinActions
 import sys
 import serial
 import multiprocessing
 import pickle
 import os
+import logging
 
+multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly
+from config import CONFIG
+CONFIG.parse_arg()
+from logging_conf import LOGGING_CONFIG
+logging.config.dictConfig(LOGGING_CONFIG)
+#Optional - matplotlib spams a lot of debugs, so setting its level to info
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
+
+from gui.mainwin_actions import mainwinActions
 from Mouse import Mouse
 import rasp_camera
+
 
 # copy inside the bracket to convert .ui file into .py
 # subprocess.run(r"pyuic6 -x ./Python/gui/mainwin.ui -o ./Python/gui/mainwin.py".split())
@@ -28,18 +36,11 @@ import rasp_camera
 # subprocess.run(r"pyuic6 -x ./Python/gui/detmousewin.ui -o ./Python/gui/detmousewin.py".split())
 # subprocess.run(r"pyuic6 -x ./Python/gui/odourwin.ui -o ./Python/gui/odourwin.py".split())
 
-# MICE_INIT_INFO = {'A11111':['Stuart',67],  
+# MICE_INIT_INFO = {'A11111':['Stuart',67],
 #               'A22222': ['Little',45],
 #               '0007A0F7C4': ['Real',27.4]}
 
 if __name__ == "__main__":
-    multiprocessing.freeze_support() # here for pyinstaller (.exe file) to work properly
-
-    from config import CONFIG
-    CONFIG.parse_arg()
-    from logging_conf import LOGGING_CONFIG
-    logging.config.dictConfig(LOGGING_CONFIG)
-    #Optional - matplotlib spams a lot of debugs, so setting its level to info
 
     logger = logging.getLogger(__name__)
     rasp_camera.start_rpi_host()
