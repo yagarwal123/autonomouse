@@ -111,7 +111,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
   //int noLickCounter = 0; // counts the number of no licks - stops after no licks found in 5 consequtive trials
   // actual number need to be confirmed
 
-  int stimulus[16];
+  int *stimulus;
   
   // lambda function, pass in outerscope
   // define timers

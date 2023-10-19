@@ -6,7 +6,7 @@
 #include "Arduino.h"
 
 int * start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, unsigned long stimDuration){
-  int stimulus[16]; 
+  static int stimulus[16]; 
   int noteFrequency;
   int r = random(100);
   int soundProb = stimProb;
