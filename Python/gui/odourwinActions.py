@@ -16,6 +16,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         self.mutex = mutex
         self.title = "Odour Pattern Generator (Select input file or generate pattern)"
         self.pattern = [] #np.zeros((1,15)) # stim pattern
+        self.target = []
         self.trials = 1
         self.dir = CONFIG.application_path
         
@@ -32,7 +33,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         self.generateButton.clicked.connect(self.generateOdour)
         self.saveButton.clicked.connect(self.savePattern)
     
-    def savePattern(self):
+    def savePattern(self): # save pattern and target array
         S__File = QtWidgets.QFileDialog.getSaveFileName(None,'SaveTextFile',self.dir, "Text Files (*.txt)")
         # This will prevent you from an error if pressed cancel on file dialog.
         if S__File[0]: 
@@ -116,7 +117,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
             target.append(7)
         prbArray.append(self.TP8.text())
     
-        target = np.asarray(target, dtype=int) 
+        self.target = np.asarray(target, dtype=int) 
         #target = list(map(int, target))
         #targetProb = list(map(float, targetProb))
         try:
@@ -139,7 +140,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
             l = self.trialEdit.text()
             if l !='' and l.isnumeric():
                 self.trials = int(l)
-            self.pattern = odour_gen(target, prbArray, nPrbArray, nChan=8, trialNo=self.trials)
+            self.pattern = odour_gen(self.target, prbArray, nPrbArray, nChan=8, trialNo=self.trials)
             self.pattern.astype(int)
             last_test.odours = self.pattern
             self.model = TableModel(self.pattern)
