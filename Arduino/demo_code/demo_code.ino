@@ -210,7 +210,7 @@ void loop()
   String ID_1 = door1Check();
   String ID_2 = door2Check();
 
-  if ( SCENARIO == 0 ) {
+  if (( SCENARIO == 0 )||( SCENARIO == 2 )) {
 
     door_open(door_one, 1);
     door_open(door_two, 2);    
@@ -233,7 +233,7 @@ void loop()
 
     //int THRESHOLD = 0;
     int THRESHOLD = 100;    
-    int liquidAmount = 50; 
+    int liquidAmount = 200; 
     int WAITTIME = 0;
     int punishtime = 0;
     //int responseTime = 0;

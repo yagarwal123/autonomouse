@@ -78,13 +78,14 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
 
     def give_reward(self):
         if not vars(self.last_test): return
-        test = self.last_test
+        test = self.last_test        
         if test.vid_recording:
             self.ser.write('Reward\n'.encode())
         else:
-            msg = QtWidgets.QMessageBox()
-            msg.setText('No mouse is in')
-            msg.exec()
+            self.ser.write('Reward\n'.encode())
+            #msg = QtWidgets.QMessageBox()
+            #msg.setText('No mouse is in')
+            #msg.exec()
 
     def stop_test(self):
         if not vars(self.last_test): return

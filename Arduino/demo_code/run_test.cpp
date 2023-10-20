@@ -187,7 +187,8 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
 
 
 
-void run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin, int SCENARIO, int LED_PIN) {
+//void run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin, int SCENARIO, int LED_PIN) {
+int run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin, int SCENARIO, int LED_PIN) {
 
   unsigned long startTime = 0;
   int i = 0; // trial counter
@@ -197,38 +198,97 @@ void run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, 
 
   lickTime = 0;
 
-  int rewardCollected = 0;
+  int rewardCollected = 1; // set to 1 so that reward delivered in beginning
+  if (SCENARIO == 2) { // only give reward if mouse licks (only once per trial)
+    rewardCollected = 0;
+  }
 
-  
   while (testOngoing) {
     i++; // increment trial number
     startTime = millis(); // record start time
     responseTime = startTime + RES; // acceptable responese time to stimulus
 
-    Serial.print("THRESHOLD="); Serial.println(THRESHOLD); 
+    //Serial.print("THRESHOLD="); Serial.println(THRESHOLD);
 
-    if ( rewardCollected == 1 ){
-      deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
+    if (SCENARIO == 2) { // only give reward if mouse licks (only once per trial)
       rewardCollected = 0;
     }
+    if (SCENARIO == 0) {
+      if ( rewardCollected == 1 ) {
+        deliver_reward(rewardPin, liquidAmount);// if mouse has licked during response period
+        rewardCollected = 0;
+      }
+    }
+
+
     while (millis() < responseTime) { // response period
       sensorValue = analogRead(lickPin); // constantly read lick trace
       if (sensorValue > THRESHOLD) {
-        rewardCollected = 1;
         digitalWrite(LED_PIN, HIGH);
+        if (( SCENARIO == 2 ) && (rewardCollected == 0)) {
+          rewardCollected = 1;
+          deliver_reward(rewardPin, liquidAmount);// give reward after each lick
+        }
+        if (SCENARIO == 0) {
+          rewardCollected = 1;
+        }
       }
       else {
         digitalWrite(LED_PIN, LOW);
       }
+
+      if (Serial.available()) {
+        String serIn = Serial.readStringUntil('\n');
+        Serial.print(serIn);
+        if (serIn == "Reward") {
+          deliver_reward(rewardPin, liquidAmount); // also customise liquid drop here
+        }
+        if (serIn == "End") {
+          testOngoing = 0;
+        }
+        if (serIn == "liquid") {
+          while (!Serial.available());
+          liquidAmount = Serial.readStringUntil('\n').toInt();
+        }
+        if (serIn == "th") {
+          while (!Serial.available());
+          THRESHOLD = Serial.readStringUntil('\n').toInt();
+        }
+        if (serIn == "wait") {
+          while (!Serial.available());
+          WAITTIME = Serial.readStringUntil('\n').toInt();
+        }
+        if (serIn == "punish") {
+          while (!Serial.available());
+          punishtime = Serial.readStringUntil('\n').toInt();
+        }
+        if (serIn == "resp") {
+          while (!Serial.available());
+          RES = Serial.readStringUntil('\n').toInt();
+        }
+        if (serIn == "stim") {
+          while (!Serial.available());
+          stimProb[0] = Serial.readStringUntil('\n').toInt();
+        }
+        if (serIn == "dur") {
+          while (!Serial.available());
+          stimDuration = Serial.readStringUntil('\n').toInt();
+        }
+      }
     }
 
-    Serial.print("sensorValue="); Serial.println(sensorValue); 
-    
+    //Serial.print("sensorValue="); Serial.println(sensorValue);
+
     Serial.print("Lick - Stimulus "); Serial.print(stimulus); Serial.print(" - Trial ");
     Serial.print(i);
     Serial.print(" - Time ");
     Serial.println(lickTime);
+
+
+
   }
+
+  return SCENARIO;
 
   /*
     Serial.println("run_test_habituate");
