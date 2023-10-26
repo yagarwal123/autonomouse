@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets, QtGui
 from PyQt6.QtCore import QThread, QMutex, QPoint, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtWidgets import QInputDialog
 
 import logging
 import os
@@ -35,6 +36,7 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.live_licks = live_licks
         self.last_test = last_test
         self.experiment_parameters = ExperimentParameters()
+        self.scenario = 1
 
         self.mutex = QMutex() # mutex object, need to lock whenever you are editing an object
 
@@ -82,7 +84,18 @@ class mainwinActions(QtWidgets.QMainWindow, Ui_MainWindow):
         self.openAllButton.clicked.connect(lambda: self.open_all_win())
         self.detMouseButton.clicked.connect(lambda: self.open_detmouse())
         self.odour_button.clicked.connect(lambda: self.open_odour())
+        self.actionSelect_Scenario.triggered.connect(lambda: self.click_menu())
 
+    def click_menu(self):
+        print('menu')
+        scenarios = ["0:habituate" ,"1:regular","2:lickforreward"]
+        scenario,ok = QInputDialog.getItem(self, "Select scenario", "scenario:", scenarios)
+        print(scenario)
+        print(scenarios.index(scenario))
+        self.scenario = scenarios.index(scenario)
+        self.setWindowTitle(str(self.scenario)) # change title
+        newstr='Scenario%d'%(self.scenario)
+        self.ser.write( ( newstr + "\n" ).encode() ) 
 
     def open_mouse(self):
         #TODO: Think of a better way to handle this

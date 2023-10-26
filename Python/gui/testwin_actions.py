@@ -12,6 +12,11 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
         self.ser = ser
         self.title = "Latest test"
 
+        self.pushButton_door1open.clicked.connect(self.door1open)
+        self.pushButton_door1close.clicked.connect(self.door1close)
+        self.pushButton_door2open.clicked.connect(self.door2open)
+        self.pushButton_door2close.clicked.connect(self.door2close)
+
         self.rewardButton.clicked.connect(self.give_reward)
         self.stopButton.clicked.connect(self.stop_test)
         self.manStartButton.clicked.connect(self.manual_start_test)
@@ -75,6 +80,15 @@ class testwinActions(QtWidgets.QWidget, Ui_testWin):
             self.add_row(trial.stimuli,i,2)
             #self.tableWidget.scrollToBottom()
         self.mutex.unlock()
+
+    def door1open(self):
+        self.ser.write('door1open\n'.encode())
+    def door1close(self):
+        self.ser.write('door1close\n'.encode())
+    def door2open(self):
+        self.ser.write('door2open\n'.encode())
+    def door2close(self):
+        self.ser.write('door2close\n'.encode())                
 
     def give_reward(self):
         if not vars(self.last_test): return

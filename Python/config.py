@@ -3,10 +3,11 @@ import argparse
 
 class Config:
     def __init__(self):
-        if getattr(sys, "frozen", False): # make sure the csv and log files are in the correct location to be read
-            self.application_path = os.path.dirname(sys.executable)
-        elif __file__:
-            self.application_path = os.getcwd()
+        #if getattr(sys, "frozen", False): # make sure the csv and log files are in the correct location to be read
+        #    self.application_path = os.path.dirname(sys.executable)
+        #elif __file__:
+        #    self.application_path = os.getcwd()
+        self.application_path = 'C:/Users/lab/Desktop/autonomouse'
         self.EMAIL_ID = 'autonomouse.error@gmail.com'
         self.PASSWORD = 'strcjmjpictxddjj'
 

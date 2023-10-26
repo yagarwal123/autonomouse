@@ -70,6 +70,27 @@ void door_close(Servo door, bool slower)
 } 
 
 
+void emergency_door_open_close(Servo door, int servonumber, int open_or_close) // might need to decrease speed
+{  
+  if (servonumber == 1){
+    angle_close = 45;
+    angle_open = 115;
+  }
+  if (servonumber == 2){
+    angle_close = 45;
+    angle_open = 109;
+  }
+
+  if (open_or_close == 1){ // open
+    int pos = angle_open;
+    door.write(pos);              // tell servo to go to position in variable 'pos' 
+  }  
+  if (open_or_close == 2){ // close
+    int pos = angle_close;
+    door.write(pos);              // tell servo to go to position in variable 'pos' 
+  }
+  
+}  
 
 // pre 20230719
 //void door_open(Servo door) // might need to decrease speed

@@ -5,7 +5,8 @@
   Ran once for each time a mouse is in the testing chamber.
   Loops through trials.
 *****************************************************************************/
-
+#include <Servo.h>
+#include "dop.h"
 #include "SdFat.h"
 #include "run_test.h"
 #include "deliver_reward.h"
@@ -56,7 +57,9 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr) 
   lastButtonStateRising = buttonStateRising;
 }
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin) {
+//void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin, Servo door_one, Servo door_two) {
+int run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin, int SCENARIO, Servo door_one, Servo door_two) {
+
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -172,6 +175,30 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
           while (!Serial.available());
           stimDuration = Serial.readStringUntil('\n').toInt();
         }
+        if (serIn == "door1open") {
+          emergency_door_open_close(door_one, 1, 1);
+        }
+        if (serIn == "door1close") {
+          emergency_door_open_close(door_one, 1, 2);
+        }
+        if (serIn == "door2open") {
+          emergency_door_open_close(door_two, 2, 1);
+        }
+        if (serIn == "door2close") {
+          emergency_door_open_close(door_two, 2, 2);
+        }
+        if (serIn == "Scenario0") {
+          SCENARIO = 0;
+        }
+        if (serIn == "Scenario1") {
+          SCENARIO = 1;
+        }
+        if (serIn == "Scenario2") {
+          SCENARIO = 2;
+        }
+        if (serIn == "Scenario3") {
+          SCENARIO = 3;
+        }
       }
     }
     // stop timers
@@ -183,12 +210,14 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
   //t1.stop();
   t3.stop();
   Serial.println("Stop recording");
+
+  return SCENARIO;
 }
 
 
 
 //void run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin, int SCENARIO, int LED_PIN) {
-int run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin, int SCENARIO, int LED_PIN) {
+int run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb[], unsigned long stimDuration, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin, int SCENARIO, int LED_PIN, Servo door_one, Servo door_two) {
 
   unsigned long startTime = 0;
   int i = 0; // trial counter
@@ -273,6 +302,30 @@ int run_test_habituate(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, i
         if (serIn == "dur") {
           while (!Serial.available());
           stimDuration = Serial.readStringUntil('\n').toInt();
+        }
+        if (serIn == "door1open") {
+          emergency_door_open_close(door_one, 1, 1);
+        }
+        if (serIn == "door1close") {
+          emergency_door_open_close(door_one, 1, 2);
+        }
+        if (serIn == "door2open") {
+          emergency_door_open_close(door_two, 2, 1);
+        }
+        if (serIn == "door2close") {
+          emergency_door_open_close(door_two, 2, 2);
+        }
+        if (serIn == "Scenario0") {
+          SCENARIO = 0;
+        }
+        if (serIn == "Scenario1") {
+          SCENARIO = 1;
+        }
+        if (serIn == "Scenario2") {
+          SCENARIO = 2;
+        }
+        if (serIn == "Scenario3") {
+          SCENARIO = 3;
         }
       }
     }

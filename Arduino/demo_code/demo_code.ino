@@ -39,7 +39,7 @@ time_t getTeensy3Time()
 // 2 = Pre-learning 2
 // 3 = Pre-learning 3
 // 4 = Learning
-int SCENARIO = 0;
+int SCENARIO = 1;
 
 // define objects for door
 Servo door_one;  // create servo object to control a servo
@@ -60,7 +60,9 @@ int stimPin[] = {8, 9, 13}; // to be extended to more pins after writing python 
 int pumpPin = 12;
 int LED_PIN = 13; // JP for testing
 
-unsigned long INTERVAL_BETWEEN_TESTS = 60 * 1e3;     //One minute before the same mouse is let in
+//unsigned long INTERVAL_BETWEEN_TESTS = 60 * 1e3;     //One minute before the same mouse is let in
+unsigned long INTERVAL_BETWEEN_TESTS = 10;     // JP 
+
 unsigned long lastExitTime = 0;
 String lastMouse = "";
 int d_count;
@@ -201,22 +203,46 @@ void loop()
       }
       digitalWrite(rewardPin, LOW);
     }
+    if (serIn == "door1open") {
+      emergency_door_open_close(door_one, 1, 1);
+    }
+    if (serIn == "door1close") {
+      emergency_door_open_close(door_one, 1, 2);
+    }
+    if (serIn == "door2open") {
+      emergency_door_open_close(door_two, 2, 1);
+    }
+    if (serIn == "door2close") {
+      emergency_door_open_close(door_two, 2, 2);
+    }
+    if (serIn == "Scenario0") {
+      SCENARIO = 0;
+    }
+    if (serIn == "Scenario1") {
+      SCENARIO = 1;
+    }
+    if (serIn == "Scenario2") {
+      SCENARIO = 2;
+    }
+    if (serIn == "Scenario3") {
+      SCENARIO = 3;
+    }
   }
 
 
   // constantly checks until a known mouse appears
   // can make this an interrupt or something
 
-  String ID_1 = door1Check();
-  String ID_2 = door2Check();
+  String ID_1 = door1Check(); // subfunction of demo_code
+  String ID_2 = door2Check(); // subfunction of demo_code
 
-  if (( SCENARIO == 0 )||( SCENARIO == 2 )) {
+  if (( SCENARIO == 0 ) || ( SCENARIO == 2 )) {
 
     door_open(door_one, 1);
-    door_open(door_two, 2);    
+    door_open(door_two, 2);
     Serial.println("LOGGER: Scenario 0");
 
-    ID_2 = "999"; 
+    ID_2 = "999";
     Serial.print("Check whether to start test - "); Serial.println(ID_2);
     while (true) {
       waitForSerial(door_one, door_two);
@@ -232,8 +258,8 @@ void loop()
     }
 
     //int THRESHOLD = 0;
-    int THRESHOLD = 100;    
-    int liquidAmount = 200; 
+    int THRESHOLD = 100;
+    int liquidAmount = 200;
     int WAITTIME = 0;
     int punishtime = 0;
     //int responseTime = 0;
@@ -243,19 +269,26 @@ void loop()
     int nStim = sizeof(stimProb); // number of pins used for stimulus
 
     //run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin); // write to file during test
-    run_test_habituate(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin, SCENARIO, LED_PIN); // write to file during test
+    SCENARIO = run_test_habituate(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin, SCENARIO, LED_PIN, door_one, door_two); // write to file during test
+    Serial.print("Finished run_test_habituate. SCENARIO="); Serial.println(SCENARIO);
 
+    //if (SCENARIO == 1){
+    // 
+    //}
   }
 
-  else if (!(SCENARIO == 0)) {
+  else if (SCENARIO == 1) {
     //TODO: dealing with rollover
     if ( (ID_2 == lastMouse) && ( (millis() - lastExitTime) < INTERVAL_BETWEEN_TESTS ) ) {
+      Serial.println("Do not let same mouse in again");
       return;
     }
 
-    if ( (ID_2.length() == 0) || (ID_1.length() != 0) ) {
+    if ( (ID_2.length() == 0) || (ID_1.length() != 0) ) {      
       return;
     }
+
+    Serial.print("ID1:");Serial.print(ID_1);Serial.print(" ID2:");Serial.println(ID_2);
 
     Serial.print("Check whether to start test - "); Serial.println(ID_2);
     while (true) {
@@ -377,7 +410,9 @@ void loop()
     Serial.print("LOGGER: Received - Stimulus Probability - "); Serial.println(stimProb[0]); // change line to print whole array
     // maybe also a line for stim duration
 
-    run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin); // write to file during test
+    SCENARIO = run_test(TTL_PIN, lickPin, THRESHOLD, rewardPin, stimPin, liquidAmount, responseTime, stimProb, stimDuration, nStim, &file, WAITTIME, punishtime, &scale, pumpPin, SCENARIO, door_one, door_two); // write to file during test
+    Serial.print("Finished run_test. SCENARIO="); Serial.println(SCENARIO);
+    
     file.close(); // close the file
 
     waitUntilReceive("Camera closed");
