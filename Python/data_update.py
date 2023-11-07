@@ -1,6 +1,7 @@
 import logging
 import re
 import os
+import numpy as np
 from multiprocessing import Process
 from myTime import myTime
 from Test import Trial
@@ -9,6 +10,7 @@ import serial
 from config import CONFIG
 import pickle
 from PyQt6 import QtWidgets
+from gui.odourwinActions import odourwinActions
 #from odour_gen import odour_gen
 #from PyQt6.QtCore import QMutex
 
@@ -67,6 +69,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
             soundStim = [s] # stimulus pattern, can be a dict of 1s and 0s
             # assume pattern already generated and displayed in the window
+            odours = odourwinActions.return_pattern()
             od_size = len(odours)
             if trial is 0:
                 stimPattern = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # first is always none, logistic purpose
@@ -75,17 +78,17 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 index = trial % od_size # pull a line of odour stim from odourwinActions pattern
                 if index is 0: index = od_size # if od_size is a multiple of trial no., i.e. last line of odour pattern
                 stimPattern = odours[index-1,:] 
-            last_test.add_trial(Trial(trial,t,soundStim + stimPattern)) # TODO: add odour stim here after testing: [soundStim,stimPattern]
-            
+            last_test.add_trial(Trial(trial,t,np.concatenate((soundStim, stimPattern),axis=None))) # add odour stim here after testing: [soundStim,stimPattern]
+
             stimPattern = odours[trial % od_size,:] # send odour stim for the next trial
             stimPattern.astype(int) 
+            stimPattern = stimPattern.tostring()
             ser.write('oStim\n'.encode())
-            ser.write(stimPattern.encode()) # send it to teensy
-            print(stimPattern) # TESTING PUROSE
+            ser.write(stimPattern) # send it to teensy
 
             # serial write if this is correct pattern
             ser.write('target\n'.encode())
-            ser.write(check_if_target(odours,odourwin.target).encode()) # send it to teensy
+            ser.write(check_if_target(odours,odourwinActions.return_target())) # send it to teensy
             
         case 6:
             test = last_test
@@ -142,6 +145,7 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             filehandler.close()      
 
         case 9:
+            #print(odourwinActions.return_pattern())
             m = all_mice[search.group(1)]
             if experiment_parameters.paused:
                 logger.info('Experiment is paused')
@@ -153,11 +157,11 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 ser.write("Start experiment\n".encode())
                 last_test.reset(m)
         case 10:
-            test_start_signal.emit() # emit signal to open all windows (in mainwin_actions.py)
+            #test_start_signal.emit() # emit signal to open all windows (in mainwin_actions.py)
             m = all_mice[search.group(1)]
             t = last_test
             t.set_trial_lim(m.trial_lim)
-            odours = odourwin.pattern
+            odours = odourwinActions.return_pattern()
             t.test_parameters.set_parameters(m.lick_threshold,m.liquid_amount,m.waittime,m.punishtime,m.response_time,m.stim_prob,odours)
             ser.write( ( str(m.lick_threshold) + "\n" ).encode() )
             ser.write( ( str(m.liquid_amount) + "\n" ).encode() )

@@ -55,7 +55,7 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   }
   lastButtonStateRising = buttonStateRising;
   }
-
+/*
 int* convertStrtoArr(char* str){
     // get length of string str
     int str_length = sizeof(str)/ sizeof(str[0]);
@@ -65,9 +65,9 @@ int* convertStrtoArr(char* str){
     int arr[str_length] = { 0 };
  
     int j = 0, i;
- 
+    int size = sizeof(str)/ sizeof(str[0]);
     // Traverse the string
-    for (i = 0; i<sizeof(str)/ sizeof(str[0]); i++) {
+    for (i = 0; i<size; i++) {
  
         // if str[i] is ', ' then split
         if (str[i] == ',')
@@ -86,7 +86,7 @@ int* convertStrtoArr(char* str){
         }
     }
     return arr;
- /*
+ 
     cout<<"arr[] ";
     for (i = 0; i <= j; i++) {
         cout << arr[i] << " ";
@@ -95,9 +95,9 @@ int* convertStrtoArr(char* str){
     cout<<endl;
     // print sum of array
     cout<<sum<<endl;
-    */
+    
 }
-
+*/
 
 void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb, unsigned long stimDuration, int oStim[], int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
   int sensorValue = 0;

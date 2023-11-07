@@ -5,18 +5,21 @@ from gui.odourwin import Ui_odourWin
 from pathlib import Path
 from odour_gen import odour_gen
 import numpy as np
+from functools import partial
 from config import CONFIG
 
 
 class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
+    set_pattern = []
+    set_target = []
     def __init__(self,mutex,last_test,pos=None):
         super().__init__()
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icon.ico'))
         self.mutex = mutex
         self.title = "Odour Pattern Generator (Select input file or generate pattern)"
-        self.pattern = [] #np.zeros((1,15)) # stim pattern
-        self.target = []
+        self.pattern = np.zeros((1,15)) # stim pattern
+        self.target = "1,2"
         self.trials = 1
         self.dir = CONFIG.application_path
         
@@ -29,36 +32,64 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         self.myactions()
         
     def myactions(self):  
-        self.selectFileButton.clicked.connect(self.showDialog)
         self.generateButton.clicked.connect(self.generateOdour)
-        self.saveButton.clicked.connect(self.savePattern)
-    
-    def savePattern(self): # save pattern and target array
+        self.saveButton.clicked.connect(partial(self.savePattern,"pattern"))
+        self.saveTargetButton.clicked.connect(partial(self.savePattern,"target"))
+        self.selectFileButton.clicked.connect(partial(self.showDialog,"pattern"))
+        self.selectTargetButton.clicked.connect(partial(self.showDialog,"target"))
+
+    def savePattern(self, mode): # save pattern and target array
         S__File = QtWidgets.QFileDialog.getSaveFileName(None,'SaveTextFile',self.dir, "Text Files (*.txt)")
         # This will prevent you from an error if pressed cancel on file dialog.
         if S__File[0]: 
-            np.savetxt(S__File[0], self.pattern, delimiter='\t', fmt='%i') # save as integer
+            if mode is 'pattern':
+                np.savetxt(S__File[0], self.pattern, delimiter='\t', fmt='%i') # save as integer
+            if mode is 'target':
+                np.savetxt(S__File[0], self.target, delimiter='\t', fmt='%i') # save as integer
+            else: pass
         
-    def showDialog(self):
+    @classmethod
+    def update_pattern(cls, new_pattern):
+        cls.set_pattern = new_pattern
+        #print(cls.patterns)
 
+    @classmethod
+    def update_target(cls, new_target):
+        cls.set_target = new_target
+        #print(cls.patterns)
+    
+    @classmethod
+    def return_pattern(cls):
+        return cls.set_pattern
+
+    @classmethod
+    def return_target(cls):
+        return cls.set_target
+
+    def showDialog(self, mode):
         #home_dir = str(Path.home())
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', self.dir)
 
         if fname[0]:
-            #f = open(fname[0], 'r')
-            self.fileDisp.setText(fname[0])
-            #with f:
-                #self.pattern = f.read()
-                #self.patternEdit.setText(self.pattern)
-            self.pattern = np.loadtxt(fname[0], dtype=int, delimiter="\t")
-            self.pattern.astype(int)
-            self.model = TableModel(self.pattern)
-            self.patternEdit.setModel(self.model)
+            if mode is "pattern":
+                self.fileDisp.setText(fname[0])
+                self.pattern = np.loadtxt(fname[0], dtype=int, delimiter="\t")
+                self.pattern.astype(int)
+                self.model = TableModel(self.pattern)
+                self.patternEdit.setModel(self.model)
+                #print(self.pattern)
+                odourwinActions.update_pattern(self.pattern)
+            if mode is "target":
+                self.targetFileDisp.setText(fname[0])
+                self.target = np.loadtxt(fname[0], dtype=int, delimiter="\t")
+                odourwinActions.update_target(self.target)
+                self.target = str(self.target)
+                self.targetDisp.setText(self.target)
+            else: pass
         else:
             msg = QtWidgets.QMessageBox()
             msg.setText('Invalid file') 
             msg.exec()
-            
 
     def generateOdour(self, last_test):
         # probability array for the number of odours
@@ -142,9 +173,11 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
                 self.trials = int(l)
             self.pattern = odour_gen(self.target, prbArray, nPrbArray, nChan=8, trialNo=self.trials)
             self.pattern.astype(int)
-            last_test.odours = self.pattern
+            #last_test.odours = self.pattern
+
             self.model = TableModel(self.pattern)
-            # self.patternEdit.setText(self.pattern)
+            odourwinActions.update_pattern(self.pattern)
+            odourwinActions.update_target(self.target)
             self.model = TableModel(self.pattern)
             self.patternEdit.setModel(self.model)
             self.fileDisp.setText('')
