@@ -99,7 +99,7 @@ int* convertStrtoArr(char* str){
 }
 */
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb, unsigned long stimDuration, int oStim[], int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int *stimPin, int liquidAmount, int RES, int stimProb, unsigned long stimDuration, int *oStim, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -156,7 +156,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         }
       if (millis() - startTime > stimDuration){ // stimDuration has to be shorter than response time
         // stop stimulus (olfaction only)
-        //stop_stimulus(stimPin, nStim); //**** PROBLEM WITH DOORS HERE 
+        stop_stimulus(stimPin, nStim); 
         }
       }
       
@@ -215,7 +215,7 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPi
         if(serIn == "oStim"){
           while (!Serial.available());
           //oStim = convertStrtoArr(Serial.readStringUntil('\n'));
-          *oStim = Serial.readStringUntil('\n').toInt();
+          *oStim = Serial.readStringUntil('\n').toInt(); // not sure if this is giving one int or an array TODO:fix
         }
         if(serIn == "target"){
           while (!Serial.available());

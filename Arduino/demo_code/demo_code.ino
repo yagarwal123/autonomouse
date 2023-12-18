@@ -128,7 +128,7 @@ void setup()
   //attachInterrupt(digitalPinToInterrupt(TTL_PIN), callback4, RISING);
 
   // setup olfaction pins
-  for(int i=0;i<(int)(sizeof(*stimPin)/sizeof(stimPin[0]));i++){
+  for(int i=0;i<nStim;i++){
     pinMode(stimPin[i], OUTPUT);
     Serial.print("setting up pins: ");
     Serial.println(stimPin[i]);

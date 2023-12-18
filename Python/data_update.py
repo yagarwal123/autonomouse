@@ -84,11 +84,13 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             stimPattern.astype(int) 
             stimPattern = stimPattern.tostring()
             ser.write('oStim\n'.encode())
-            ser.write(stimPattern) # send it to teensy
+            ser.write( ( str(stimPattern) + "\n" ).encode() )
+            #ser.write(stimPattern) # send it to teensy
 
             # serial write if this is correct pattern
             ser.write('target\n'.encode())
-            ser.write(check_if_target(odours,odourwinActions.return_target())) # send it to teensy
+            ser.write( ( str(check_if_target(odours,odourwinActions.return_target())) + "\n" ).encode() )
+            #ser.write(check_if_target(odours,odourwinActions.return_target())) # send it to teensy
             
         case 6:
             test = last_test
