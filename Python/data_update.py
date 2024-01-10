@@ -58,7 +58,8 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
             rasp_camera.start_record(last_test.id)
             last_test.vid_recording = True
         case 5:
-            s = int(search.group(1))
+            #s = int(search.group(1))
+            s = search.group(1)
             trial = int(search.group(2))
             t = int(search.group(3))
             if ( len(last_test.trials) != (trial-1) ):   #Trial-1 since the newest one hasnt been added yet
@@ -67,24 +68,31 @@ def dataUpdate(START_TIME,mutex,ser, inSer,all_mice,doors,live_licks,last_test,e
                 # if n trials happened already, and a signal is end, trials end at n+1
                 last_test.trials_over = True
                 ser.write('End\n'.encode()) # equivalent to clicking Stop test in test window
-            soundStim = [s] # stimulus pattern, can be a dict of 1s and 0s
             # assume pattern already generated and displayed in the window
             odours = odourwinActions.return_pattern()
             od_size = len(odours)
-            if trial is 0:
-                stimPattern = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # first is always none, logistic purpose
+            '''
+            if trial == 0:
+                stimPattern = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # first is always none, logistic purpose
                 index = 0
             else:
                 index = trial % od_size # pull a line of odour stim from odourwinActions pattern
-                if index is 0: index = od_size # if od_size is a multiple of trial no., i.e. last line of odour pattern
+                if index == 0: index = od_size # if od_size is a multiple of trial no., i.e. last line of odour pattern
                 stimPattern = odours[index-1,:] 
-            last_test.add_trial(Trial(trial,t,np.concatenate((soundStim, stimPattern),axis=None))) # add odour stim here after testing: [soundStim,stimPattern]
+            #soundStim = [s] # stimulus pattern, can be a dict of 1s and 0s
+            #last_test.add_trial(Trial(trial,t,np.concatenate((soundStim, stimPattern),axis=None))) # add odour stim here after testing: [soundStim,stimPattern]
+            '''
+
+            stimuli = [s]
+            last_test.add_trial(Trial(trial,t,stimuli)) # add odour stim here after testing: [soundStim,stimPattern]
 
             stimPattern = odours[trial % od_size,:] # send odour stim for the next trial
             stimPattern.astype(int) 
-            stimPattern = stimPattern.tostring()
+            stimPattern = np.array2string(stimPattern,separator=',')
+            #stimPattern = stimPattern.tostring()
             ser.write('oStim\n'.encode())
-            ser.write( ( str(stimPattern) + "\n" ).encode() )
+            ser.write( ( stimPattern + "\n" ).encode() )
+            #ser.write( ( str(stimPattern) + "\n" ).encode() )
             #ser.write(stimPattern) # send it to teensy
 
             # serial write if this is correct pattern

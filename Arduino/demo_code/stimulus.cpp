@@ -5,8 +5,8 @@
 
 #include "Arduino.h"
 
-int * start_stimulus(int *stimPin, int *oStim, int nStim, int stimProb, unsigned long stimDuration){
-  static int stimulus[16]; 
+int * start_stimulus(int stimPin[], int oStim[], int nStim, int stimProb, unsigned long stimDuration){
+  static int stimulus[17]; 
   int noteFrequency;
   int r = random(100);
   int soundProb = stimProb;
@@ -37,7 +37,7 @@ int * start_stimulus(int *stimPin, int *oStim, int nStim, int stimProb, unsigned
 
 
 // only for olfactometer
-void stop_stimulus(int *stimPin, int nStim){
+void stop_stimulus(int stimPin[], int nStim){
     for(int i=0; i<nStim;i++){ // first element is sound
     digitalWrite(stimPin[i], 0);
     //digitalWrite(*(stimPin+i), LOW);

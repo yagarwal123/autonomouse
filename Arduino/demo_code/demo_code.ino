@@ -49,8 +49,8 @@ float weight;
 int rewardPin = 32;
 int lickPin = A14;
 int TTL_PIN = 33;
-int stimPin[] = {8,4,5,6,9,10,11,13,28,29,30,31,34,35,36,37}; // to be extended to more pins after writing python code, first element is sound
-int nStim = 16; // number of pins used for sound and odour stimulus
+int stimPin[17] = {8,3,4,5,6,9,10,11,13,28,29,30,31,34,35,36,37}; // to be extended to more pins after writing python code, first element is sound
+int nStim = 17; // number of pins used for sound and odour stimulus
 int pumpPin = 12;
 
 unsigned long INTERVAL_BETWEEN_TESTS = 60*1e3;       //One minute before the same mouse is let in
@@ -307,7 +307,7 @@ void loop()
   waitForSerial(door_one, door_two);
   int stimProb = Serial.readStringUntil('\n').toInt(); 
   unsigned long stimDuration = 2000; // use default for now - get from python later
-  int oStim[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // hard code fine number of dours
+  int oStim[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // hard code fine number of dours
   //waitForSerial(door_one, door_two);
   //int taget_arr[] = Serial.readStringUntil('\n').toInt(); 
   /*

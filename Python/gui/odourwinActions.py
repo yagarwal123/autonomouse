@@ -42,9 +42,9 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         S__File = QtWidgets.QFileDialog.getSaveFileName(None,'SaveTextFile',self.dir, "Text Files (*.txt)")
         # This will prevent you from an error if pressed cancel on file dialog.
         if S__File[0]: 
-            if mode is 'pattern':
+            if mode == 'pattern':
                 np.savetxt(S__File[0], self.pattern, delimiter='\t', fmt='%i') # save as integer
-            if mode is 'target':
+            if mode == 'target':
                 np.savetxt(S__File[0], self.target, delimiter='\t', fmt='%i') # save as integer
             else: pass
         
@@ -71,7 +71,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', self.dir)
 
         if fname[0]:
-            if mode is "pattern":
+            if mode == "pattern":
                 self.fileDisp.setText(fname[0])
                 self.pattern = np.loadtxt(fname[0], dtype=int, delimiter="\t")
                 self.pattern.astype(int)
@@ -79,7 +79,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
                 self.patternEdit.setModel(self.model)
                 #print(self.pattern)
                 odourwinActions.update_pattern(self.pattern)
-            if mode is "target":
+            if mode == "target":
                 self.targetFileDisp.setText(fname[0])
                 self.target = np.loadtxt(fname[0], dtype=int, delimiter="\t")
                 odourwinActions.update_target(self.target)
@@ -171,7 +171,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
             l = self.trialEdit.text()
             if l !='' and l.isnumeric():
                 self.trials = int(l)
-            self.pattern = odour_gen2(self.target, prbArray, nPrbArray, nChan=8, trialNo=self.trials)
+            self.pattern = odour_gen2(prbArray, nPrbArray, nChan=8, trialNo=self.trials)
             self.pattern.astype(int)
             #last_test.odours = self.pattern
 

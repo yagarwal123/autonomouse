@@ -55,51 +55,40 @@ void callback3(int TTL_PIN, int* sensorAddr, unsigned long* timePt, FsFile* pr){
   }
   lastButtonStateRising = buttonStateRising;
   }
-/*
-int* convertStrtoArr(char* str){
-    // get length of string str
-    int str_length = sizeof(str)/ sizeof(str[0]);
+
+
+// Function to convert a string to
+// integer array
+void convertStrtoArr(String str, int oStim[])
+{
+    // get length of array str
+    //int str_length = (str.length()+1)/2;
  
     // create an array with size as string
     // length and initialize with 0
-    int arr[str_length] = { 0 };
+    //int arr[str_length] = { 0 };
  
-    int j = 0, i;
-    int size = sizeof(str)/ sizeof(str[0]);
+    int i,j = 0;
+ 
     // Traverse the string
-    for (i = 0; i<size; i++) {
+    for (i = 0; i<str.length()-1; i++) { // using full length gives ] as last character
  
         // if str[i] is ', ' then split
-        if (str[i] == ',')
-            continue;
-         if (str[i] == ' '){
+        if (str[i] == ','){
             // Increment j to point to next
             // array location
             j++;
         }
         else {
- 
             // subtract str[i] by 48 to convert it to int
             // Generate number by multiplying 10 and adding
             // (int)(str[i])
-            arr[j] = arr[j] * 10 + (str[i] - 48);
+            oStim[j] = str[i] - 48;
         }
     }
-    return arr;
- 
-    cout<<"arr[] ";
-    for (i = 0; i <= j; i++) {
-        cout << arr[i] << " ";
-        sum += arr[i]; // sum of array
-    }
-    cout<<endl;
-    // print sum of array
-    cout<<sum<<endl;
-    
 }
-*/
 
-void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int *stimPin, int liquidAmount, int RES, int stimProb, unsigned long stimDuration, int *oStim, int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
+void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int stimPin[], int liquidAmount, int RES, int stimProb, unsigned long stimDuration, int oStim[], int nStim, FsFile* pr, int WAITTIME, int punishtime, HX711 *scale, int pumpPin){
   int sensorValue = 0;
   int* sensorPt = &sensorValue; // must define pointer, cannot just pass address
   unsigned long startTime = 0;
@@ -171,7 +160,10 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int *stimP
       t2.start();
       //noLickCounter++;
     }
-    Serial.print("Lick - Stimulus "); Serial.print(*stimulus); Serial.print(" - Trial ");
+    Serial.print("Lick - Stimulus "); 
+    for(int i=0;i<nStim;i++){Serial.print(*(stimulus+i));}
+    Serial.print(" - Trial ");
+    //Serial.print("Lick - Stimulus "); Serial.print(*stimulus); Serial.print(" - Trial ");
     Serial.print(i);
     Serial.print(" - Time ");
     Serial.println(lickTime);
@@ -216,7 +208,8 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int *stimP
           while (!Serial.available());
           //oStim = convertStrtoArr(Serial.readStringUntil('\n'));
           //*oStim = Serial.readStringUntil('\n').toInt(); // not sure if this is giving one int or an array TODO:fix
-          *oStim = convertStrtoArr(Serial.readStringUntil('\n'));
+          oStim[nStim-1] = { 0 };
+          convertStrtoArr(Serial.readStringUntil('\n'), oStim);
         }
         if(serIn == "target"){
           while (!Serial.available());
@@ -239,34 +232,3 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int *stimP
   Serial.println("Stop recording");
 }
 
-// Function to convert a string to
-// integer array
-int * convertStrtoArr(string str)
-{
-    // get length of string str
-    int str_length = str.length();
- 
-    // create an array with size as string
-    // length and initialize with 0
-    int arr[str_length] = { 0 };
- 
-    int j = 0, i, sum = 0;
- 
-    // Traverse the string
-    for (i = 0; i<str.length(); i++) {
- 
-        // if str[i] is ', ' then split
-        if (str[i] == ','){
-            // Increment j to point to next
-            // array location
-            j++;
-        }
-        else {
-            // subtract str[i] by 48 to convert it to int
-            // Generate number by multiplying 10 and adding
-            // (int)(str[i])
-            arr[j] = arr[j] * 10 + (str[i] - 48);
-        }
-    }
-    return arr;
-}
