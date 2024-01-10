@@ -215,7 +215,8 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int *stimP
         if(serIn == "oStim"){
           while (!Serial.available());
           //oStim = convertStrtoArr(Serial.readStringUntil('\n'));
-          *oStim = Serial.readStringUntil('\n').toInt(); // not sure if this is giving one int or an array TODO:fix
+          //*oStim = Serial.readStringUntil('\n').toInt(); // not sure if this is giving one int or an array TODO:fix
+          *oStim = convertStrtoArr(Serial.readStringUntil('\n'));
         }
         if(serIn == "target"){
           while (!Serial.available());
@@ -238,3 +239,34 @@ void run_test(int TTL_PIN, int lickPin, int THRESHOLD, int rewardPin, int *stimP
   Serial.println("Stop recording");
 }
 
+// Function to convert a string to
+// integer array
+int * convertStrtoArr(string str)
+{
+    // get length of string str
+    int str_length = str.length();
+ 
+    // create an array with size as string
+    // length and initialize with 0
+    int arr[str_length] = { 0 };
+ 
+    int j = 0, i, sum = 0;
+ 
+    // Traverse the string
+    for (i = 0; i<str.length(); i++) {
+ 
+        // if str[i] is ', ' then split
+        if (str[i] == ','){
+            // Increment j to point to next
+            // array location
+            j++;
+        }
+        else {
+            // subtract str[i] by 48 to convert it to int
+            // Generate number by multiplying 10 and adding
+            // (int)(str[i])
+            arr[j] = arr[j] * 10 + (str[i] - 48);
+        }
+    }
+    return arr;
+}

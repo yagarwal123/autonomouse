@@ -3,7 +3,7 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from gui.odourwin import Ui_odourWin
 
 from pathlib import Path
-from odour_gen import odour_gen
+from odour_gen import odour_gen2
 import numpy as np
 from functools import partial
 from config import CONFIG
@@ -171,7 +171,7 @@ class odourwinActions(QtWidgets.QWidget, Ui_odourWin):
             l = self.trialEdit.text()
             if l !='' and l.isnumeric():
                 self.trials = int(l)
-            self.pattern = odour_gen(self.target, prbArray, nPrbArray, nChan=8, trialNo=self.trials)
+            self.pattern = odour_gen2(self.target, prbArray, nPrbArray, nChan=8, trialNo=self.trials)
             self.pattern.astype(int)
             #last_test.odours = self.pattern
 
