@@ -13,11 +13,8 @@ void waitForSerial(Servo door_one, Servo door_two){
     if (Serial.available()){return;};
   }
   Serial.println("no response from python for 30s, opening all doors");
-  door_open(door_one,1);
-  door_open(door_two,2);
-  //pre 20230719
-  //door_open(door_one);
-  //door_open(door_two);
+  door_open(door_one);
+  door_open(door_two);
   while (true); //Do nothing forever
 
 }

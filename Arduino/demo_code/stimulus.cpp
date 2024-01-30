@@ -11,18 +11,14 @@ unsigned start_stimulus(int stimPin[], int nStim, int stimProb[], unsigned long 
   int r = random(100);
   int soundProb = stimProb[0];
   if (r < soundProb){
-    //noteFrequency = 8000;
-    digitalWrite(stimPin[0], HIGH); // test odour line
+    noteFrequency = 8000;
     stimulus = 1;
   }
   else{
-    //noteFrequency = 1000;
-    digitalWrite(stimPin[0], LOW);// test odour line
+    noteFrequency = 1000;
     stimulus = 0;
   }
-  //tone(stimPin[0], noteFrequency, stimDuration);
-  delay(stimDuration); // test odour line
-  digitalWrite(stimPin[0], LOW); // test odour line
+  tone(stimPin[0], noteFrequency, stimDuration);
 
   // olfactory stimulus:
 
@@ -32,7 +28,6 @@ unsigned start_stimulus(int stimPin[], int nStim, int stimProb[], unsigned long 
   
   return stimulus;
 }
-
 
 // only for olfactometer
 void stop_stimulus(int stimPin[], int nStim){
