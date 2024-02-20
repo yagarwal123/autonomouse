@@ -17,6 +17,7 @@ class Mouse:
         self.waittime = 5000
         self.punishtime = 0
         self.test_limit = 10
+        self.trial_lim = None
         self.response_time = 2500
         self.stim_prob = 70
         self.n_odours = 0
